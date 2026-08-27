@@ -1,176 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BITS & PIECES — Expanded Sanctuary</title>
 <style>
-:root {
-  --bg: #08080a;
-  --text: #c4c4cc;
-  --gold: #d4af37;
-  --gold-dim: rgba(212,175,55,0.15);
-  --green: #4af626;
-  --red: #e63946;
-  --purple: #c084fc;
-  --blue: #7eb8ff;
-  --grid: rgba(255,255,255,0.03);
-  --mono: "Courier New", Courier, monospace;
-  --serif: "Cinzel", "Times New Roman", serif;
-  --panel: rgba(0,0,0,0.38);
-  --log-bg: rgba(6,6,9,0.94);
+:root, [data-theme="dark"] {
+  --bg: #08080a; --bg-soft: #0c0c10; --panel: rgba(0,0,0,.42);
+  --text: #c4c4cc; --muted: #7a7a84; --gold: #d4af37; --gold-dim: rgba(212,175,55,.16);
+  --green: #4af626; --red: #e63946; --purple: #c084fc; --blue: #7eb8ff;
+  --grid: rgba(255,255,255,.03); --log-bg: rgba(6,6,9,.95);
+  --input-bg: rgba(0,0,0,.4); --border: rgba(255,255,255,.07);
+  --shadow: rgba(0,0,0,.7);
+}
+[data-theme="light"] {
+  --bg: #eef1f5; --bg-soft: #e4e8ef; --panel: rgba(255,255,255,.82);
+  --text: #1a1a22; --muted: #5a5a68; --gold: #a07820; --gold-dim: rgba(160,120,32,.2);
+  --green: #1a9a30; --red: #c03030; --purple: #7c3aed; --blue: #2563eb;
+  --grid: rgba(0,0,0,.04); --log-bg: rgba(245,247,250,.97);
+  --input-bg: rgba(255,255,255,.7); --border: rgba(0,0,0,.1);
+  --shadow: rgba(20,30,50,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-  background:var(--bg);color:var(--text);font-family:var(--mono);
+  background:var(--bg);color:var(--text);font-family:"Courier New",Courier,monospace;
   min-height:100vh;display:flex;align-items:center;justify-content:center;
-  overflow-x:hidden;overflow-y:auto;position:relative;padding:1.2rem 0;
+  overflow-x:hidden;overflow-y:auto;position:relative;padding:1rem 0;
+  transition:background .4s,color .3s;
 }
 .bg-grid{position:fixed;inset:0;background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-.vignette{position:fixed;inset:0;background:radial-gradient(circle,transparent 32%,rgba(0,0,0,.9) 100%);pointer-events:none;z-index:1}
+.vignette{position:fixed;inset:0;background:radial-gradient(circle,transparent 30%,rgba(0,0,0,.75) 100%);pointer-events:none;z-index:1;transition:opacity .4s}
+[data-theme="light"] .vignette{opacity:.45}
 
-.view{position:relative;z-index:2;width:96%;max-width:1280px;background:rgba(12,12,15,.86);backdrop-filter:blur(14px);border:1px solid var(--gold-dim);box-shadow:0 0 60px rgba(0,0,0,.9);transition:opacity .55s cubic-bezier(.2,.8,.2,1),transform .55s cubic-bezier(.2,.8,.2,1)}
-.hidden{display:none!important;opacity:0;transform:scale(.97) translateY(10px)}
+.view{position:relative;z-index:2;width:97%;max-width:1320px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--gold-dim);box-shadow:0 0 60px var(--shadow);transition:opacity .5s,transform .5s,background .4s}
+.hidden{display:none!important;opacity:0;transform:scale(.97) translateY(8px)}
 
 /* Gate */
-#gateView{max-width:480px;text-align:center;padding:2.4rem 2rem}
-.sigil-container{width:140px;height:140px;margin:0 auto 1.4rem;cursor:pointer;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
-.sigil-container:hover{transform:scale(1.07)}
-.sigil-container:active{transform:scale(.95)}
+#gateView{max-width:480px;text-align:center;padding:2.3rem 2rem}
+.sigil-container{width:130px;height:130px;margin:0 auto 1.3rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.sigil-container:hover{transform:scale(1.08) rotate(4deg)}
+.sigil-container:active{transform:scale(.94)}
 canvas{width:100%;height:100%;display:block}
-h1{font-family:var(--serif);font-size:1.5rem;letter-spacing:.35em;color:#fff;text-transform:uppercase;margin-bottom:.4rem;font-weight:300}
-.subtitle{font-size:.66rem;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:1.6rem;opacity:.85}
-.manifesto{font-size:.73rem;line-height:1.85;letter-spacing:.04em;color:#8a8a93;margin-bottom:2rem}
-.input-group{position:relative;margin-top:.7rem}
-input[type=password]{width:100%;background:transparent;border:none;border-bottom:1px solid var(--gold-dim);padding:.6rem 0;color:var(--gold);font-family:var(--mono);font-size:.8rem;letter-spacing:.3em;text-align:center;outline:none;transition:border-color .35s,box-shadow .35s}
-input[type=password]:focus{border-bottom-color:var(--gold);box-shadow:0 4px 18px rgba(212,175,55,.12)}
-input[type=password]::placeholder{color:#4a4a52;letter-spacing:.14em;font-size:.68rem}
-.status-msg{margin-top:.9rem;font-size:.62rem;letter-spacing:.16em;height:1.1rem;color:#5a5a62;text-transform:uppercase;transition:color .3s}
+h1{font-family:Georgia,serif;font-size:1.45rem;letter-spacing:.32em;color:var(--text);text-transform:uppercase;margin-bottom:.35rem;font-weight:400}
+.subtitle{font-size:.64rem;letter-spacing:.26em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem;opacity:.9}
+.manifesto{font-size:.72rem;line-height:1.8;color:var(--muted);margin-bottom:1.8rem}
+input[type=password],input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--gold);
+  font-family:inherit;font-size:.78rem;padding:.5rem .6rem;outline:none;letter-spacing:.04em;
+  transition:border-color .3s,box-shadow .3s;
+}
+input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);background:transparent;text-align:center;letter-spacing:.28em;padding:.55rem 0}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 12px var(--gold-dim)}
+.status-msg{margin-top:.8rem;font-size:.6rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;height:1.1rem}
 
-/* Dashboard */
-#dashboardView{padding:1.2rem 1.3rem 1.4rem;text-align:left}
-.dashboard-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-dim);padding-bottom:.75rem;margin-bottom:1rem;flex-wrap:wrap;gap:.7rem}
-.dashboard-header h2{font-family:var(--serif);font-size:1.1rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
-.header-meta{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
-.token-counter{font-size:.7rem;letter-spacing:.12em;color:var(--gold);border:1px solid var(--gold-dim);padding:.32rem .7rem;background:rgba(212,175,55,.06);transition:transform .25s,box-shadow .25s}
-.token-counter.pulse{transform:scale(1.09);box-shadow:0 0 20px rgba(212,175,55,.4)}
-.token-counter span{color:#fff;font-weight:bold}
-.clearance-badge{font-size:.6rem;letter-spacing:.12em;color:var(--green);border:1px solid rgba(74,246,38,.28);padding:.32rem .55rem;background:rgba(74,246,38,.05)}
-.power-active{font-size:.58rem;letter-spacing:.1em;color:var(--purple);border:1px solid rgba(192,132,252,.35);padding:.3rem .55rem;background:rgba(192,132,252,.08);animation:powerPulse 1.8s ease-in-out infinite}
-@keyframes powerPulse{0%,100%{opacity:.85}50%{opacity:1;box-shadow:0 0 12px rgba(192,132,252,.35)}}
+/* Dashboard shell */
+#dashboardView{padding:1.1rem 1.2rem 1.3rem}
+.dashboard-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-dim);padding-bottom:.7rem;margin-bottom:.9rem;flex-wrap:wrap;gap:.6rem}
+.dashboard-header h2{font-family:Georgia,serif;font-size:1.05rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.header-meta{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.token-counter,.clearance-badge,.power-active,.theme-btn,.settings-btn{
+  font-size:.62rem;letter-spacing:.1em;padding:.3rem .55rem;border:1px solid var(--gold-dim);
+  background:rgba(212,175,55,.05);color:var(--gold);cursor:pointer;transition:all .25s;
+}
+.token-counter span{color:var(--text);font-weight:bold}
+.token-counter.pulse{transform:scale(1.1);box-shadow:0 0 18px var(--gold-dim)}
+.clearance-badge{color:var(--green);border-color:rgba(74,246,38,.3);cursor:default}
+.power-active{color:var(--purple);border-color:rgba(192,132,252,.4);animation:powerPulse 1.6s ease-in-out infinite;display:none}
+@keyframes powerPulse{0%,100%{opacity:.8}50%{opacity:1;box-shadow:0 0 14px rgba(192,132,252,.35)}}
+.theme-btn,.settings-btn{background:transparent;color:var(--muted);border-color:var(--border)}
+.theme-btn:hover,.settings-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
 
-.dashboard-body{display:grid;grid-template-columns:1fr 290px;gap:1.1rem;min-height:560px}
-@media(max-width:960px){.dashboard-body{grid-template-columns:1fr}}
+.dashboard-body{display:grid;grid-template-columns:1fr 280px;gap:1rem;min-height:540px}
+@media(max-width:980px){.dashboard-body{grid-template-columns:1fr}}
 
-.main-col{display:flex;flex-direction:column;gap:1rem}
-.tabs{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.2rem}
-.tab-btn{background:transparent;border:1px solid rgba(255,255,255,.08);color:#8a8a93;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;padding:.35rem .7rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
+.main-col{display:flex;flex-direction:column;gap:.85rem}
+.tabs{display:flex;gap:.3rem;flex-wrap:wrap}
+.tab-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.58rem;letter-spacing:.1em;padding:.32rem .6rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
 .tab-btn:hover,.tab-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.07)}
-.tab-panel{display:none}
-.tab-panel.active{display:block;animation:fadeIn .35s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tab-panel{display:none;animation:fadeUp .35s ease}
+.tab-panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.panel{border:1px solid rgba(255,255,255,.05);background:var(--panel);padding:1rem;position:relative;transition:border-color .3s,box-shadow .3s}
-.panel:hover{border-color:rgba(212,175,55,.2);box-shadow:0 0 20px rgba(212,175,55,.05)}
-.panel-title{font-size:.64rem;letter-spacing:.16em;color:#8a8a93;text-transform:uppercase;margin-bottom:.75rem;border-bottom:1px dashed var(--gold-dim);padding-bottom:.3rem;display:flex;justify-content:space-between;align-items:center}
+.panel{border:1px solid var(--border);background:var(--panel);padding:.9rem;position:relative;transition:border-color .3s,box-shadow .3s,transform .3s}
+.panel:hover{border-color:var(--gold-dim);box-shadow:0 0 18px rgba(212,175,55,.06)}
+.panel-title{font-size:.6rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:.65rem;border-bottom:1px dashed var(--gold-dim);padding-bottom:.28rem;display:flex;justify-content:space-between;align-items:center}
 
 /* Tasks */
-.task-list{display:flex;flex-direction:column;gap:.65rem}
-.task-card{border:1px solid rgba(255,255,255,.05);background:rgba(15,15,20,.55);padding:.65rem .75rem;display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;font-size:.68rem;letter-spacing:.03em;position:relative;overflow:hidden;transition:border-color .25s,background .25s,transform .25s}
-.task-card:hover{border-color:rgba(212,175,55,.22);background:rgba(20,18,12,.55)}
-.task-card.working{border-color:var(--gold);box-shadow:0 0 16px rgba(212,175,55,.18)}
-.task-card.cooldown{border-color:rgba(255,255,255,.08);opacity:.85}
-.task-info{display:flex;flex-direction:column;gap:.12rem}
-.task-title{color:#ddd}
-.task-meta{color:var(--gold);font-size:.6rem}
-.task-progress{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green));width:0%;transition:width .15s linear;box-shadow:0 0 8px var(--gold)}
-.task-cooldown-ring{position:absolute;top:6px;right:6px;width:28px;height:28px}
-.task-cooldown-ring svg{transform:rotate(-90deg)}
-.task-cooldown-ring circle{fill:none;stroke:rgba(212,175,55,.25);stroke-width:3}
-.task-cooldown-ring .progress{stroke:var(--gold);stroke-linecap:round;transition:stroke-dashoffset .2s linear}
-.btn-action{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);padding:.32rem .65rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;cursor:pointer;text-transform:uppercase;transition:all .28s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;white-space:nowrap}
-.btn-action:hover:not(:disabled){background:var(--gold);color:#000;transform:translateY(-1px);box-shadow:0 4px 14px rgba(212,175,55,.3)}
-.btn-action:active:not(:disabled){transform:translateY(1px) scale(.97)}
-.btn-action:disabled{border-color:rgba(255,255,255,.07);color:#4a4a52;cursor:not-allowed;transform:none}
+.task-list{display:flex;flex-direction:column;gap:.5rem;max-height:380px;overflow-y:auto;padding-right:.25rem}
+.task-card{border:1px solid var(--border);background:rgba(15,15,20,.45);padding:.55rem .65rem;display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:center;font-size:.64rem;position:relative;overflow:hidden;transition:all .28s}
+[data-theme="light"] .task-card{background:rgba(255,255,255,.5)}
+.task-card:hover{border-color:var(--gold-dim);transform:translateX(3px)}
+.task-card.working{border-color:var(--gold);box-shadow:0 0 14px var(--gold-dim)}
+.task-card.cooldown{opacity:.75}
+.task-card.locked{opacity:.45;pointer-events:none}
+.task-info{display:flex;flex-direction:column;gap:.1rem}
+.task-title{color:var(--text)}
+.task-meta{color:var(--gold);font-size:.56rem}
+.task-deps{font-size:.52rem;color:var(--muted)}
+.task-progress{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green));width:0%;box-shadow:0 0 8px var(--gold);transition:width .12s linear}
+.btn-action{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);padding:.28rem .55rem;font-family:inherit;font-size:.56rem;letter-spacing:.1em;cursor:pointer;text-transform:uppercase;transition:all .25s;white-space:nowrap}
+.btn-action:hover:not(:disabled){background:var(--gold);color:#000;transform:translateY(-1px);box-shadow:0 3px 12px var(--gold-dim)}
+.btn-action:active:not(:disabled){transform:scale(.96)}
+.btn-action:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
-/* Shop */
-.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;max-height:420px;overflow-y:auto;padding-right:.3rem}
-.upgrade-card{border:1px solid rgba(255,255,255,.06);background:rgba(10,10,14,.6);padding:.7rem;display:flex;flex-direction:column;gap:.35rem;transition:border-color .25s,transform .25s}
-.upgrade-card:hover{border-color:rgba(212,175,55,.25);transform:translateY(-2px)}
-.upgrade-card.owned{border-color:rgba(74,246,38,.25);opacity:.75}
-.upgrade-name{font-size:.68rem;color:#ddd;letter-spacing:.04em}
-.upgrade-desc{font-size:.58rem;color:#7a7a82;line-height:1.4}
-.upgrade-cost{font-size:.6rem;color:var(--gold);margin-top:auto}
-.upgrade-card .btn-action{align-self:flex-start;margin-top:.3rem}
+/* ASCII Process Window */
+.process-window{border:1px solid var(--gold-dim);background:rgba(4,4,8,.85);margin-top:.7rem;display:none;flex-direction:column;max-height:320px;overflow:hidden;animation:fadeUp .4s ease}
+.process-window.visible{display:flex}
+.process-header{padding:.45rem .7rem;border-bottom:1px solid var(--gold-dim);font-size:.58rem;letter-spacing:.12em;color:var(--gold);display:flex;justify-content:space-between}
+.process-body{display:grid;grid-template-columns:1fr 1.1fr;gap:0;min-height:220px}
+@media(max-width:700px){.process-body{grid-template-columns:1fr}}
+.process-text{padding:.6rem .7rem;font-size:.6rem;line-height:1.55;color:var(--muted);overflow-y:auto;border-right:1px solid var(--border);max-height:260px}
+.process-text .line{opacity:0;animation:lineIn .4s forwards}
+@keyframes lineIn{to{opacity:1}}
+.process-ascii{font-family:monospace;font-size:10px;line-height:1.05;color:var(--gold);padding:.5rem;white-space:pre;overflow:hidden;background:rgba(0,0,0,.35);min-height:200px}
+[data-theme="light"] .process-ascii{background:rgba(0,0,0,.06);color:#7a5a10}
 
-/* Keys & Powers */
-.keys-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
-@media(max-width:600px){.keys-grid{grid-template-columns:1fr}}
-.key-slot,.power-slot{border:1px solid rgba(255,255,255,.06);background:rgba(10,10,14,.55);padding:.7rem;min-height:90px}
-.key-slot h4,.power-slot h4{font-size:.62rem;letter-spacing:.14em;color:var(--purple);text-transform:uppercase;margin-bottom:.4rem}
-.key-item,.power-item{font-size:.62rem;padding:.35rem .45rem;margin-bottom:.3rem;border-left:2px solid var(--purple);background:rgba(192,132,252,.06);display:flex;justify-content:space-between;align-items:center;gap:.4rem}
-.key-item button,.power-item button{font-size:.55rem;padding:.2rem .4rem}
+/* Shop / Keys / Research */
+.shop-grid,.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.55rem;max-height:400px;overflow-y:auto}
+.upgrade-card,.research-card{border:1px solid var(--border);background:rgba(10,10,14,.5);padding:.6rem;display:flex;flex-direction:column;gap:.3rem;transition:all .25s}
+[data-theme="light"] .upgrade-card,[data-theme="light"] .research-card{background:rgba(255,255,255,.55)}
+.upgrade-card:hover,.research-card:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
+.upgrade-card.owned{opacity:.7;border-color:rgba(74,246,38,.3)}
+.upgrade-name,.research-name{font-size:.64rem;color:var(--text)}
+.upgrade-desc,.research-desc{font-size:.54rem;color:var(--muted);line-height:1.35}
+.upgrade-cost{font-size:.56rem;color:var(--gold);margin-top:auto}
+
+.keys-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.key-slot,.power-slot{border:1px solid var(--border);padding:.6rem;min-height:80px}
+.key-slot h4,.power-slot h4{font-size:.58rem;letter-spacing:.12em;color:var(--purple);text-transform:uppercase;margin-bottom:.35rem}
+.key-item,.power-item{font-size:.58rem;padding:.3rem .4rem;margin-bottom:.25rem;border-left:2px solid var(--purple);background:rgba(192,132,252,.06);display:flex;justify-content:space-between;gap:.3rem;align-items:center}
 
 /* Viz */
-.viz-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem}
-@media(max-width:700px){.viz-row{grid-template-columns:1fr}}
-.viz-box{height:150px;width:100%;position:relative;display:flex;align-items:center;justify-content:center;background:rgba(5,5,8,.65);overflow:hidden}
+.viz-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem}
+@media(max-width:720px){.viz-row{grid-template-columns:1fr}}
+.viz-box{height:140px;position:relative;background:rgba(5,5,8,.6);overflow:hidden}
 .viz-box canvas{position:absolute;inset:0;width:100%;height:100%}
-.lock-overlay{position:absolute;inset:0;background:rgba(8,8,10,.9);backdrop-filter:blur(5px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;padding:.8rem;text-align:center;transition:opacity .55s,transform .55s}
-.lock-overlay.unlocked{opacity:0;transform:scale(1.08);pointer-events:none}
-.lock-overlay p{font-size:.64rem;letter-spacing:.1em;color:#8a8a93;margin-bottom:.4rem}
-.unlock-cost{color:var(--gold);font-size:.58rem;margin-bottom:.55rem}
+.lock-overlay{position:absolute;inset:0;background:rgba(8,8,10,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;padding:.6rem;text-align:center;transition:opacity .5s,transform .5s}
+.lock-overlay.unlocked{opacity:0;transform:scale(1.06);pointer-events:none}
+.lock-overlay p{font-size:.6rem;color:var(--muted);margin-bottom:.3rem}
+.unlock-cost{color:var(--gold);font-size:.54rem;margin-bottom:.4rem}
 
-/* Challenge modal from viz */
-.challenge-modal{position:absolute;inset:0;background:rgba(6,6,10,.92);z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;text-align:center;animation:fadeIn .3s ease}
-.challenge-modal h3{font-size:.72rem;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:.5rem}
-.challenge-modal p{font-size:.62rem;color:#9a9aa2;margin-bottom:.7rem;line-height:1.5}
-.challenge-modal input{background:rgba(0,0,0,.4);border:1px solid var(--gold-dim);color:var(--gold);font-family:var(--mono);font-size:.7rem;padding:.35rem .5rem;text-align:center;width:80%;outline:none;margin-bottom:.5rem}
-.challenge-actions{display:flex;gap:.4rem}
+.challenge-modal{position:absolute;inset:0;background:rgba(6,6,10,.94);z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.8rem;text-align:center;animation:fadeUp .3s ease}
+.challenge-modal h3{font-size:.68rem;letter-spacing:.14em;color:var(--gold);margin-bottom:.4rem}
+.challenge-modal p{font-size:.58rem;color:var(--muted);margin-bottom:.5rem;line-height:1.45}
+.challenge-modal input{width:85%;margin-bottom:.4rem;text-align:center}
 
 /* Log */
-.log-panel{border:1px solid rgba(255,255,255,.06);background:var(--log-bg);display:flex;flex-direction:column;height:100%;min-height:500px;max-height:680px;overflow:hidden}
-.log-header{padding:.65rem .8rem .5rem;border-bottom:1px solid var(--gold-dim);display:flex;flex-direction:column;gap:.45rem}
+.log-panel{border:1px solid var(--border);background:var(--log-bg);display:flex;flex-direction:column;height:100%;min-height:480px;max-height:720px;overflow:hidden}
+.log-header{padding:.55rem .7rem .45rem;border-bottom:1px solid var(--gold-dim);display:flex;flex-direction:column;gap:.4rem}
 .log-title-row{display:flex;justify-content:space-between;align-items:center}
-.log-title{font-size:.64rem;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
-.log-actions{display:flex;gap:.3rem}
-.log-btn{background:transparent;border:1px solid rgba(255,255,255,.1);color:#8a8a93;font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;padding:.25rem .45rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
-.log-btn:hover{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.06)}
-.log-search{width:100%;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.07);color:var(--text);font-family:var(--mono);font-size:.65rem;padding:.35rem .5rem;outline:none}
-.log-search:focus{border-color:var(--gold-dim)}
-.log-meta{font-size:.55rem;color:#5a5a62;letter-spacing:.08em}
-.log-entries{flex:1;overflow-y:auto;padding:.5rem .65rem;display:flex;flex-direction:column;gap:.3rem;scrollbar-width:thin;scrollbar-color:rgba(212,175,55,.25) transparent}
-.log-entry{font-size:.6rem;line-height:1.4;padding:.3rem .4rem;border-left:2px solid transparent;background:rgba(255,255,255,.015);animation:logSlide .3s cubic-bezier(.2,.8,.2,1) forwards;opacity:0;transform:translateX(6px)}
-.log-entry .ts{color:#5a5a62;margin-right:.35rem;font-size:.55rem}
-.log-entry.type-system{border-left-color:#6a6a72}
-.log-entry.type-click{border-left-color:var(--gold)}
-.log-entry.type-key{border-left-color:var(--blue)}
-.log-entry.type-task{border-left-color:var(--green)}
-.log-entry.type-unlock{border-left-color:var(--purple)}
-.log-entry.type-error{border-left-color:var(--red)}
-.log-entry.type-info{border-left-color:#8ab4d4}
-.log-entry.type-power{border-left-color:#f0abfc}
+.log-title{font-size:.6rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.log-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.52rem;letter-spacing:.08em;padding:.22rem .4rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
+.log-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
+.log-search{width:100%;font-size:.62rem;padding:.3rem .45rem}
+.log-meta{font-size:.52rem;color:var(--muted)}
+.log-entries{flex:1;overflow-y:auto;padding:.45rem .55rem;display:flex;flex-direction:column;gap:.25rem}
+.log-entry{font-size:.56rem;line-height:1.35;padding:.25rem .35rem;border-left:2px solid transparent;background:rgba(255,255,255,.015);animation:logSlide .28s forwards;opacity:0;transform:translateX(6px)}
+.log-entry .ts{color:var(--muted);margin-right:.3rem;font-size:.52rem}
+.log-entry.type-system{border-left-color:#6a6a72}.log-entry.type-click{border-left-color:var(--gold)}
+.log-entry.type-key{border-left-color:var(--blue)}.log-entry.type-task{border-left-color:var(--green)}
+.log-entry.type-unlock{border-left-color:var(--purple)}.log-entry.type-error{border-left-color:var(--red)}
+.log-entry.type-info{border-left-color:#8ab4d4}.log-entry.type-power{border-left-color:#f0abfc}
+.log-entry.type-research{border-left-color:#f59e0b}.log-entry.type-notify{border-left-color:#22d3ee}
 .log-entry.hidden-by-search{display:none}
 @keyframes logSlide{to{opacity:1;transform:none}}
 
-.dashboard-footer{margin-top:.9rem;display:flex;justify-content:flex-end;gap:.5rem}
-.btn-lock{background:transparent;border:1px solid var(--gold-dim);color:#8a8a93;padding:.4rem .9rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;cursor:pointer;text-transform:uppercase;transition:all .3s}
-.btn-lock:hover{color:var(--gold);border-color:var(--gold);background:rgba(212,175,55,.05)}
+.dashboard-footer{margin-top:.8rem;display:flex;justify-content:flex-end;gap:.45rem}
+.btn-lock{background:transparent;border:1px solid var(--gold-dim);color:var(--muted);padding:.35rem .8rem;font-family:inherit;font-size:.58rem;letter-spacing:.14em;cursor:pointer;text-transform:uppercase;transition:all .3s}
+.btn-lock:hover{color:var(--gold);border-color:var(--gold)}
 
-.corner{position:absolute;width:7px;height:7px;border:1px solid var(--gold);opacity:.5;pointer-events:none}
+/* Settings Modal */
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:none;align-items:center;justify-content:center;padding:1rem;animation:fadeUp .3s ease}
+.settings-overlay.visible{display:flex}
+.settings-panel{background:var(--bg-soft);border:1px solid var(--gold-dim);width:min(520px,95vw);max-height:85vh;overflow-y:auto;padding:1.2rem;position:relative;box-shadow:0 20px 50px var(--shadow)}
+.settings-panel h3{font-size:.85rem;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
+.settings-section{margin-bottom:1.1rem}
+.settings-section h4{font-size:.62rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:.5rem;border-bottom:1px dashed var(--border);padding-bottom:.25rem}
+.settings-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem;margin-bottom:.45rem;font-size:.65rem}
+.settings-row label{color:var(--text);flex:1}
+.settings-row input[type=range]{width:120px}
+.settings-row input[type=color]{width:36px;height:28px;border:none;background:transparent;cursor:pointer}
+.settings-close{position:absolute;top:.7rem;right:.8rem;background:transparent;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer}
+.keyword-list{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem}
+.keyword-chip{font-size:.55rem;padding:.2rem .4rem;border:1px solid var(--gold-dim);color:var(--gold);display:flex;align-items:center;gap:.25rem}
+.keyword-chip button{background:none;border:none;color:var(--red);cursor:pointer;font-size:.7rem}
+
+/* Notifications */
+.notify-toast{position:fixed;top:18px;right:18px;background:var(--bg-soft);border:1px solid var(--blue);color:var(--text);padding:.55rem .9rem;font-size:.62rem;letter-spacing:.08em;z-index:60;opacity:0;transform:translateX(20px);transition:all .35s;max-width:280px;box-shadow:0 8px 24px var(--shadow)}
+.notify-toast.show{opacity:1;transform:none}
+
+.corner{position:absolute;width:6px;height:6px;border:1px solid var(--gold);opacity:.5;pointer-events:none}
 .tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
 .tr{top:-1px;right:-1px;border-left:none;border-bottom:none}
 .bl{bottom:-1px;left:-1px;border-right:none;border-top:none}
 .br{bottom:-1px;right:-1px;border-left:none;border-top:none}
 
-.ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.35);transform:scale(0);animation:rippleOut .55s ease-out forwards;pointer-events:none;z-index:20}
-@keyframes rippleOut{to{transform:scale(4.5);opacity:0}}
-.flash-green{animation:flashGreen .65s ease}
-@keyframes flashGreen{0%,100%{box-shadow:none}40%{box-shadow:0 0 22px rgba(74,246,38,.4)}}
-.shake{animation:shake .4s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-
-.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(18px);background:rgba(12,12,15,.96);border:1px solid var(--gold-dim);color:var(--text);padding:.55rem 1rem;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;opacity:0;pointer-events:none;z-index:100;transition:opacity .3s,transform .3s;box-shadow:0 8px 28px rgba(0,0,0,.5)}
+.ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.35);transform:scale(0);animation:rippleOut .5s ease-out forwards;pointer-events:none;z-index:20}
+@keyframes rippleOut{to{transform:scale(5);opacity:0}}
+.flash-green{animation:flashG .55s ease}
+@keyframes flashG{0%,100%{box-shadow:none}40%{box-shadow:0 0 20px rgba(74,246,38,.45)}}
+.shake{animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}70%{transform:translateX(5px)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg-soft);border:1px solid var(--gold-dim);color:var(--text);padding:.5rem .95rem;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;opacity:0;pointer-events:none;z-index:100;transition:all .3s;box-shadow:0 8px 24px var(--shadow)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -181,14 +212,12 @@ input[type=password]::placeholder{color:#4a4a52;letter-spacing:.14em;font-size:.
 <!-- GATE -->
 <div class="view" id="gateView">
   <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="sigil-container" id="sigilButton" title="Initiate Resonance">
-    <canvas id="sigilCanvas" width="280" height="280"></canvas>
-  </div>
+  <div class="sigil-container" id="sigilButton"><canvas id="sigilCanvas" width="260" height="260"></canvas></div>
   <h1>Bits &amp; Pieces</h1>
   <div class="subtitle">Order of the Fragmented Mind</div>
   <p class="manifesto">Truth is never revealed whole.<br>It is gathered, byte by byte, echo by echo.<br>Assemble the cipher to enter.</p>
   <form id="gateForm" autocomplete="off">
-    <div class="input-group"><input type="password" id="passphrase" placeholder="ENTER PASSPHRASE" maxlength="32"></div>
+    <input type="password" id="passphrase" placeholder="ENTER PASSPHRASE" maxlength="32">
     <div class="status-msg" id="status">Awaiting Input</div>
   </form>
 </div>
@@ -196,95 +225,99 @@ input[type=password]::placeholder{color:#4a4a52;letter-spacing:.14em;font-size:.
 <!-- DASHBOARD -->
 <div class="view hidden" id="dashboardView">
   <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-
   <div class="dashboard-header">
     <h2>Inner Sanctuary</h2>
     <div class="header-meta">
       <div class="token-counter" id="tokenCounter">TOKENS: <span id="tokenBalance">0</span> ⟁</div>
       <div class="clearance-badge" id="clearanceBadge">CLEARANCE: INITIATE</div>
-      <div class="power-active" id="powerBadge" style="display:none">POWER ACTIVE</div>
+      <div class="power-active" id="powerBadge">POWER</div>
+      <button class="theme-btn" id="themeBtn" title="Toggle theme">☾</button>
+      <button class="settings-btn" id="settingsBtn">Settings</button>
     </div>
   </div>
 
   <div class="dashboard-body">
     <div class="main-col">
       <div class="tabs">
-        <button class="tab-btn active" data-tab="work">Work of the Order</button>
-        <button class="tab-btn" data-tab="shop">Relic Shop</button>
-        <button class="tab-btn" data-tab="keys">Keys &amp; Powers</button>
-        <button class="tab-btn" data-tab="viz">Mystical Nodes</button>
+        <button class="tab-btn active" data-tab="work">Rites</button>
+        <button class="tab-btn" data-tab="shop">Relics</button>
+        <button class="tab-btn" data-tab="keys">Keys</button>
+        <button class="tab-btn" data-tab="research">Research</button>
+        <button class="tab-btn" data-tab="viz">Nodes</button>
       </div>
 
-      <!-- WORK TAB -->
+      <!-- RITES -->
       <div class="tab-panel active" id="tab-work">
         <div class="panel">
-          <div class="panel-title"><span>// Transmutation Rites</span><span style="color:var(--gold)" id="activeMultiplier">×1.0</span></div>
+          <div class="panel-title"><span>// Transmutation Rites</span><span style="color:var(--gold)" id="activeMultiplier">×1.00</span></div>
           <div class="task-list" id="taskList"></div>
-        </div>
-      </div>
-
-      <!-- SHOP TAB -->
-      <div class="tab-panel" id="tab-shop">
-        <div class="panel">
-          <div class="panel-title"><span>// Relic Shop — Spend Tokens</span><span style="color:var(--gold)">PERMANENT</span></div>
-          <div class="shop-grid" id="shopGrid"></div>
-        </div>
-      </div>
-
-      <!-- KEYS TAB -->
-      <div class="tab-panel" id="tab-keys">
-        <div class="panel">
-          <div class="panel-title"><span>// Keys &amp; Activated Powers</span></div>
-          <div class="keys-grid">
-            <div class="key-slot">
-              <h4>Held Keys</h4>
-              <div id="keysInventory"></div>
-              <p style="font-size:.58rem;color:#6a6a72;margin-top:.4rem">Keys are earned by answering the Nodes’ challenges.</p>
-            </div>
-            <div class="power-slot">
-              <h4>Active / Ready Powers</h4>
-              <div id="powersInventory"></div>
+          <div class="process-window" id="processWindow">
+            <div class="process-header"><span id="processTitle">RITE IN PROGRESS</span><button class="log-btn" id="closeProcess">Close</button></div>
+            <div class="process-body">
+              <div class="process-text" id="processText"></div>
+              <pre class="process-ascii" id="processAscii"></pre>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- VIZ TAB -->
+      <!-- SHOP -->
+      <div class="tab-panel" id="tab-shop">
+        <div class="panel">
+          <div class="panel-title"><span>// Relic Shop</span></div>
+          <div class="shop-grid" id="shopGrid"></div>
+        </div>
+      </div>
+
+      <!-- KEYS -->
+      <div class="tab-panel" id="tab-keys">
+        <div class="panel">
+          <div class="panel-title"><span>// Keys &amp; Powers</span></div>
+          <div class="keys-grid">
+            <div class="key-slot"><h4>Held Keys</h4><div id="keysInventory"></div></div>
+            <div class="power-slot"><h4>Powers</h4><div id="powersInventory"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESEARCH -->
+      <div class="tab-panel" id="tab-research">
+        <div class="panel">
+          <div class="panel-title"><span>// Log Analysis Research</span><span style="color:var(--gold)">FINDINGS → REWARD BOOST</span></div>
+          <div class="research-grid" id="researchGrid"></div>
+          <div id="analysisArea" style="margin-top:.8rem;display:none">
+            <div class="panel-title">Active Analysis Challenge</div>
+            <p id="analysisPrompt" style="font-size:.62rem;color:var(--muted);margin-bottom:.5rem;line-height:1.5"></p>
+            <textarea id="analysisInput" rows="3" placeholder="Submit your findings from the activity log…"></textarea>
+            <button class="btn-action" id="submitAnalysis" style="margin-top:.4rem">Submit Findings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIZ -->
       <div class="tab-panel" id="tab-viz">
         <div class="panel">
-          <div class="panel-title"><span>// Mystical Visualizations</span><span style="color:var(--purple)">MAY OFFER KEYS</span></div>
+          <div class="panel-title"><span>// Mystical Nodes</span></div>
           <div class="viz-row">
             <div>
-              <div style="font-size:.6rem;color:#8a8a93;margin-bottom:.35rem;letter-spacing:.1em">CHRONO LATTICE</div>
+              <div style="font-size:.55rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.1em">CHRONO LATTICE</div>
               <div class="viz-box" id="vizLatticeBox">
                 <canvas id="vizLatticeCanvas"></canvas>
-                <div class="lock-overlay" id="lockLattice">
-                  <p>LATTICE MATRIX RESTRICTED</p>
-                  <div class="unlock-cost">COST: 30 TOKENS</div>
-                  <button class="btn-action" data-feature="lattice" data-cost="30">Unlock Node</button>
-                </div>
+                <div class="lock-overlay" id="lockLattice"><p>RESTRICTED</p><div class="unlock-cost">30 ⟁</div><button class="btn-action" data-feature="lattice" data-cost="30">Unlock</button></div>
               </div>
             </div>
             <div>
-              <div style="font-size:.6rem;color:#8a8a93;margin-bottom:.35rem;letter-spacing:.1em">ASTRAL WAVE</div>
+              <div style="font-size:.55rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.1em">ASTRAL WAVE</div>
               <div class="viz-box" id="vizWaveBox">
                 <canvas id="vizWaveCanvas"></canvas>
-                <div class="lock-overlay" id="lockWave">
-                  <p>RESONANCE SPECTRUM SEALED</p>
-                  <div class="unlock-cost">COST: 50 TOKENS</div>
-                  <button class="btn-action" data-feature="wave" data-cost="50">Unlock Node</button>
-                </div>
+                <div class="lock-overlay" id="lockWave"><p>SEALED</p><div class="unlock-cost">50 ⟁</div><button class="btn-action" data-feature="wave" data-cost="50">Unlock</button></div>
               </div>
             </div>
             <div>
-              <div style="font-size:.6rem;color:#8a8a93;margin-bottom:.35rem;letter-spacing:.1em">ORACLE FIELD</div>
+              <div style="font-size:.55rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.1em">ORACLE FIELD</div>
               <div class="viz-box" id="vizOracleBox">
                 <canvas id="vizOracleCanvas"></canvas>
-                <div class="lock-overlay" id="lockOracle">
-                  <p>ORACLE CONSTELLATION LOCKED</p>
-                  <div class="unlock-cost">COST: 90 TOKENS</div>
-                  <button class="btn-action" data-feature="oracle" data-cost="90">Unlock Node</button>
-                </div>
+                <div class="lock-overlay" id="lockOracle"><p>LOCKED</p><div class="unlock-cost">90 ⟁</div><button class="btn-action" data-feature="oracle" data-cost="90">Unlock</button></div>
               </div>
             </div>
           </div>
@@ -293,17 +326,17 @@ input[type=password]::placeholder{color:#4a4a52;letter-spacing:.14em;font-size:.
     </div>
 
     <!-- LOG -->
-    <div class="log-panel" id="logPanel">
+    <div class="log-panel">
       <div class="log-header">
         <div class="log-title-row">
           <span class="log-title">// Activity Log</span>
-          <div class="log-actions">
-            <button class="log-btn" id="downloadLogBtn">↓ Save</button>
+          <div style="display:flex;gap:.25rem">
+            <button class="log-btn" id="downloadLogBtn">↓</button>
             <button class="log-btn" id="clearLogBtn">Clear</button>
           </div>
         </div>
-        <input type="text" class="log-search" id="logSearch" placeholder="Keyword search…">
-        <div class="log-meta"><span id="logCount">0</span> entries · live</div>
+        <input type="text" class="log-search" id="logSearch" placeholder="Search log…">
+        <div class="log-meta"><span id="logCount">0</span> entries</div>
       </div>
       <div class="log-entries" id="logEntries"></div>
     </div>
@@ -314,7 +347,57 @@ input[type=password]::placeholder{color:#4a4a52;letter-spacing:.14em;font-size:.
   </div>
 </div>
 
+<!-- SETTINGS -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-panel">
+    <button class="settings-close" id="settingsClose">×</button>
+    <h3>Sanctuary Settings</h3>
+
+    <div class="settings-section">
+      <h4>Appearance</h4>
+      <div class="settings-row"><label>Theme</label>
+        <select id="setTheme"><option value="dark">Dark</option><option value="light">Light</option></select>
+      </div>
+      <div class="settings-row"><label>Accent Gold</label><input type="color" id="setGold" value="#d4af37"></div>
+      <div class="settings-row"><label>Animation Intensity</label><input type="range" id="setAnim" min="0" max="2" step="0.1" value="1"></div>
+      <div class="settings-row"><label>UI Scale</label><input type="range" id="setScale" min="0.85" max="1.15" step="0.05" value="1"></div>
+    </div>
+
+    <div class="settings-section">
+      <h4>Transmutation Visuals</h4>
+      <div class="settings-row"><label>ASCII Density</label><input type="range" id="setAsciiDens" min="0.5" max="1.5" step="0.1" value="1"></div>
+      <div class="settings-row"><label>ASCII Speed</label><input type="range" id="setAsciiSpeed" min="0.4" max="2" step="0.1" value="1"></div>
+      <div class="settings-row"><label>Process Text Speed</label><input type="range" id="setTextSpeed" min="0.5" max="2" step="0.1" value="1"></div>
+      <div class="settings-row"><label>ASCII Style</label>
+        <select id="setAsciiStyle">
+          <option value="wave">Wave / Flow</option>
+          <option value="lattice">Lattice / Grid</option>
+          <option value="noise">Noise Field</option>
+          <option value="spiral">Spiral</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h4>Keyword Notifications</h4>
+      <div class="settings-row">
+        <input type="text" id="keywordInput" placeholder="Add keyword or phrase…" style="flex:1">
+        <button class="btn-action" id="addKeyword">Add</button>
+      </div>
+      <div class="keyword-list" id="keywordList"></div>
+      <p style="font-size:.55rem;color:var(--muted);margin-top:.4rem">When these appear in the log, a notification fires.</p>
+    </div>
+
+    <div class="settings-section">
+      <h4>Log & Feedback</h4>
+      <div class="settings-row"><label>Show toasts</label><input type="checkbox" id="setToasts" checked></div>
+      <div class="settings-row"><label>Log click events</label><input type="checkbox" id="setLogClicks" checked></div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
+<div class="notify-toast" id="notifyToast"></div>
 
 <script>
 (() => {
@@ -322,573 +405,577 @@ input[type=password]::placeholder{color:#4a4a52;letter-spacing:.14em;font-size:.
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
-/* ── State ─────────────────────────────────────────────────── */
+/* ── State ──────────────────────────────────────────────── */
 let tokens = 0;
 const unlocked = { lattice:false, wave:false, oracle:false };
 const ownedUpgrades = new Set();
-const keys = [];          // {id, type, name, powerId}
-const powers = [];        // {id, name, mult, uses, cooldownMs, readyAt, activeUntil}
-let activePower = null;   // currently running power
+const keys = [];
+const powers = [];
+let activePower = null;
 let globalMultiplier = 1;
-let cooldownFactor = 1;   // lower = shorter cooldowns
-let durationFactor = 1;   // lower = faster work
+let cooldownFactor = 1;
+let durationFactor = 1;
+let researchBoost = 1;          // from analysis findings
 let autoFlags = { align:false, decipher:false, void:false, all:false };
 const logEntries = [];
 let logId = 0;
-
-/* ── Tasks definition ──────────────────────────────────────── */
-const TASKS = [
-  { id:"align",    title:"Align Aetheric Signal",   baseReward:15,  baseDuration:3000,  baseCooldown:4000  },
-  { id:"decipher", title:"Decipher Arcane Packet",  baseReward:30,  baseDuration:6000,  baseCooldown:8000  },
-  { id:"void",     title:"Offer Focus to the Void", baseReward:60,  baseDuration:10000, baseCooldown:14000 },
-  { id:"weave",    title:"Weave Chrono Thread",     baseReward:45,  baseDuration:7500,  baseCooldown:11000 },
-  { id:"bind",     title:"Bind Shadow Glyph",       baseReward:90,  baseDuration:14000, baseCooldown:20000 },
-  { id:"ascend",   title:"Ascend the Lattice",      baseReward:150, baseDuration:20000, baseCooldown:30000 },
-];
-const taskState = {}; // id -> { status: idle|working|cooldown, endsAt, progress }
-
-/* ── Upgrades ──────────────────────────────────────────────── */
-const UPGRADES = [
-  { id:"eff1", name:"Efficiency I",     desc:"All cooldowns −12%", cost:40,  effect:()=> cooldownFactor *= 0.88 },
-  { id:"eff2", name:"Efficiency II",    desc:"All cooldowns −15%", cost:90,  effect:()=> cooldownFactor *= 0.85 },
-  { id:"eff3", name:"Efficiency III",   desc:"All cooldowns −18%", cost:180, effect:()=> cooldownFactor *= 0.82 },
-  { id:"eff4", name:"Efficiency IV",    desc:"All cooldowns −20%", cost:320, effect:()=> cooldownFactor *= 0.80 },
-  { id:"yield1", name:"Yield I",        desc:"All rewards +15%",  cost:50,  effect:()=> globalMultiplier *= 1.15 },
-  { id:"yield2", name:"Yield II",       desc:"All rewards +20%",  cost:110, effect:()=> globalMultiplier *= 1.20 },
-  { id:"yield3", name:"Yield III",      desc:"All rewards +25%",  cost:220, effect:()=> globalMultiplier *= 1.25 },
-  { id:"yield4", name:"Yield IV",       desc:"All rewards +30%",  cost:400, effect:()=> globalMultiplier *= 1.30 },
-  { id:"focus1", name:"Instant Focus I",desc:"Work duration −15%",cost:60,  effect:()=> durationFactor *= 0.85 },
-  { id:"focus2", name:"Instant Focus II",desc:"Work duration −20%",cost:140, effect:()=> durationFactor *= 0.80 },
-  { id:"focus3", name:"Instant Focus III",desc:"Work duration −25%",cost:280,effect:()=> durationFactor *= 0.75 },
-  { id:"autoA", name:"Auto-Align",      desc:"Automatically runs Align when ready", cost:120, effect:()=> autoFlags.align = true },
-  { id:"autoD", name:"Auto-Decipher",   desc:"Automatically runs Decipher when ready", cost:200, effect:()=> autoFlags.decipher = true },
-  { id:"autoV", name:"Auto-Void",       desc:"Automatically runs Void when ready", cost:350, effect:()=> autoFlags.void = true },
-  { id:"autoAll",name:"Full Automation",desc:"All basic tasks auto-run", cost:600, effect:()=> { autoFlags.all = true; autoFlags.align=autoFlags.decipher=autoFlags.void=true; } },
-  { id:"parallel",name:"Parallel Rites", desc:"Can run 2 tasks at once", cost:250, effect:()=> window.__parallel = true },
-  { id:"echo",  name:"Echo Chamber",    desc:"+8% chance of double reward", cost:180, effect:()=> window.__echo = 0.08 },
-  { id:"sigil", name:"Living Sigil",    desc:"Token counter pulses stronger", cost:70,  effect:()=> window.__livingSigil = true },
-];
-
-/* ── Powers that keys can grant ────────────────────────────── */
-const POWER_DEFS = {
-  x5:   { name:"5× Yield Surge",   mult:5,   uses:3,  cooldownMs:45000 },
-  x7:   { name:"7× Void Amplify",  mult:7,   uses:2,  cooldownMs:70000 },
-  x55:  { name:"55× Apex Ritual",  mult:55,  uses:1,  cooldownMs:180000 },
-  instant:{ name:"Instant Transmute", mult:1, uses:5, cooldownMs:30000, special:"instant" },
-  skip: { name:"Cooldown Sever",   mult:1, uses:4, cooldownMs:40000, special:"skip" },
+const keywords = [];            // notification triggers
+let settings = {
+  theme: "dark", anim: 1, scale: 1, asciiDens: 1, asciiSpeed: 1, textSpeed: 1,
+  asciiStyle: "wave", toasts: true, logClicks: true, gold: "#d4af37"
 };
 
-/* ── Logging ───────────────────────────────────────────────── */
+/* ── Expanded Rites with interplay ──────────────────────── */
+const TASKS = [
+  { id:"align",    title:"Align Aetheric Signal",   base:15,  dur:2800,  cd:3800,  deps:[],        unlocks:["weave"] },
+  { id:"decipher", title:"Decipher Arcane Packet",  base:28,  dur:5200,  cd:7200,  deps:[],        unlocks:["bind"] },
+  { id:"void",     title:"Offer Focus to the Void", base:55,  dur:9000,  cd:12000, deps:[],        unlocks:["ascend"] },
+  { id:"weave",    title:"Weave Chrono Thread",     base:42,  dur:6500,  cd:9500,  deps:["align"], unlocks:["lattice_sync"] },
+  { id:"bind",     title:"Bind Shadow Glyph",       base:80,  dur:11000, cd:16000, deps:["decipher"], unlocks:["echo_bind"] },
+  { id:"ascend",   title:"Ascend the Lattice",      base:130, dur:16000, cd:24000, deps:["void"],  unlocks:["apex"] },
+  { id:"lattice_sync", title:"Lattice Synchronization", base:70, dur:8000, cd:11000, deps:["weave","align"], unlocks:[] },
+  { id:"echo_bind", title:"Echo Binding Ritual",    base:110, dur:13000, cd:18000, deps:["bind","decipher"], unlocks:[] },
+  { id:"apex",     title:"Apex Convergence",        base:200, dur:22000, cd:32000, deps:["ascend","lattice_sync"], unlocks:[] },
+  { id:"fracture", title:"Fracture the Veil",       base:95,  dur:10000, cd:14000, deps:["void","bind"], unlocks:["reweave"] },
+  { id:"reweave",  title:"Reweave Broken Signal",   base:160, dur:15000, cd:21000, deps:["fracture","weave"], unlocks:[] },
+  { id:"oracle_call", title:"Call the Oracle",      base:180, dur:18000, cd:26000, deps:["apex"], unlocks:[] },
+  { id:"silent",   title:"Silent Observation",      base:25,  dur:4000,  cd:5000,  deps:[],        unlocks:[] },
+  { id:"pulse",    title:"Pulse the Grid",          base:48,  dur:6000,  cd:8500,  deps:["align","silent"], unlocks:[] },
+];
+const taskState = {};
+const completedOnce = new Set(); // for unlock interplay
+
+const RITE_FLAVOR = {
+  align: ["Calibrating aetheric baseline…","Locking phase offset…","Signal coherence rising…","Alignment locked."],
+  decipher: ["Packet headers exposed…","Glyph frequency matched…","Cipher layer peeling…","Arcane content revealed."],
+  void: ["Opening void aperture…","Focus stream established…","Offering accepted by the dark…","Void echo returned."],
+  weave: ["Threading chrono filaments…","Crossing temporal nodes…","Weave density increasing…","Chrono thread stable."],
+  bind: ["Shadow ink prepared…","Glyph geometry set…","Binding pressure applied…","Shadow glyph sealed."],
+  ascend: ["Lattice rungs illuminated…","Vertical resonance climb…","Higher node reached…","Ascent complete."],
+  lattice_sync: ["Nodes reporting in…","Sync pulses exchanged…","Phase drift corrected…","Lattice fully synchronized."],
+  echo_bind: ["Echo chamber primed…","Binding wave reflected…","Double resonance achieved…","Echo binding held."],
+  apex: ["All streams converging…","Apex geometry forming…","Singularity threshold…","Convergence achieved."],
+  fracture: ["Veil tension rising…","Micro-fractures opening…","Signal bleeding through…","Veil fractured."],
+  reweave: ["Broken strands gathered…","Reweaving under tension…","Integrity restoring…","Signal rewoven."],
+  oracle_call: ["Oracle attention requested…","Constellation aligning…","Question transmitted…","Oracle has answered."],
+  silent: ["Observation window open…","No interference…","Data accumulating…","Silent record complete."],
+  pulse: ["Grid capacitance charged…","Pulse front forming…","Energy released…","Grid pulse complete."],
+};
+
+/* ── Upgrades (expanded) ────────────────────────────────── */
+const UPGRADES = [
+  {id:"eff1",name:"Efficiency I",desc:"Cooldowns −12%",cost:40,fn:()=>cooldownFactor*=0.88},
+  {id:"eff2",name:"Efficiency II",desc:"Cooldowns −15%",cost:95,fn:()=>cooldownFactor*=0.85},
+  {id:"eff3",name:"Efficiency III",desc:"Cooldowns −18%",cost:190,fn:()=>cooldownFactor*=0.82},
+  {id:"yield1",name:"Yield I",desc:"Rewards +15%",cost:55,fn:()=>globalMultiplier*=1.15},
+  {id:"yield2",name:"Yield II",desc:"Rewards +20%",cost:120,fn:()=>globalMultiplier*=1.20},
+  {id:"yield3",name:"Yield III",desc:"Rewards +25%",cost:240,fn:()=>globalMultiplier*=1.25},
+  {id:"focus1",name:"Focus I",desc:"Duration −15%",cost:65,fn:()=>durationFactor*=0.85},
+  {id:"focus2",name:"Focus II",desc:"Duration −20%",cost:150,fn:()=>durationFactor*=0.80},
+  {id:"autoA",name:"Auto-Align",desc:"Auto-run Align",cost:110,fn:()=>autoFlags.align=true},
+  {id:"autoD",name:"Auto-Decipher",desc:"Auto-run Decipher",cost:190,fn:()=>autoFlags.decipher=true},
+  {id:"autoV",name:"Auto-Void",desc:"Auto-run Void",cost:320,fn:()=>autoFlags.void=true},
+  {id:"parallel",name:"Parallel Rites",desc:"Run 2 at once",cost:260,fn:()=>window.__parallel=true},
+  {id:"echo",name:"Echo Chamber",desc:"8% double reward",cost:175,fn:()=>window.__echo=0.08},
+  {id:"research+",name:"Deep Analysis",desc:"Research boost +25%",cost:200,fn:()=>researchBoost*=1.25},
+];
+
+/* ── Research definitions ───────────────────────────────── */
+const RESEARCH = [
+  {id:"r1",name:"Pattern Scan I",desc:"Analyze recent log for task frequency",cost:40,boost:0.08},
+  {id:"r2",name:"Anomaly Hunt",desc:"Find error or rejection patterns",cost:70,boost:0.12},
+  {id:"r3",name:"Power Trace",desc:"Track key/power activations",cost:110,boost:0.18},
+  {id:"r4",name:"Deep Correlation",desc:"Cross-reference rites & yields",cost:180,boost:0.28},
+];
+let activeResearch = null;
+
+/* ── Logging + keyword notify ───────────────────────────── */
 function log(msg, type="info"){
-  const now = new Date();
-  const ts = now.toLocaleTimeString("en-GB",{hour12:false}) + "." + String(now.getMilliseconds()).padStart(3,"0").slice(0,2);
-  const entry = {id:++logId, ts, type, msg, raw:msg.toLowerCase()};
+  const now=new Date();
+  const ts=now.toLocaleTimeString("en-GB",{hour12:false})+"."+String(now.getMilliseconds()).padStart(3,"0").slice(0,2);
+  const entry={id:++logId,ts,type,msg,raw:msg.toLowerCase()};
   logEntries.push(entry);
-  const div = document.createElement("div");
-  div.className = `log-entry type-${type}`;
-  div.dataset.id = entry.id;
-  div.innerHTML = `<span class="ts">${ts}</span>${escapeHtml(msg)}`;
+  const div=document.createElement("div");
+  div.className=`log-entry type-${type}`;
+  div.dataset.id=entry.id;
+  div.innerHTML=`<span class="ts">${ts}</span>${escapeHtml(msg)}`;
   $("#logEntries").appendChild(div);
-  $("#logEntries").scrollTop = $("#logEntries").scrollHeight;
-  $("#logCount").textContent = logEntries.length;
+  $("#logEntries").scrollTop=$("#logEntries").scrollHeight;
+  $("#logCount").textContent=logEntries.length;
   applyLogFilter();
+  // keyword notifications
+  keywords.forEach(kw=>{
+    if(entry.raw.includes(kw.toLowerCase())){
+      showNotify(`Keyword “${kw}” detected in log`);
+      log(`Notification fired for “${kw}”`,"notify");
+    }
+  });
 }
 function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 function applyLogFilter(){
-  const q = $("#logSearch").value.trim().toLowerCase();
+  const q=$("#logSearch").value.trim().toLowerCase();
   $$(".log-entry").forEach(el=>{
-    const id = +el.dataset.id;
-    const e = logEntries.find(x=>x.id===id);
-    el.classList.toggle("hidden-by-search", !(!q || (e && e.raw.includes(q))));
+    const e=logEntries.find(x=>x.id==+el.dataset.id);
+    el.classList.toggle("hidden-by-search",!(!q||(e&&e.raw.includes(q))));
   });
 }
-$("#logSearch").addEventListener("input", applyLogFilter);
+$("#logSearch").addEventListener("input",applyLogFilter);
 $("#downloadLogBtn").addEventListener("click",()=>{
-  const lines = logEntries.map(e=>`[${e.ts}] [${e.type.toUpperCase()}] ${e.msg}`);
-  const blob = new Blob([lines.join("\n")],{type:"text/plain"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `bits-pieces-log-${Date.now()}.txt`;
-  a.click();
-  log("Log exported","system"); toast("Log downloaded");
+  const lines=logEntries.map(e=>`[${e.ts}] [${e.type.toUpperCase()}] ${e.msg}`);
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/plain"}));
+  a.download=`bits-log-${Date.now()}.txt`;a.click();log("Log exported","system");toast("Downloaded");
 });
-$("#clearLogBtn").addEventListener("click",()=>{
-  logEntries.length=0; $("#logEntries").innerHTML=""; $("#logCount").textContent="0";
-  log("Log cleared by operator","system"); toast("Log cleared");
-});
+$("#clearLogBtn").addEventListener("click",()=>{logEntries.length=0;$("#logEntries").innerHTML="";$("#logCount").textContent="0";log("Log cleared","system");});
 
-/* ── Toast / Ripple ────────────────────────────────────────── */
-let toastTimer;
-function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),1700); }
-function spawnRipple(e, parent){
-  const rect = parent.getBoundingClientRect();
-  const x = (e.clientX||rect.left+rect.width/2)-rect.left;
-  const y = (e.clientY||rect.top+rect.height/2)-rect.top;
-  const r = document.createElement("div"); r.className="ripple";
-  r.style.cssText=`left:${x-10}px;top:${y-10}px;width:20px;height:20px`;
-  parent.style.position = parent.style.position||"relative";
-  parent.appendChild(r); setTimeout(()=>r.remove(),600);
+function showNotify(msg){
+  const n=$("#notifyToast");n.textContent=msg;n.classList.add("show");
+  setTimeout(()=>n.classList.remove("show"),3200);
 }
 
-/* ── Tokens & Clearance ────────────────────────────────────── */
-function setTokens(n, animate=true){
-  const prev=tokens; tokens=Math.max(0,Math.floor(n));
+/* ── Toast / Ripple / Theme ─────────────────────────────── */
+let toastTimer;
+function toast(m){if(!settings.toasts)return;const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),1600);}
+function spawnRipple(e,parent){
+  if(settings.anim<0.3)return;
+  const rect=parent.getBoundingClientRect();
+  const r=document.createElement("div");r.className="ripple";
+  r.style.cssText=`left:${(e.clientX||rect.left+rect.width/2)-rect.left-10}px;top:${(e.clientY||rect.top+rect.height/2)-rect.top-10}px;width:20px;height:20px`;
+  parent.style.position=parent.style.position||"relative";parent.appendChild(r);setTimeout(()=>r.remove(),550);
+}
+
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme",theme);
+  settings.theme=theme;
+  $("#themeBtn").textContent=theme==="dark"?"☾":"☀";
+  $("#setTheme").value=theme;
+  try{localStorage.setItem("bp-theme",theme);}catch(_){}
+}
+$("#themeBtn").addEventListener("click",()=>applyTheme(settings.theme==="dark"?"light":"dark"));
+
+/* ── Tokens ─────────────────────────────────────────────── */
+function setTokens(n,anim=true){
+  const prev=tokens;tokens=Math.max(0,Math.floor(n));
   $("#tokenBalance").textContent=tokens;
-  if(animate && tokens!==prev){ $("#tokenCounter").classList.add("pulse"); setTimeout(()=>$("#tokenCounter").classList.remove("pulse"),380); }
-  updateClearance(); updateMultiplierDisplay();
-  try{ localStorage.setItem("bp2-tokens",tokens); }catch(_){}
+  if(anim&&tokens!==prev){$("#tokenCounter").classList.add("pulse");setTimeout(()=>$("#tokenCounter").classList.remove("pulse"),360);}
+  updateClearance();updateMult();
+  try{localStorage.setItem("bp2-tokens",tokens);}catch(_){}
 }
 function updateClearance(){
-  let level="INITIATE";
-  if(tokens>=150 || ownedUpgrades.size>=3) level="ADEPT";
-  if(tokens>=400 || ownedUpgrades.size>=8) level="ORACLE";
-  if(tokens>=900 || keys.length>=4) level="ARCHON";
-  $("#clearanceBadge").textContent="CLEARANCE: "+level;
+  let l="INITIATE";
+  if(tokens>=120||ownedUpgrades.size>=2)l="ADEPT";
+  if(tokens>=350||ownedUpgrades.size>=6)l="ORACLE";
+  if(tokens>=800||completedOnce.size>=8)l="ARCHON";
+  $("#clearanceBadge").textContent="CLEARANCE: "+l;
 }
-function updateMultiplierDisplay(){
-  let m = globalMultiplier;
-  if(activePower && activePower.mult>1) m *= activePower.mult;
-  $("#activeMultiplier").textContent = "×"+m.toFixed(2);
+function updateMult(){
+  let m=globalMultiplier*researchBoost;
+  if(activePower&&activePower.mult>1)m*=activePower.mult;
+  $("#activeMultiplier").textContent="×"+m.toFixed(2);
 }
 
-/* ── Tabs ──────────────────────────────────────────────────── */
-$$(".tab-btn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    $$(".tab-btn").forEach(b=>b.classList.remove("active"));
-    $$(".tab-panel").forEach(p=>p.classList.remove("active"));
-    btn.classList.add("active");
-    $("#tab-"+btn.dataset.tab).classList.add("active");
-    log(`Tab → ${btn.dataset.tab}`,"click");
+/* ── Tabs ───────────────────────────────────────────────── */
+$$(".tab-btn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    $$(".tab-btn").forEach(x=>x.classList.remove("active"));
+    $$(".tab-panel").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");$("#tab-"+b.dataset.tab).classList.add("active");
+    if(settings.logClicks)log(`Tab → ${b.dataset.tab}`,"click");
   });
 });
 
-/* ── Render Tasks ──────────────────────────────────────────── */
+/* ── Rites rendering & interplay ────────────────────────── */
+function isUnlocked(t){
+  if(!t.deps.length)return true;
+  return t.deps.every(d=>completedOnce.has(d));
+}
 function renderTasks(){
-  const list = $("#taskList");
-  list.innerHTML="";
+  const list=$("#taskList");list.innerHTML="";
   TASKS.forEach(t=>{
-    if(!taskState[t.id]) taskState[t.id]={status:"idle", endsAt:0};
-    const st = taskState[t.id];
-    const card = document.createElement("div");
-    card.className = "task-card"+(st.status==="working"?" working":"")+(st.status==="cooldown"?" cooldown":"");
-    card.dataset.task = t.id;
-
-    const reward = Math.floor(t.baseReward * globalMultiplier * (activePower?.mult||1));
-    const dur = Math.floor(t.baseDuration * durationFactor);
-    const cd  = Math.floor(t.baseCooldown * cooldownFactor);
-
-    card.innerHTML = `
+    if(!taskState[t.id])taskState[t.id]={status:"idle",endsAt:0};
+    const st=taskState[t.id];
+    const open=isUnlocked(t);
+    const card=document.createElement("div");
+    card.className="task-card"+(st.status==="working"?" working":"")+(st.status==="cooldown"?" cooldown":"")+(open?"":" locked");
+    card.dataset.task=t.id;
+    const mult=globalMultiplier*researchBoost*(activePower?.mult||1);
+    const reward=Math.floor(t.base*mult);
+    const dur=Math.floor(t.dur*durationFactor);
+    const cd=Math.floor(t.cd*cooldownFactor);
+    card.innerHTML=`
       <div class="task-info">
         <span class="task-title">${t.title}</span>
-        <span class="task-meta">+${reward} ⟁ · ${ (dur/1000).toFixed(1)}s work · ${ (cd/1000).toFixed(1)}s cd</span>
+        <span class="task-meta">+${reward} ⟁ · ${(dur/1000).toFixed(1)}s · cd ${(cd/1000).toFixed(1)}s</span>
+        ${t.deps.length?`<span class="task-deps">Requires: ${t.deps.join(", ")}</span>`:""}
       </div>
-      <button class="btn-action" data-task="${t.id}">${st.status==="idle"?"Transmute":st.status==="working"?"…":"Cooldown"}</button>
-      <div class="task-progress" id="prog-${t.id}"></div>
-      <div class="task-cooldown-ring" id="ring-${t.id}" style="display:none">
-        <svg width="28" height="28"><circle cx="14" cy="14" r="11"></circle>
-        <circle class="progress" cx="14" cy="14" r="11" stroke-dasharray="69.1" stroke-dashoffset="69.1"></circle></svg>
-      </div>`;
+      <button class="btn-action" data-task="${t.id}" ${!open||st.status!=="idle"?"disabled":""}>${st.status==="idle"?(open?"Transmute":"Locked"):st.status==="working"?"…":"CD"}</button>
+      <div class="task-progress" id="prog-${t.id}"></div>`;
     list.appendChild(card);
-
-    const btn = card.querySelector(".btn-action");
-    if(st.status!=="idle") btn.disabled=true;
-    btn.addEventListener("click",e=>startTask(t.id,e));
+    if(open&&st.status==="idle"){
+      card.querySelector("button").addEventListener("click",e=>startTask(t.id,e));
+    }
   });
 }
 
-function startTask(id, e){
-  const t = TASKS.find(x=>x.id===id);
-  const st = taskState[id];
-  if(st.status!=="idle") return;
+function startTask(id,e){
+  const t=TASKS.find(x=>x.id===id);
+  const st=taskState[id];
+  if(st.status!=="idle"||!isUnlocked(t))return;
+  const working=Object.values(taskState).filter(s=>s.status==="working").length;
+  if(working>=1&&!window.__parallel){toast("Need Parallel Rites");return;}
 
-  // parallel check
-  const workingCount = Object.values(taskState).filter(s=>s.status==="working").length;
-  if(workingCount>=1 && !window.__parallel){ toast("Parallel rites not unlocked"); log("Parallel blocked","error"); return; }
-
-  const dur = Math.floor(t.baseDuration * durationFactor);
-  st.status="working"; st.endsAt=performance.now()+dur;
+  const dur=Math.floor(t.dur*durationFactor);
+  st.status="working";st.endsAt=performance.now()+dur;
   renderTasks();
-  if(e) spawnRipple(e, e.target);
-  log(`Task started: ${t.title}`,"task");
+  if(e)spawnRipple(e,e.target);
+  log(`Rite started: ${t.title}`,"task");
+  openProcessWindow(t);
 
-  // special power: instant
-  if(activePower?.special==="instant" && activePower.uses>0){
-    finishTask(id);
-    activePower.uses--;
-    if(activePower.uses<=0) deactivatePower();
-    return;
-  }
-
-  const prog = $(`#prog-${id}`);
-  const tick = ()=>{
-    if(st.status!=="working") return;
-    const left = st.endsAt - performance.now();
-    const p = Math.max(0, Math.min(1, 1 - left/dur));
-    if(prog) prog.style.width = (p*100)+"%";
-    if(left<=0){ finishTask(id); return; }
+  const prog=$(`#prog-${id}`);
+  const tick=()=>{
+    if(st.status!=="working")return;
+    const left=st.endsAt-performance.now();
+    const p=Math.max(0,Math.min(1,1-left/dur));
+    if(prog)prog.style.width=(p*100)+"%";
+    if(left<=0){finishTask(id);return;}
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
 }
 
 function finishTask(id){
-  const t = TASKS.find(x=>x.id===id);
-  const st = taskState[id];
-  let reward = Math.floor(t.baseReward * globalMultiplier * (activePower?.mult||1));
-  if(window.__echo && Math.random()<window.__echo){ reward*=2; log("Echo Chamber triggered — double yield!","power"); }
-
-  setTokens(tokens + reward);
-  log(`Task complete: ${t.title} · +${reward} tokens`,"task");
+  const t=TASKS.find(x=>x.id===id);
+  const st=taskState[id];
+  let reward=Math.floor(t.base*globalMultiplier*researchBoost*(activePower?.mult||1));
+  if(window.__echo&&Math.random()<window.__echo){reward*=2;log("Echo Chamber double yield","power");}
+  setTokens(tokens+reward);
+  completedOnce.add(id);
+  log(`Rite complete: ${t.title} · +${reward}`,"task");
   toast(`+${reward} ⟁`);
+  const card=$(`.task-card[data-task="${id}"]`);
+  if(card)card.classList.add("flash-green");
 
-  const card = $(`.task-card[data-task="${id}"]`);
-  if(card) card.classList.add("flash-green");
+  // unlock messages for newly available rites
+  TASKS.filter(x=>x.deps.includes(id)&&isUnlocked(x)).forEach(x=>{
+    log(`New rite available: ${x.title}`,"info");
+  });
 
-  // cooldown
-  const cd = Math.floor(t.baseCooldown * cooldownFactor);
-  st.status="cooldown"; st.endsAt=performance.now()+cd;
+  const cd=Math.floor(t.cd*cooldownFactor);
+  st.status="cooldown";st.endsAt=performance.now()+cd;
+  closeProcessWindowSoon();
   renderTasks();
-
-  // cooldown ring animation
-  const ring = $(`#ring-${id}`);
-  if(ring){
-    ring.style.display="block";
-    const circ = ring.querySelector(".progress");
-    const total = 69.1;
-    const start = performance.now();
-    const anim = ()=>{
-      const elapsed = performance.now()-start;
-      const p = Math.min(1, elapsed/cd);
-      circ.style.strokeDashoffset = total * (1-p);
-      if(p<1 && st.status==="cooldown") requestAnimationFrame(anim);
-      else { ring.style.display="none"; st.status="idle"; renderTasks(); maybeAuto(id); }
-    };
-    requestAnimationFrame(anim);
-  } else {
-    setTimeout(()=>{ st.status="idle"; renderTasks(); maybeAuto(id); }, cd);
-  }
+  setTimeout(()=>{st.status="idle";renderTasks();maybeAuto(id);},cd);
 }
 
 function maybeAuto(id){
-  if(autoFlags.all || autoFlags[id]){
-    setTimeout(()=>{ if(taskState[id].status==="idle") startTask(id); }, 400);
-  }
+  if(autoFlags.all||autoFlags[id])setTimeout(()=>{if(taskState[id].status==="idle")startTask(id);},350);
 }
 
-/* ── Shop ──────────────────────────────────────────────────── */
-function renderShop(){
-  const grid = $("#shopGrid");
-  grid.innerHTML="";
-  UPGRADES.forEach(u=>{
-    const owned = ownedUpgrades.has(u.id);
-    const card = document.createElement("div");
-    card.className = "upgrade-card"+(owned?" owned":"");
-    card.innerHTML = `
-      <div class="upgrade-name">${u.name}</div>
-      <div class="upgrade-desc">${u.desc}</div>
-      <div class="upgrade-cost">${owned?"OWNED":u.cost+" ⟁"}</div>
-      <button class="btn-action" ${owned?"disabled":""} data-upg="${u.id}">${owned?"Acquired":"Purchase"}</button>`;
-    grid.appendChild(card);
-    if(!owned){
-      card.querySelector("button").addEventListener("click",e=>{
-        if(tokens < u.cost){ toast("Insufficient tokens"); log(`Purchase failed: ${u.name}`,"error"); return; }
-        setTokens(tokens - u.cost);
-        ownedUpgrades.add(u.id);
-        u.effect();
-        log(`Purchased relic: ${u.name} (−${u.cost})`,"unlock");
-        toast(u.name+" acquired");
-        spawnRipple(e, e.target);
-        renderShop(); renderTasks(); updateMultiplierDisplay();
-        try{ localStorage.setItem("bp2-upgrades", JSON.stringify([...ownedUpgrades])); }catch(_){}
-      });
-    }
-  });
-}
-
-/* ── Keys & Powers ─────────────────────────────────────────── */
-function addKey(type){
-  const map = {
-    lattice: { name:"Chrono Lattice Key", powerId:"x5" },
-    wave:    { name:"Astral Wave Key",    powerId:"x7" },
-    oracle:  { name:"Oracle Field Key",   powerId:"x55" },
-    void:    { name:"Void Echo Key",      powerId:"instant" },
-    sever:   { name:"Severance Key",      powerId:"skip" },
+/* ── ASCII Process Window ───────────────────────────────── */
+let asciiRaf=null, processLines=[];
+function openProcessWindow(task){
+  const win=$("#processWindow");
+  win.classList.add("visible");
+  $("#processTitle").textContent=task.title.toUpperCase();
+  const textEl=$("#processText");
+  textEl.innerHTML="";
+  processLines=RITE_FLAVOR[task.id]||["Initiating unknown process…","Resonance building…","Complete."];
+  let i=0;
+  const speed=900/settings.textSpeed;
+  const addLine=()=>{
+    if(i>=processLines.length)return;
+    const d=document.createElement("div");d.className="line";d.textContent="› "+processLines[i++];
+    textEl.appendChild(d);textEl.scrollTop=textEl.scrollHeight;
+    if(i<processLines.length)setTimeout(addLine,speed);
   };
-  const def = map[type] || map.lattice;
-  const k = { id:Date.now()+Math.random(), type, name:def.name, powerId:def.powerId };
-  keys.push(k);
-  log(`Key obtained: ${k.name}`,"power");
-  toast("Key received");
-  renderKeys();
+  addLine();
+  startAscii(task.id);
 }
-
-function renderKeys(){
-  const inv = $("#keysInventory");
-  inv.innerHTML = keys.length ? "" : "<span style='font-size:.58rem;color:#5a5a62'>None yet</span>";
-  keys.forEach(k=>{
-    const div = document.createElement("div");
-    div.className="key-item";
-    div.innerHTML = `<span>${k.name}</span><button class="btn-action" data-key="${k.id}">Activate</button>`;
-    inv.appendChild(div);
-    div.querySelector("button").addEventListener("click",()=>activateKey(k.id));
-  });
-
-  const pinv = $("#powersInventory");
-  pinv.innerHTML = powers.length ? "" : "<span style='font-size:.58rem;color:#5a5a62'>No powers ready</span>";
-  powers.forEach(p=>{
-    const ready = performance.now() >= (p.readyAt||0);
-    const div = document.createElement("div");
-    div.className="power-item";
-    div.innerHTML = `<span>${p.name} (${p.uses} left)</span>
-      <button class="btn-action" ${ready && !activePower ? "" : "disabled"} data-pow="${p.id}">${activePower?.id===p.id?"ACTIVE":ready?"Use":"CD"}</button>`;
-    pinv.appendChild(div);
-    if(ready && !activePower){
-      div.querySelector("button").addEventListener("click",()=>usePower(p.id));
-    }
-  });
-}
-
-function activateKey(keyId){
-  const idx = keys.findIndex(k=>k.id===keyId);
-  if(idx<0) return;
-  const k = keys[idx];
-  keys.splice(idx,1);
-  const def = POWER_DEFS[k.powerId];
-  const p = { id:Date.now()+Math.random(), name:def.name, mult:def.mult, uses:def.uses, cooldownMs:def.cooldownMs, special:def.special, readyAt:0 };
-  powers.push(p);
-  log(`Key activated → Power: ${p.name}`,"power");
-  toast(p.name+" ready");
-  // reveal secret about viz
-  if(k.type==="lattice") log("SECRET: Lattice nodes pulse in golden ratios — watch the intersections.","info");
-  if(k.type==="wave")    log("SECRET: Wave peaks encode the next challenge answer.","info");
-  if(k.type==="oracle")  log("SECRET: Oracle rings align every 7th rotation.","info");
-  renderKeys();
-}
-
-function usePower(powId){
-  const p = powers.find(x=>x.id===powId);
-  if(!p || activePower) return;
-  activePower = p;
-  p.activeUntil = performance.now() + 25000; // 25s window for mult powers
-  $("#powerBadge").style.display="block";
-  $("#powerBadge").textContent = p.name.toUpperCase();
-  log(`Power engaged: ${p.name}`,"power");
-  toast(p.name+" active");
-  updateMultiplierDisplay();
-  renderKeys(); renderTasks();
-
-  if(p.special==="skip"){
-    // clear all cooldowns
-    Object.keys(taskState).forEach(id=>{
-      if(taskState[id].status==="cooldown"){ taskState[id].status="idle"; }
-    });
-    renderTasks();
-    p.uses--;
-    if(p.uses<=0) deactivatePower();
-    else { p.readyAt = performance.now()+p.cooldownMs; activePower=null; $("#powerBadge").style.display="none"; }
-    return;
-  }
-
-  // auto expire mult powers
+function closeProcessWindowSoon(){
   setTimeout(()=>{
-    if(activePower===p) deactivatePower();
-  }, 25000);
+    $("#processWindow").classList.remove("visible");
+    if(asciiRaf)cancelAnimationFrame(asciiRaf);
+  },1200);
 }
-
-function deactivatePower(){
-  if(!activePower) return;
-  const p = activePower;
-  activePower = null;
-  $("#powerBadge").style.display="none";
-  p.readyAt = performance.now() + p.cooldownMs;
-  log(`Power expired: ${p.name}`,"power");
-  updateMultiplierDisplay();
-  renderKeys(); renderTasks();
-}
-
-/* ── Challenge system from visualizations ──────────────────── */
-const CHALLENGES = [
-  { q:"What is 7 × 8 − 3?", a:"53", type:"oracle" },
-  { q:"Type the word: AETHER", a:"aether", type:"wave" },
-  { q:"How many sides does a hexagon have?", a:"6", type:"lattice" },
-  { q:"Reverse 'SIGIL'", a:"ligis", type:"void" },
-  { q:"First letter of the Order?", a:"b", type:"sever" },
-  { q:"Golden ratio approx (1.6)", a:"1.6", type:"lattice" },
-];
-
-function maybeOfferChallenge(boxId, type){
-  if(!unlocked[type] && type!=="void" && type!=="sever") return;
-  if(Math.random() > 0.35) return; // 35% chance when called
-  const box = $(boxId);
-  if(box.querySelector(".challenge-modal")) return;
-
-  const ch = CHALLENGES[Math.floor(Math.random()*CHALLENGES.length)];
-  const modal = document.createElement("div");
-  modal.className="challenge-modal";
-  modal.innerHTML = `
-    <h3>Node Challenge</h3>
-    <p>${ch.q}</p>
-    <input type="text" placeholder="Answer…" maxlength="20">
-    <div class="challenge-actions">
-      <button class="btn-action" data-act="submit">Submit</button>
-      <button class="btn-action" data-act="decline">Decline</button>
-    </div>`;
-  box.appendChild(modal);
-  const input = modal.querySelector("input");
-  input.focus();
-  log(`Challenge offered by ${type} node`,"info");
-
-  modal.querySelector("[data-act=submit]").addEventListener("click",()=>{
-    const ans = input.value.trim().toLowerCase();
-    if(ans === ch.a.toLowerCase()){
-      addKey(ch.type);
-      log("Challenge solved — key granted","power");
-      toast("Challenge complete");
-    } else {
-      log("Challenge failed","error");
-      toast("Incorrect");
-    }
-    modal.remove();
-  });
-  modal.querySelector("[data-act=decline]").addEventListener("click",()=>{
-    log("Challenge declined","info");
-    modal.remove();
-  });
-}
-
-/* ── Unlock nodes ──────────────────────────────────────────── */
-$$("[data-feature]").forEach(btn=>{
-  btn.addEventListener("click",e=>{
-    const feature = btn.dataset.feature;
-    const cost = +btn.dataset.cost;
-    if(unlocked[feature]) return;
-    if(tokens < cost){ toast("Insufficient tokens"); log(`Unlock failed: ${feature}`,"error"); return; }
-    setTokens(tokens-cost);
-    unlocked[feature]=true;
-    const overlay = btn.closest(".lock-overlay");
-    overlay.classList.add("unlocked");
-    spawnRipple(e,overlay);
-    log(`Node unlocked: ${feature.toUpperCase()} (−${cost})`,"unlock");
-    toast(`${feature} online`);
-    setTimeout(()=>overlay.style.display="none",600);
-    try{ localStorage.setItem("bp2-unlocked",JSON.stringify(unlocked)); }catch(_){}
-  });
+$("#closeProcess").addEventListener("click",()=>{
+  $("#processWindow").classList.remove("visible");
+  if(asciiRaf)cancelAnimationFrame(asciiRaf);
 });
 
-/* ── Gate ──────────────────────────────────────────────────── */
-const canvas=$("#sigilCanvas"), ctx=canvas.getContext("2d");
-let angle=0, pulse=0;
-function drawSigil(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const cx=canvas.width/2,cy=canvas.height/2,r=90;
-  ctx.save(); ctx.translate(cx,cy);
-  ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.strokeStyle="rgba(212,175,55,.4)"; ctx.lineWidth=1; ctx.setLineDash([4,4]); ctx.stroke();
-  ctx.rotate(angle);
-  ctx.beginPath(); for(let i=0;i<3;i++){const a=i*2*Math.PI/3-Math.PI/2; const x=r*.8*Math.cos(a),y=r*.8*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.closePath(); ctx.strokeStyle="rgba(212,175,55,.7)"; ctx.setLineDash([]); ctx.stroke();
-  ctx.beginPath(); for(let i=0;i<3;i++){const a=i*2*Math.PI/3+Math.PI/2; const x=r*.8*Math.cos(a),y=r*.8*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.closePath(); ctx.strokeStyle="rgba(212,175,55,.3)"; ctx.stroke();
-  ctx.beginPath(); ctx.arc(0,0,4+Math.sin(pulse)*2,0,Math.PI*2); ctx.fillStyle="#d4af37"; ctx.fill();
-  ctx.restore(); angle+=0.003; pulse+=0.05; requestAnimationFrame(drawSigil);
+function startAscii(seed){
+  const pre=$("#processAscii");
+  let t=0;
+  const cols=42, rows=16;
+  const dens=settings.asciiDens, spd=settings.asciiSpeed, style=settings.asciiStyle;
+  const hash=n=>{const x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x);};
+  function frame(){
+    let out="";
+    for(let y=0;y<rows;y++){
+      let row="";
+      for(let x=0;x<cols;x++){
+        let v=0;
+        if(style==="wave"){
+          v=Math.sin(x*0.22+t*spd)+Math.cos(y*0.18+t*0.7*spd)+hash(x+y+seed.length)*0.4;
+        }else if(style==="lattice"){
+          v=((x+Math.floor(t*spd*2))%7===0||(y+Math.floor(t*spd))%5===0)?1.2:hash(x*3+y*7+t)*0.6;
+        }else if(style==="spiral"){
+          const cx=cols/2,cy=rows/2,dx=x-cx,dy=y-cy;
+          const ang=Math.atan2(dy,dx)+t*spd*0.4;
+          const rad=Math.hypot(dx,dy);
+          v=Math.sin(rad*0.4-ang*2)+hash(x+y)*0.3;
+        }else{ // noise
+          v=hash(x*0.15+t*spd*0.1)+hash(y*0.2+t*0.07)-0.7;
+        }
+        v*=dens;
+        if(v>1.1)row+="█";else if(v>0.6)row+="▓";else if(v>0.2)row+="▒";else if(v>-0.2)row+="░";else if(v>-0.6)row+="·";else row+=" ";
+      }
+      out+=row+"\n";
+    }
+    pre.textContent=out;
+    t+=0.08;
+    asciiRaf=requestAnimationFrame(frame);
+  }
+  if(asciiRaf)cancelAnimationFrame(asciiRaf);
+  frame();
 }
-drawSigil();
-$("#sigilButton").addEventListener("click",e=>{ angle+=0.55; spawnRipple(e,$("#sigilButton")); $("#status").textContent="Resonance Shifted"; $("#status").style.color="#d4af37"; log("Sigil pulse","click"); setTimeout(()=>{$("#status").textContent="Awaiting Input";$("#status").style.color="#5a5a62";},1600); });
+
+/* ── Shop ───────────────────────────────────────────────── */
+function renderShop(){
+  const g=$("#shopGrid");g.innerHTML="";
+  UPGRADES.forEach(u=>{
+    const owned=ownedUpgrades.has(u.id);
+    const c=document.createElement("div");c.className="upgrade-card"+(owned?" owned":"");
+    c.innerHTML=`<div class="upgrade-name">${u.name}</div><div class="upgrade-desc">${u.desc}</div>
+      <div class="upgrade-cost">${owned?"OWNED":u.cost+" ⟁"}</div>
+      <button class="btn-action" ${owned?"disabled":""} data-upg="${u.id}">${owned?"Owned":"Buy"}</button>`;
+    g.appendChild(c);
+    if(!owned)c.querySelector("button").addEventListener("click",e=>{
+      if(tokens<u.cost){toast("Need more tokens");return;}
+      setTokens(tokens-u.cost);ownedUpgrades.add(u.id);u.fn();
+      log(`Relic acquired: ${u.name}`,"unlock");toast(u.name);spawnRipple(e,e.target);
+      renderShop();renderTasks();updateMult();
+      try{localStorage.setItem("bp2-upg",JSON.stringify([...ownedUpgrades]));}catch(_){}
+    });
+  });
+}
+
+/* ── Research ───────────────────────────────────────────── */
+function renderResearch(){
+  const g=$("#researchGrid");g.innerHTML="";
+  RESEARCH.forEach(r=>{
+    const c=document.createElement("div");c.className="research-card";
+    c.innerHTML=`<div class="research-name">${r.name}</div><div class="research-desc">${r.desc}</div>
+      <div class="upgrade-cost">${r.cost} ⟁ · potential +${(r.boost*100).toFixed(0)}% yield</div>
+      <button class="btn-action" data-res="${r.id}">Begin Analysis</button>`;
+    g.appendChild(c);
+    c.querySelector("button").addEventListener("click",()=>{
+      if(tokens<r.cost){toast("Insufficient tokens");return;}
+      setTokens(tokens-r.cost);
+      activeResearch=r;
+      $("#analysisArea").style.display="block";
+      $("#analysisPrompt").textContent=`Challenge: ${r.desc}. Examine the activity log carefully and submit concise findings (keywords, counts, patterns). Higher quality → stronger permanent boost.`;
+      log(`Research started: ${r.name}`,"research");
+      toast("Analysis open");
+    });
+  });
+}
+$("#submitAnalysis").addEventListener("click",()=>{
+  if(!activeResearch)return;
+  const text=$("#analysisInput").value.trim().toLowerCase();
+  if(text.length<8){toast("Findings too brief");return;}
+  // simple quality heuristic
+  let quality=0.4;
+  if(text.length>40)quality+=0.15;
+  if(/\d+/.test(text))quality+=0.1;
+  if(text.includes("task")||text.includes("rite")||text.includes("token"))quality+=0.1;
+  if(text.includes("error")||text.includes("fail")||text.includes("reject"))quality+=0.1;
+  if(text.includes("power")||text.includes("key"))quality+=0.1;
+  quality=Math.min(1,quality);
+  const boost=activeResearch.boost*quality;
+  researchBoost*= (1+boost);
+  log(`Findings accepted (quality ${(quality*100).toFixed(0)}%) · permanent yield +${(boost*100).toFixed(1)}%`,"research");
+  toast(`Research boost +${(boost*100).toFixed(1)}%`);
+  $("#analysisArea").style.display="none";
+  $("#analysisInput").value="";
+  activeResearch=null;
+  updateMult();renderTasks();
+});
+
+/* ── Keys / Powers (kept lean) ──────────────────────────── */
+function addKey(type){
+  const map={lattice:{name:"Lattice Key",power:"x5"},wave:{name:"Wave Key",power:"x7"},oracle:{name:"Oracle Key",power:"x55"},void:{name:"Void Key",power:"instant"}};
+  const d=map[type]||map.lattice;
+  keys.push({id:Date.now()+Math.random(),type,name:d.name,powerId:d.power});
+  log(`Key obtained: ${d.name}`,"power");toast("Key received");renderKeys();
+}
+function renderKeys(){
+  const inv=$("#keysInventory");inv.innerHTML=keys.length?"":"<span style='font-size:.55rem;color:var(--muted)'>None</span>";
+  keys.forEach(k=>{
+    const d=document.createElement("div");d.className="key-item";
+    d.innerHTML=`<span>${k.name}</span><button class="btn-action" data-k="${k.id}">Activate</button>`;
+    inv.appendChild(d);
+    d.querySelector("button").addEventListener("click",()=>{
+      const idx=keys.findIndex(x=>x.id===k.id);if(idx<0)return;
+      keys.splice(idx,1);
+      const defs={x5:{name:"5× Surge",mult:5,uses:3},x7:{name:"7× Amplify",mult:7,uses:2},x55:{name:"55× Apex",mult:55,uses:1},instant:{name:"Instant",mult:1,uses:4,special:"instant"}};
+      const def=defs[k.powerId]||defs.x5;
+      powers.push({id:Date.now(),...def,readyAt:0});
+      log(`Power ready: ${def.name}`,"power");renderKeys();
+    });
+  });
+  const pinv=$("#powersInventory");pinv.innerHTML=powers.length?"":"<span style='font-size:.55rem;color:var(--muted)'>None</span>";
+  powers.forEach(p=>{
+    const ready=performance.now()>=(p.readyAt||0);
+    const d=document.createElement("div");d.className="power-item";
+    d.innerHTML=`<span>${p.name} (${p.uses})</span><button class="btn-action" ${ready&&!activePower?"":"disabled"}>${activePower?.id===p.id?"ON":ready?"Use":"CD"}</button>`;
+    pinv.appendChild(d);
+    if(ready&&!activePower)d.querySelector("button").addEventListener("click",()=>{
+      activePower=p;$("#powerBadge").style.display="block";$("#powerBadge").textContent=p.name;
+      log(`Power active: ${p.name}`,"power");updateMult();renderTasks();renderKeys();
+      setTimeout(()=>{if(activePower===p){activePower=null;$("#powerBadge").style.display="none";p.readyAt=performance.now()+60000;p.uses--;updateMult();renderKeys();renderTasks();}},20000);
+    });
+  });
+}
+
+/* ── Settings panel ─────────────────────────────────────── */
+$("#settingsBtn").addEventListener("click",()=>{$("#settingsOverlay").classList.add("visible");syncSettingsUI();});
+$("#settingsClose").addEventListener("click",()=>{$("#settingsOverlay").classList.remove("visible");});
+$("#settingsOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)$("#settingsOverlay").classList.remove("visible");});
+
+function syncSettingsUI(){
+  $("#setTheme").value=settings.theme;
+  $("#setAnim").value=settings.anim;
+  $("#setScale").value=settings.scale;
+  $("#setAsciiDens").value=settings.asciiDens;
+  $("#setAsciiSpeed").value=settings.asciiSpeed;
+  $("#setTextSpeed").value=settings.textSpeed;
+  $("#setAsciiStyle").value=settings.asciiStyle;
+  $("#setToasts").checked=settings.toasts;
+  $("#setLogClicks").checked=settings.logClicks;
+  $("#setGold").value=settings.gold;
+  renderKeywords();
+}
+$("#setTheme").addEventListener("change",e=>applyTheme(e.target.value));
+$("#setAnim").addEventListener("input",e=>settings.anim=+e.target.value);
+$("#setScale").addEventListener("input",e=>{settings.scale=+e.target.value;document.documentElement.style.fontSize=(16*settings.scale)+"px";});
+$("#setAsciiDens").addEventListener("input",e=>settings.asciiDens=+e.target.value);
+$("#setAsciiSpeed").addEventListener("input",e=>settings.asciiSpeed=+e.target.value);
+$("#setTextSpeed").addEventListener("input",e=>settings.textSpeed=+e.target.value);
+$("#setAsciiStyle").addEventListener("change",e=>settings.asciiStyle=e.target.value);
+$("#setToasts").addEventListener("change",e=>settings.toasts=e.target.checked);
+$("#setLogClicks").addEventListener("change",e=>settings.logClicks=e.target.checked);
+$("#setGold").addEventListener("input",e=>{
+  settings.gold=e.target.value;
+  document.documentElement.style.setProperty("--gold",settings.gold);
+  document.documentElement.style.setProperty("--gold-dim",settings.gold+"29");
+});
+
+$("#addKeyword").addEventListener("click",()=>{
+  const v=$("#keywordInput").value.trim();
+  if(!v||keywords.includes(v))return;
+  keywords.push(v);$("#keywordInput").value="";renderKeywords();
+  log(`Notification keyword added: “${v}”`,"system");
+});
+function renderKeywords(){
+  const list=$("#keywordList");list.innerHTML="";
+  keywords.forEach((k,i)=>{
+    const chip=document.createElement("span");chip.className="keyword-chip";
+    chip.innerHTML=`${k}<button data-i="${i}">×</button>`;
+    list.appendChild(chip);
+    chip.querySelector("button").addEventListener("click",()=>{keywords.splice(i,1);renderKeywords();});
+  });
+}
+
+/* ── Gate + Viz unlock ──────────────────────────────────── */
+const canvas=$("#sigilCanvas"),ctx=canvas.getContext("2d");
+let angle=0,pulse=0;
+(function drawSigil(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cx=canvas.width/2,cy=canvas.height/2,r=85;
+  ctx.save();ctx.translate(cx,cy);
+  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.strokeStyle="rgba(212,175,55,.4)";ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.stroke();
+  ctx.rotate(angle);
+  ctx.beginPath();for(let i=0;i<3;i++){const a=i*2*Math.PI/3-Math.PI/2;const x=r*.8*Math.cos(a),y=r*.8*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.strokeStyle="rgba(212,175,55,.7)";ctx.setLineDash([]);ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,4+Math.sin(pulse)*2,0,Math.PI*2);ctx.fillStyle="#d4af37";ctx.fill();
+  ctx.restore();angle+=0.003;pulse+=0.05;requestAnimationFrame(drawSigil);
+})();
+$("#sigilButton").addEventListener("click",e=>{angle+=0.5;spawnRipple(e,$("#sigilButton"));$("#status").textContent="Resonance Shifted";$("#status").style.color="var(--gold)";log("Sigil pulse","click");setTimeout(()=>{$("#status").textContent="Awaiting Input";$("#status").style.color="var(--muted)";},1500);});
 
 $("#gateForm").addEventListener("submit",e=>{
   e.preventDefault();
   const val=$("#passphrase").value.trim().toLowerCase();
-  log(`Passphrase attempt`,"key");
   if(val==="bits and pieces"||val==="bits & pieces"){
-    $("#status").textContent="Access Granted"; $("#status").style.color="#4af626";
+    $("#status").textContent="Access Granted";$("#status").style.color="var(--green)";
     setTimeout(()=>{
-      $("#gateView").classList.add("hidden");
-      $("#dashboardView").classList.remove("hidden");
-      $("#passphrase").value=""; $("#status").textContent="Awaiting Input"; $("#status").style.color="#5a5a62";
+      $("#gateView").classList.add("hidden");$("#dashboardView").classList.remove("hidden");
       log("Sanctuary online","system");
-      initVisualizations(); renderTasks(); renderShop(); renderKeys();
-      toast("Welcome, Initiate");
-      // periodic challenge offers
+      initVisualizations();renderTasks();renderShop();renderKeys();renderResearch();
+      toast("Welcome");
       setInterval(()=>{
-        if(unlocked.lattice) maybeOfferChallenge("#vizLatticeBox","lattice");
-        if(unlocked.wave) maybeOfferChallenge("#vizWaveBox","wave");
-        if(unlocked.oracle) maybeOfferChallenge("#vizOracleBox","oracle");
-      }, 28000);
-    },800);
-  } else {
-    $("#status").textContent="Cipher Rejected"; $("#status").style.color="#e63946";
-    $("#passphrase").classList.add("shake");
-    log("Cipher rejected","error");
-    setTimeout(()=>{$("#status").textContent="Awaiting Input";$("#status").style.color="#5a5a62";$("#passphrase").classList.remove("shake");},1800);
+        if(unlocked.lattice&&Math.random()<0.3)maybeChallenge("#vizLatticeBox","lattice");
+        if(unlocked.wave&&Math.random()<0.3)maybeChallenge("#vizWaveBox","wave");
+        if(unlocked.oracle&&Math.random()<0.25)maybeChallenge("#vizOracleBox","oracle");
+      },32000);
+    },700);
+  }else{
+    $("#status").textContent="Cipher Rejected";$("#status").style.color="var(--red)";
+    $("#passphrase").classList.add("shake");log("Rejected","error");
+    setTimeout(()=>{$("#status").textContent="Awaiting Input";$("#status").style.color="var(--muted)";$("#passphrase").classList.remove("shake");},1600);
   }
 });
+$("#lockBtn").addEventListener("click",()=>{log("Session end","system");$("#dashboardView").classList.add("hidden");$("#gateView").classList.remove("hidden");});
 
-$("#lockBtn").addEventListener("click",()=>{
-  log("Session terminated","system");
-  $("#dashboardView").classList.add("hidden");
-  $("#gateView").classList.remove("hidden");
-  toast("Session closed");
+$$("[data-feature]").forEach(btn=>{
+  btn.addEventListener("click",e=>{
+    const f=btn.dataset.feature,cost=+btn.dataset.cost;
+    if(unlocked[f]||tokens<cost){if(tokens<cost)toast("Need tokens");return;}
+    setTokens(tokens-cost);unlocked[f]=true;
+    const o=btn.closest(".lock-overlay");o.classList.add("unlocked");
+    log(`Node ${f} unlocked`,"unlock");toast(f+" online");spawnRipple(e,o);
+    setTimeout(()=>o.style.display="none",550);
+  });
 });
 
-/* ── Visualizations ────────────────────────────────────────── */
+function maybeChallenge(boxId,type){
+  const box=$(boxId);if(box.querySelector(".challenge-modal"))return;
+  const qs=[{q:"7×8−3?",a:"53"},{q:"Type AETHER",a:"aether"},{q:"Hexagon sides?",a:"6"},{q:"Reverse SIGIL",a:"ligis"}];
+  const ch=qs[Math.floor(Math.random()*qs.length)];
+  const m=document.createElement("div");m.className="challenge-modal";
+  m.innerHTML=`<h3>Node Challenge</h3><p>${ch.q}</p><input placeholder="Answer"><div style="display:flex;gap:.3rem;margin-top:.3rem"><button class="btn-action" data-a="ok">Submit</button><button class="btn-action" data-a="no">Skip</button></div>`;
+  box.appendChild(m);
+  m.querySelector("[data-a=ok]").addEventListener("click",()=>{
+    if(m.querySelector("input").value.trim().toLowerCase()===ch.a){addKey(type);toast("Key earned");}
+    else toast("Wrong");m.remove();
+  });
+  m.querySelector("[data-a=no]").addEventListener("click",()=>m.remove());
+}
+
+/* ── Viz engines (compact) ──────────────────────────────── */
 function initVisualizations(){
-  setupLattice(); setupWave(); setupOracle();
-  log("Visualization engines online","system");
-}
-function setupLattice(){
-  const cvs=$("#vizLatticeCanvas"), c=cvs.getContext("2d");
-  const resize=()=>{cvs.width=cvs.offsetWidth;cvs.height=cvs.offsetHeight;}; resize(); window.addEventListener("resize",resize);
-  const nodes=Array.from({length:20},()=>({x:Math.random()*cvs.width,y:Math.random()*cvs.height,vx:(Math.random()-.5)*.55,vy:(Math.random()-.5)*.55}));
-  (function render(){
-    if(unlocked.lattice){ c.clearRect(0,0,cvs.width,cvs.height);
-      nodes.forEach((n,i)=>{ n.x+=n.vx;n.y+=n.vy; if(n.x<0||n.x>cvs.width)n.vx*=-1; if(n.y<0||n.y>cvs.height)n.vy*=-1;
-        c.beginPath();c.arc(n.x,n.y,2.1,0,Math.PI*2);c.fillStyle="#d4af37";c.fill();
-        for(let j=i+1;j<nodes.length;j++){ const dx=nodes[j].x-n.x,dy=nodes[j].y-n.y,d=Math.hypot(dx,dy);
-          if(d<70){c.beginPath();c.moveTo(n.x,n.y);c.lineTo(nodes[j].x,nodes[j].y);c.strokeStyle=`rgba(212,175,55,${1-d/70})`;c.lineWidth=.55;c.stroke();} } }); }
-    requestAnimationFrame(render);
-  })();
-}
-function setupWave(){
-  const cvs=$("#vizWaveCanvas"), c=cvs.getContext("2d");
-  const resize=()=>{cvs.width=cvs.offsetWidth;cvs.height=cvs.offsetHeight;}; resize(); window.addEventListener("resize",resize);
-  let step=0;
-  (function render(){
-    if(unlocked.wave){ c.clearRect(0,0,cvs.width,cvs.height);
-      for(let layer=0;layer<3;layer++){ c.beginPath(); c.lineWidth=1.1-layer*.25; c.strokeStyle=`rgba(74,246,38,${.7-layer*.18})`;
-        for(let x=0;x<cvs.width;x++){ const y=cvs.height/2+Math.sin(x*.027+step+layer)*(17-layer*3)+Math.cos(x*.01+step*.5+layer*.6)*(11-layer*2);
-          x?c.lineTo(x,y):c.moveTo(x,y);} c.stroke(); } step+=.042; }
-    requestAnimationFrame(render);
-  })();
-}
-function setupOracle(){
-  const cvs=$("#vizOracleCanvas"), c=cvs.getContext("2d");
-  const resize=()=>{cvs.width=cvs.offsetWidth;cvs.height=cvs.offsetHeight;}; resize(); window.addEventListener("resize",resize);
-  let t=0;
-  (function render(){
-    if(unlocked.oracle){ c.clearRect(0,0,cvs.width,cvs.height); const cx=cvs.width/2,cy=cvs.height/2;
-      c.save(); c.translate(cx,cy); c.rotate(t);
-      for(let i=0;i<7;i++){ const a=i/7*Math.PI*2, rad=26+Math.sin(t*2+i)*5;
-        c.beginPath(); c.arc(Math.cos(a)*rad,Math.sin(a)*rad,13+(i%3)*2,0,Math.PI*2);
-        c.strokeStyle=`rgba(212,175,55,${.32+(i%3)*.1})`; c.lineWidth=1; c.stroke(); }
-      c.beginPath(); c.arc(0,0,4+Math.sin(t*3)*2,0,Math.PI*2); c.fillStyle="rgba(212,175,55,.7)"; c.fill();
-      c.restore(); t+=.011; }
-    requestAnimationFrame(render);
-  })();
+  // Lattice
+  const c1=$("#vizLatticeCanvas"),x1=c1.getContext("2d");
+  const nodes=Array.from({length:18},()=>({x:Math.random()*200,y:Math.random()*140,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5}));
+  (function r(){if(unlocked.lattice){c1.width=c1.offsetWidth;c1.height=c1.offsetHeight;x1.clearRect(0,0,c1.width,c1.height);
+    nodes.forEach((n,i)=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>c1.width)n.vx*=-1;if(n.y<0||n.y>c1.height)n.vy*=-1;
+      x1.beginPath();x1.arc(n.x,n.y,2,0,7);x1.fillStyle=settings.gold;x1.fill();
+      for(let j=i+1;j<nodes.length;j++){const d=Math.hypot(nodes[j].x-n.x,nodes[j].y-n.y);if(d<65){x1.beginPath();x1.moveTo(n.x,n.y);x1.lineTo(nodes[j].x,nodes[j].y);x1.strokeStyle=`rgba(212,175,55,${1-d/65})`;x1.stroke();}}});}requestAnimationFrame(r);})();
+  // Wave
+  const c2=$("#vizWaveCanvas"),x2=c2.getContext("2d");let st=0;
+  (function r(){if(unlocked.wave){c2.width=c2.offsetWidth;c2.height=c2.offsetHeight;x2.clearRect(0,0,c2.width,c2.height);
+    x2.beginPath();x2.strokeStyle="rgba(74,246,38,.7)";for(let x=0;x<c2.width;x++){const y=c2.height/2+Math.sin(x*.03+st)*18+Math.cos(x*.01+st*.5)*12;x?x2.lineTo(x,y):x2.moveTo(x,y);}x2.stroke();st+=.04;}requestAnimationFrame(r);})();
+  // Oracle
+  const c3=$("#vizOracleCanvas"),x3=c3.getContext("2d");let ot=0;
+  (function r(){if(unlocked.oracle){c3.width=c3.offsetWidth;c3.height=c3.offsetHeight;x3.clearRect(0,0,c3.width,c3.height);
+    x3.save();x3.translate(c3.width/2,c3.height/2);x3.rotate(ot);
+    for(let i=0;i<6;i++){x3.beginPath();x3.arc(Math.cos(i)*30,Math.sin(i)*30,14,0,7);x3.strokeStyle="rgba(212,175,55,.5)";x3.stroke();}x3.restore();ot+=.01;}requestAnimationFrame(r);})();
 }
 
-/* ── Global click/key logging ──────────────────────────────── */
-document.addEventListener("click",e=>{
-  const t=e.target;
-  if(t.closest(".log-panel")) return;
-  if(t.matches("button,.btn-action,.tab-btn,.btn-lock")) log(`Click → ${(t.textContent||"").trim().slice(0,32)}`,"click");
-},true);
-
-/* ── Restore ───────────────────────────────────────────────── */
+/* ── Boot ───────────────────────────────────────────────── */
 try{
-  const s=localStorage.getItem("bp2-tokens"); if(s) setTokens(+s,false);
-  const u=localStorage.getItem("bp2-unlocked"); if(u){ Object.assign(unlocked,JSON.parse(u));
-    Object.keys(unlocked).forEach(k=>{ if(unlocked[k]){ const el=$(`#lock${k[0].toUpperCase()+k.slice(1)}`); if(el) el.style.display="none"; }}); }
-  const up=localStorage.getItem("bp2-upgrades"); if(up){ JSON.parse(up).forEach(id=>{ ownedUpgrades.add(id); const def=UPGRADES.find(x=>x.id===id); if(def) def.effect(); }); }
+  const th=localStorage.getItem("bp-theme");if(th)applyTheme(th);
+  const tk=localStorage.getItem("bp2-tokens");if(tk)setTokens(+tk,false);
+  const up=localStorage.getItem("bp2-upg");if(up)JSON.parse(up).forEach(id=>{ownedUpgrades.add(id);const d=UPGRADES.find(x=>x.id===id);if(d)d.fn();});
 }catch(_){}
-
-log("Gatekeeper online · awaiting cipher","system");
+log("Gatekeeper online","system");
 })();
 </script>
 </body>
