@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BITS & PIECES</title>
+    <style>
+        :root {
+            --bg-color: #08080a;
+            --text-color: #c4c4cc;
+            --accent-gold: #d4af37;
+            --accent-dim: rgba(212, 175, 55, 0.15);
+            --accent-green: #4af626;
+            --grid-line: rgba(255, 255, 255, 0.03);
+            --font-mono: "Courier New", Courier, monospace;
+            --font-serif: "Cinzel", "Times New Roman", serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Views */
+        .view {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            background: rgba(12, 12, 15, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--accent-dim);
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+            transform: scale(0.96);
+        }
+
+        /* Gatekeeper View */
+        #gateView {
+            max-width: 480px;
+            text-align: center;
+            padding: 2.5rem 2rem;
+        }
+
+        .sigil-container {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.5rem auto;
+            position: relative;
+            cursor: pointer;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            letter-spacing: 0.35em;
+            color: #fff;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .manifesto {
+            font-size: 0.75rem;
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            color: #8a8a93;
+            margin-bottom: 2.5rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--accent-dim);
+            padding: 0.6rem 0;
+            color: var(--accent-gold);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.4s ease;
+        }
+
+        input[type="password"]:focus {
+            border-bottom-color: var(--accent-gold);
+        }
+
+        input[type="password"]::placeholder {
+            color: #4a4a52;
+            letter-spacing: 0.15em;
+            font-size: 0.7rem;
+        }
+
+        .status-msg {
+            margin-top: 1rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            height: 1rem;
+            color: #5a5a62;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        /* Dashboard View */
+        #dashboardView {
+            max-width: 900px;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--accent-dim);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-header h2 {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            letter-spacing: 0.25em;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .token-counter {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-dim);
+            padding: 0.4rem 0.8rem;
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .token-counter span {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .clearance-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--accent-green);
+            border: 1px solid rgba(74, 246, 38, 0.3);
+            padding: 0.4rem 0.6rem;
+            background: rgba(74, 246, 38, 0.05);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-layout { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.2rem;
+            position: relative;
+        }
+
+        .panel-full {
+            grid-column: 1 / -1;
+        }
+
+        .panel-title {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: #8a8a93;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed var(--accent-dim);
+            padding-bottom: 0.4rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Task Module */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .task-card {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(15, 15, 20, 0.5);
+            padding: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            letter-spacing: 0.05em;
+        }
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .task-title {
+            color: #ddd;
+        }
+
+        .task-reward {
+            color: var(--accent-gold);
+            font-size: 0.65rem;
+        }
+
+        .btn-action {
+            background: transparent;
+            border: 1px solid var(--accent-dim);
+            color: var(--accent-gold);
+            padding: 0.4rem 0.8rem;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        .btn-action:disabled {
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #4a4a52;
+            cursor: not-allowed;
+        }
+
+        /* Locked Visualizations Container */
+        .viz-box {
+            height: 180px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5, 5, 8, 0.6);
+            overflow: hidden;
+        }
+
+        .viz-box canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 8, 10, 0.88);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .lock-overlay p {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: #8a8a93;
+            margin-bottom: 0.8rem;
+        }
+
+        .unlock-cost {
+            color: var(--accent-gold);
+            font-size: 0.65rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .btn-lock {
+            background: transparent;
+            border: 1px solid var(--accent-dim);
+            color: #8a8a93;
+            padding: 0.5rem 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-lock:hover {
+            color: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
+
+        /* Corner accents */
+        .corner {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border: 1px solid var(--accent-gold);
+            opacity: 0.5;
+        }
+        .tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+        .bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+        .br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-grid"></div>
+    <div class="vignette"></div>
+
+    <!-- GATEKEEPER VIEW -->
+    <div class="view" id="gateView">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+
+        <div class="sigil-container" id="sigilButton" title="Initiate Resonance">
+            <canvas id="sigilCanvas" width="280" height="280"></canvas>
+        </div>
+
+        <h1>Bits & Pieces</h1>
+        <div class="subtitle">Order of the Fragmented Mind</div>
+
+        <p class="manifesto">
+            Truth is never revealed whole.<br>
+            It is gathered, byte by byte, echo by echo.<br>
+            Assemble the cipher to enter.
+        </p>
+
+        <form id="gateForm" autocomplete="off">
+            <div class="input-group">
+                <input type="password" id="passphrase" placeholder="ENTER PASSPHRASE" maxlength="32">
+            </div>
+            <div class="status-msg" id="status">Awaiting Input</div>
+        </form>
+    </div>
+
+    <!-- SECRET DASHBOARD VIEW -->
+    <div class="view hidden" id="dashboardView">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+
+        <div class="dashboard-header">
+            <h2>Inner Sanctuary</h2>
+            <div class="header-meta">
+                <div class="token-counter">TOKENS: <span id="tokenBalance">0</span> ⟁</div>
+                <div class="clearance-badge">CLEARANCE: INITIATE</div>
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- TASK MODULE -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>// Work of the Order</span>
+                    <span style="color: var(--accent-gold)">EARN TOKENS</span>
+                </div>
+                <div class="task-list">
+                    <div class="task-card">
+                        <div class="task-info">
+                            <span class="task-title">Align Aetheric Signal</span>
+                            <span class="task-reward">+15 Tokens (3s)</span>
+                        </div>
+                        <button class="btn-action" onclick="completeTask(15, this, 3000)">Transmute</button>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-info">
+                            <span class="task-title">Decipher Arcane Packet</span>
+                            <span class="task-reward">+30 Tokens (6s)</span>
+                        </div>
+                        <button class="btn-action" onclick="completeTask(30, this, 6000)">Transmute</button>
+                    </div>
+                    <div class="task-card">
+                        <div class="task-info">
+                            <span class="task-title">Offer Focus to the Void</span>
+                            <span class="task-reward">+60 Tokens (10s)</span>
+                        </div>
+                        <button class="btn-action" onclick="completeTask(60, this, 10000)">Transmute</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIZ 1: CHRONO NODE LATTICE -->
+            <div class="panel">
+                <div class="panel-title">// Chrono Node Lattice</div>
+                <div class="viz-box">
+                    <canvas id="vizLatticeCanvas"></canvas>
+                    <div class="lock-overlay" id="lockLattice">
+                        <p>LATTICE MATRIX RESTRICTED</p>
+                        <div class="unlock-cost">COST: 30 TOKENS</div>
+                        <button class="btn-action" onclick="unlockFeature('lattice', 30)">Unlock Node</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIZ 2: ASTRAL RESONANCE WAVE -->
+            <div class="panel">
+                <div class="panel-title">// Astral Wave Oscillation</div>
+                <div class="viz-box">
+                    <canvas id="vizWaveCanvas"></canvas>
+                    <div class="lock-overlay" id="lockWave">
+                        <p>RESONANCE SPECTRUM SEALED</p>
+                        <div class="unlock-cost">COST: 50 TOKENS</div>
+                        <button class="btn-action" onclick="unlockFeature('wave', 50)">Unlock Node</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIZ 3: DIVINATION ORACLE ARRAY -->
+            <div class="panel">
+                <div class="panel-title">// Divination Oracle Field</div>
+                <div class="viz-box">
+                    <canvas id="vizOracleCanvas"></canvas>
+                    <div class="lock-overlay" id="lockOracle">
+                        <p>ORACLE CONSTELLATION LOCKED</p>
+                        <div class="unlock-cost">COST: 90 TOKENS</div>
+                        <button class="btn-action" onclick="unlockFeature('oracle', 90)">Unlock Node</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-lock" id="lockBtn">Term Session</button>
+    </div>
+
+    <script>
+        // GATE LOGIC & CANVAS
+        const canvas = document.getElementById('sigilCanvas');
+        const ctx = canvas.getContext('2d');
+        const sigilButton = document.getElementById('sigilButton');
+        const passphraseInput = document.getElementById('passphrase');
+        const statusMsg = document.getElementById('status');
+        
+        const gateView = document.getElementById('gateView');
+        const dashboardView = document.getElementById('dashboardView');
+        const lockBtn = document.getElementById('lockBtn');
+
+        let angle = 0;
+        let pulse = 0;
+
+        function drawSigil() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const r = 90;
+
+            ctx.save();
+            ctx.translate(cx, cy);
+
+            ctx.beginPath();
+            ctx.arc(0, 0, r, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+
+            ctx.rotate(angle);
+
+            ctx.beginPath();
+            for (let i = 0; i < 3; i++) {
+                const a = (i * 2 * Math.PI / 3) - Math.PI / 2;
+                const x = r * 0.8 * Math.cos(a);
+                const y = r * 0.8 * Math.sin(a);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
+            ctx.setLineDash([]);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.beginPath();
+            for (let i = 0; i < 3; i++) {
+                const a = (i * 2 * Math.PI / 3) + Math.PI / 2;
+                const x = r * 0.8 * Math.cos(a);
+                const y = r * 0.8 * Math.sin(a);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 4 + Math.sin(pulse) * 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#d4af37';
+            ctx.fill();
+
+            ctx.restore();
+
+            angle += 0.003;
+            pulse += 0.05;
+            requestAnimationFrame(drawSigil);
+        }
+        drawSigil();
+
+        sigilButton.addEventListener('click', () => {
+            angle += 0.5;
+            statusMsg.textContent = "Resonance Shifted";
+            statusMsg.style.color = "#d4af37";
+            setTimeout(() => {
+                statusMsg.textContent = "Awaiting Input";
+                statusMsg.style.color = "#5a5a62";
+            }, 2000);
+        });
+
+        document.getElementById('gateForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = passphraseInput.value.trim().toLowerCase();
+            if (val === "bits and pieces" || val === "bits & pieces") {
+                statusMsg.textContent = "Access Granted. Initializing...";
+                statusMsg.style.color = "#4af626";
+                passphraseInput.style.borderColor = "#4af626";
+
+                setTimeout(() => {
+                    gateView.classList.add('hidden');
+                    dashboardView.classList.remove('hidden');
+                    passphraseInput.value = '';
+                    statusMsg.textContent = "Awaiting Input";
+                    statusMsg.style.color = "#5a5a62";
+                    passphraseInput.style.borderColor = "rgba(212, 175, 55, 0.15)";
+                    initVisualizations();
+                }, 1000);
+            } else {
+                statusMsg.textContent = "Cipher Rejected";
+                statusMsg.style.color = "#e63946";
+                passphraseInput.style.borderColor = "#e63946";
+                setTimeout(() => {
+                    statusMsg.textContent = "Awaiting Input";
+                    statusMsg.style.color = "#5a5a62";
+                    passphraseInput.style.borderColor = "rgba(212, 175, 55, 0.15)";
+                }, 2000);
+            }
+        });
+
+        lockBtn.addEventListener('click', () => {
+            dashboardView.classList.add('hidden');
+            gateView.classList.remove('hidden');
+        });
+
+        // ECONOMY & TASK SYSTEM
+        let tokens = 0;
+        const tokenDisplay = document.getElementById('tokenBalance');
+
+        function completeTask(reward, btn, duration) {
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            let elapsed = 0;
+            const interval = setInterval(() => {
+                elapsed += 200;
+                btn.textContent = `${Math.ceil((duration - elapsed) / 1000)}s...`;
+                if (elapsed >= duration) {
+                    clearInterval(interval);
+                    tokens += reward;
+                    tokenDisplay.textContent = tokens;
+                    btn.textContent = "Completed";
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                }
+            }, 200);
+        }
+
+        const unlocked = { lattice: false, wave: false, oracle: false };
+
+        function unlockFeature(featureKey, cost) {
+            if (tokens >= cost) {
+                tokens -= cost;
+                tokenDisplay.textContent = tokens;
+                unlocked[featureKey] = true;
+                const overlayId = 'lock' + featureKey.charAt(0).toUpperCase() + featureKey.slice(1);
+                document.getElementById(overlayId).classList.add('hidden');
+            } else {
+                alert("Insufficient tokens for ritual activation.");
+            }
+        }
+
+        // CRYPTIC VISUALIZATIONS
+        function initVisualizations() {
+            setupLattice();
+            setupWave();
+            setupOracle();
+        }
+
+        function setupLattice() {
+            const cvs = document.getElementById('vizLatticeCanvas');
+            const c = cvs.getContext('2d');
+            cvs.width = cvs.offsetWidth;
+            cvs.height = cvs.offsetHeight;
+
+            const nodes = Array.from({ length: 18 }, () => ({
+                x: Math.random() * cvs.width,
+                y: Math.random() * cvs.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
+            }));
+
+            function render() {
+                if (unlocked.lattice) {
+                    c.clearRect(0, 0, cvs.width, cvs.height);
+                    nodes.forEach((node, i) => {
+                        node.x += node.vx;
+                        node.y += node.vy;
+                        if (node.x < 0 || node.x > cvs.width) node.vx *= -1;
+                        if (node.y < 0 || node.y > cvs.height) node.vy *= -1;
+
+                        c.beginPath();
+                        c.arc(node.x, node.y, 2, 0, Math.PI * 2);
+                        c.fillStyle = '#d4af37';
+                        c.fill();
+
+                        for (let j = i + 1; j < nodes.length; j++) {
+                            const dx = nodes[j].x - node.x;
+                            const dy = nodes[j].y - node.y;
+                            const dist = Math.hypot(dx, dy);
+                            if (dist < 70) {
+                                c.beginPath();
+                                c.moveTo(node.x, node.y);
+                                c.lineTo(nodes[j].x, nodes[j].y);
+                                c.strokeStyle = `rgba(212, 175, 55, ${1 - dist / 70})`;
+                                c.lineWidth = 0.5;
+                                c.stroke();
+                            }
+                        }
+                    });
+                }
+                requestAnimationFrame(render);
+            }
+            render();
+        }
+
+        function setupWave() {
+            const cvs = document.getElementById('vizWaveCanvas');
+            const c = cvs.getContext('2d');
+            cvs.width = cvs.offsetWidth;
+            cvs.height = cvs.offsetHeight;
+            let step = 0;
+
+            function render() {
+                if (unlocked.wave) {
+                    c.clearRect(0, 0, cvs.width, cvs.height);
+                    c.beginPath();
+                    c.lineWidth = 1;
+                    c.strokeStyle = 'rgba(74, 246, 38, 0.7)';
+                    for (let x = 0; x < cvs.width; x++) {
+                        const y = cvs.height / 2 + 
+                            Math.sin(x * 0.03 + step) * 20 + 
+                            Math.cos(x * 0.01 + step * 0.5) * 15;
+                        if (x === 0) c.moveTo(x, y);
+                        else c.lineTo(x, y);
+                    }
+                    c.stroke();
+                    step += 0.04;
+                }
+                requestAnimationFrame(render);
+            }
+            render();
+        }
+
+        function setupOracle() {
+            const cvs = document.getElementById('vizOracleCanvas');
+            const c = cvs.getContext('2d');
+            cvs.width = cvs.offsetWidth;
+            cvs.height = cvs.offsetHeight;
+            let t = 0;
+
+            function render() {
+                if (unlocked.oracle) {
+                    c.clearRect(0, 0, cvs.width, cvs.height);
+                    const cx = cvs.width / 2;
+                    const cy = cvs.height / 2;
+                    c.save();
+                    c.translate(cx, cy);
+                    c.rotate(t);
+
+                    for (let i = 0; i < 6; i++) {
+                        c.beginPath();
+                        c.arc(Math.cos(i) * 35, Math.sin(i) * 35, 18, 0, Math.PI * 2);
+                        c.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+                        c.lineWidth = 1;
+                        c.stroke();
+                    }
+
+                    c.restore();
+                    t += 0.01;
+                }
+                requestAnimationFrame(render);
+            }
+            render();
+        }
+    </script>
+</body>
+</html>
