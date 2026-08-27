@@ -24,8 +24,12 @@ jobs:
             const attempt = context.payload.workflow_run.run_attempt;
 
             core.info(`Re-running failed jobs for Copilot run ${runId} (attempt ${attempt}).`);
-            await github.rest.actions.reRunWorkflowFailedJobs({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: runId,
-            });
+            try {
+              await github.rest.actions.reRunWorkflowFailedJobs({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: runId,
+              });
+            } catch (error) {
+              core.warning(`Failed to trigger retry for run ${runId}: ${error.message}`);
+            }
