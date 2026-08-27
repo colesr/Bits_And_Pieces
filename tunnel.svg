@@ -1,19 +1,83 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="150" viewBox="0 0 500 150">
   <style>
     .bg { fill: #0d1117; }
-    .text { font-family: monospace; font-size: 25px; fill: #58a6ff; white-space: pre; }
-    .shark {
-      animation: swim 6s linear infinite;
+    .text { 
+      font-family: monospace; 
+      font-size: 14px; 
+      white-space: pre;
+      text-anchor: middle;
+      dominant-baseline: middle;
     }
-    @keyframes swim {
-      0% { transform: translateX(-250px); }
-      100% { transform: translateX(500px); }
+    
+    /* Concentric expanding layers */
+    .ring {
+      transform-origin: 250px 75px;
+      animation: zoom 2s infinite linear;
+    }
+    
+    .r1 { animation-delay: 0.0s; }
+    .r2 { animation-delay: 0.5s; }
+    .r3 { animation-delay: 1.0s; }
+    .r4 { animation-delay: 1.5s; }
+
+    @keyframes zoom {
+      0% {
+        transform: scale(0.1);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2.8);
+        opacity: 0;
+      }
+    }
+
+    /* Pulsing color cycles */
+    .c1 { animation: pulse1 3s infinite ease-in-out; }
+    .c2 { animation: pulse2 3s infinite ease-in-out; }
+
+    @keyframes pulse1 {
+      0%, 100% { fill: #58a6ff; }
+      50% { fill: #bc8cff; }
+    }
+    @keyframes pulse2 {
+      0%, 100% { fill: #7ee787; }
+      50% { fill: #ff7b72; }
     }
   </style>
+
   <rect width="100%" height="100%" class="bg" />
-  <g class="shark">
-    <text x="0" y="50" class="text">   /\"-...</text>
-    <text x="0" y="65" class="text">  &gt;(*)</text>
-    <text x="0" y="80" class="text">   /\"-...</text>
+
+  <!-- Vanishing Point Center -->
+  <text x="250" y="75" class="text c1" font-size="10">.</text>
+
+  <!-- Expanding Tunnel Layers -->
+  <g class="ring r1">
+    <text x="250" y="55" class="text c1">+ + + + +</text>
+    <text x="250" y="75" class="text c2">+       +</text>
+    <text x="250" y="95" class="text c1">+ + + + +</text>
+  </g>
+
+  <g class="ring r2">
+    <text x="250" y="45" class="text c2">/ - - - \</text>
+    <text x="250" y="75" class="text c1">|       |</text>
+    <text x="250" y="105" class="text c2">\ - - - /</text>
+  </g>
+
+  <g class="ring r3">
+    <text x="250" y="35" class="text c1"># = = = = #</text>
+    <text x="250" y="75" class="text c2">|         |</text>
+    <text x="250" y="115" class="text c1"># = = = = #</text>
+  </g>
+
+  <g class="ring r4">
+    <text x="250" y="25" class="text c2">&lt; * * * * * &gt;</text>
+    <text x="250" y="75" class="text c1">:           :</text>
+    <text x="250" y="125" class="text c2">&lt; * * * * * &gt;</text>
   </g>
 </svg>
