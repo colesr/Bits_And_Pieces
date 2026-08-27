@@ -767,7 +767,7 @@ const CHAR_COLORS = {};
 
 /* ── Helpers ───────────────────────────────────────────── */
 function toast(m){const t=$("#toast");t.classList.remove("error-toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1500)}
-function toastError(m){const t=$("#toast");t.textContent=m;t.classList.remove("error-toast");void t.offsetWidth;t.classList.add("show","error-toast");setTimeout(()=>t.classList.remove("show"),1800)}
+function toastError(m){const t=$("#toast");t.classList.remove("show","error-toast");void t.offsetWidth;t.textContent=m;t.classList.add("show","error-toast");setTimeout(()=>t.classList.remove("show"),1800)}
 function log(msg,type="info"){
   const now=new Date();
   const ts=now.toLocaleTimeString("en-GB",{hour12:false})+"."+String(now.getMilliseconds()).padStart(3,"0").slice(0,2);
@@ -798,16 +798,15 @@ function setTokens(n,anim=true){
     $("#tokenCounter").classList.add("pulse");
     setTimeout(()=>$("#tokenCounter").classList.remove("pulse"),300);
     const diff=tokens-prev;
-    if(diff>0){
-      const pop=document.createElement("div");
-      pop.className="token-popup";
-      pop.textContent=(diff>0?"+":"")+diff+" ⟁";
-      const r=$("#tokenCounter").getBoundingClientRect();
-      pop.style.left=(r.left+r.width/2)+"px";
-      pop.style.top=(r.top-6)+"px";
-      document.body.appendChild(pop);
-      setTimeout(()=>pop.remove(),1150);
-    }
+    const pop=document.createElement("div");
+    pop.className="token-popup";
+    pop.textContent=(diff>0?"+":"")+diff+" ⟁";
+    if(diff<0)pop.style.color="var(--red)";
+    const r=$("#tokenCounter").getBoundingClientRect();
+    pop.style.left=(r.left+r.width/2)+"px";
+    pop.style.top=(r.top-6)+"px";
+    document.body.appendChild(pop);
+    setTimeout(()=>pop.remove(),1150);
   }
   updateClearance();
   try{localStorage.setItem("bp_tokens_"+user,tokens)}catch(_){}
@@ -885,14 +884,16 @@ function bootUI(){
 }
 function makeJuicy(){
   // Button press scale feedback on all .btn-action elements (mousedown/mouseup)
+  let pressedBtn=null;
   document.addEventListener("mousedown",e=>{
     const b=e.target.closest(".btn-action");
     if(!b||b.disabled)return;
+    pressedBtn=b;
     b.style.transform="scale(.93)";
     b.style.boxShadow="0 0 10px rgba(212,175,55,.45)";
   });
   document.addEventListener("mouseup",()=>{
-    document.querySelectorAll(".btn-action").forEach(b=>{b.style.transform="";b.style.boxShadow=""});
+    if(pressedBtn){pressedBtn.style.transform="";pressedBtn.style.boxShadow="";pressedBtn=null}
   });
   // Power badge pulse when active
   const pwBadge=$("#powerBadge");
@@ -1379,7 +1380,7 @@ function buyTalent(tid,nid){
   const st=nodeState[nid];const t=TALENTS.find(x=>x.id===tid);
   if(st.talents.has(tid))return;
   const pts=st.level-1-st.talents.size;
-  if(pts<t.cost){toastError("Need talent points");return}
+  if(pts<t.cost){toastError("Need talent points (level up)");return}
   st.talents.add(tid);t.effect(st);log("Talent "+t.name+" on "+nid,"unlock");renderNodes();
 }
 function inspectNode(id){
