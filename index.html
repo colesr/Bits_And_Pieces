@@ -275,7 +275,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.55)!import
       <button class="hdr-btn btn-halt" id="haltAllBtn">Halt All</button>
       <button class="hdr-btn" id="themeBtn">☾</button>
       <button class="hdr-btn" id="chatToggleBtn">AI</button>
-      <div class="hdr-btn ai-mode-badge" id="topAIModeBadge" title="Current AI mode">⚙️ Rules</div>
+      <div class="hdr-btn ai-mode-badge" id="topAIModeBadge" title="Current AI mode" role="status" aria-live="polite">⚙️ Rules</div>
       <button class="hdr-btn" id="settingsBtn">Settings</button>
       <button class="hdr-btn" id="logoutBtn">Logout</button>
     </div>
@@ -708,7 +708,7 @@ const aiState = {
   busy:false,
   local:{status:"idle",progress:0,message:"Local model idle.",eta:"",generator:null,loadedModel:"",loadPromise:null,modulePromise:null,lastError:"",cacheMeta:{}},
   ollama:{status:"disconnected",connected:false,models:[],checking:false,lastError:""},
-  voice:{supported:false,synthSupported:"speechSynthesis" in window,listening:false,recognition:null,preview:"",silenceTimer:null}
+  voice:{supported:false,synthSupported:"speechSynthesis" in window,listening:false,recognition:null,preview:"",silenceTimer:null,finalText:""}
 };
 
 const CHAPTERS = [
@@ -1038,7 +1038,6 @@ function bootUI(){
   renderChapters();renderSongPages();renderPortfolio();renderShop();
   renderKeys();renderResearch();renderNodes();renderNodeShop();renderShards();
   renderCodeArchive();renderLab();setAIEnabled(settings.aiEnabled);
-  syncSettingsUI();detectVoiceSupport();renderAIStatus();
   startVaultTick();
   makeJuicy();
 }
@@ -1964,13 +1963,18 @@ function ensureVoiceRecognition(){
   recognition.lang=settings.speechLang;
   recognition.onstart=()=>{
     aiState.voice.listening=true;
+    aiState.voice.finalText="";
     aiState.voice.preview="Listening…";
     renderAIStatus();
   };
   recognition.onresult=e=>{
-    let transcript="";
-    for(let i=0;i<e.results.length;i++)transcript+=e.results[i][0].transcript;
-    transcript=transcript.trim();
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const spoken=e.results[i][0].transcript;
+      if(e.results[i].isFinal)aiState.voice.finalText+=spoken+" ";
+      else interim+=spoken;
+    }
+    const transcript=(aiState.voice.finalText+interim).trim();
     aiState.voice.preview=transcript?`Recognized: ${transcript}`:"Listening…";
     if(transcript)$("#chatInput").value=transcript;
     clearTimeout(aiState.voice.silenceTimer);
@@ -2112,7 +2116,7 @@ async function loadLocalModel({silent=false}={}){
           const total=Number(update?.total)||0,loaded=Number(update?.loaded)||0;
           let progress=Number(update?.progress);
           if(total&&loaded)progress=(loaded/total)*100;
-          if(progress<=1)progress*=100;
+          if(progress>0&&progress<1)progress*=100;
           const elapsed=Math.max(1,(performance.now()-started)/1000);
           aiState.local.progress=isFinite(progress)?Math.max(aiState.local.progress,progress):aiState.local.progress;
           aiState.local.eta=total&&loaded?formatEta((total-loaded)/Math.max(1,loaded/elapsed)):"";
@@ -2214,7 +2218,8 @@ async function streamOllamaReply(q,bubble){
       clearInterval(pump);
     }
   },35);
-  while(true){
+  try{
+    while(true){
     const {value,done:streamDone}=await reader.read();
     if(streamDone)break;
     buffer+=decoder.decode(value,{stream:true});
@@ -2222,17 +2227,28 @@ async function streamOllamaReply(q,bubble){
     buffer=lines.pop();
     lines.forEach(line=>{
       if(!line.trim())return;
-      const part=JSON.parse(line);
-      if(part.error)throw new Error(part.error);
-      if(part.response)(part.response.match(/\S+\s*/g)||[part.response]).forEach(word=>queue.push(word));
+      try{
+        const part=JSON.parse(line);
+        if(part.error)throw new Error(part.error);
+        if(part.response)(part.response.match(/\S+\s*/g)||[part.response]).forEach(word=>queue.push(word));
+      }catch(err){
+        log("Ollama stream parse skipped: "+(err.message||err),"system");
+      }
     });
+    }
+    if(buffer.trim()){
+    try{
+      const part=JSON.parse(buffer);
+      if(part.response)(part.response.match(/\S+\s*/g)||[part.response]).forEach(word=>queue.push(word));
+    }catch(err){
+      log("Ollama stream tail skipped: "+(err.message||err),"system");
+    }
+    }
+  }finally{
+    done=true;
   }
-  if(buffer.trim()){
-    const part=JSON.parse(buffer);
-    if(part.response)(part.response.match(/\S+\s*/g)||[part.response]).forEach(word=>queue.push(word));
-  }
-  done=true;
   while(queue.length)await new Promise(r=>setTimeout(r,30));
+  clearInterval(pump);
   if(!rendered.trim())rendered=localInfer(q);
   return rendered.trim();
 }
