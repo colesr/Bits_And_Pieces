@@ -100,6 +100,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
   background:rgba(0,0,0,.22);padding:.35rem;display:flex;flex-direction:column;gap:.2rem;position:relative;transition:all .22s;
 }
 .portfolio-slot.filled{border-style:solid;border-color:var(--gold-dim);background:rgba(212,175,55,.06)}
+.portfolio-slot.active-slot{border-color:var(--green)!important;box-shadow:0 0 18px rgba(74,246,38,.4),inset 0 0 16px rgba(74,246,38,.08);animation:slotPulse 1.2s ease-in-out infinite;transform:scale(1.05);z-index:2}
+@keyframes slotPulse{0%,100%{box-shadow:0 0 12px rgba(74,246,38,.3)}50%{box-shadow:0 0 26px rgba(74,246,38,.6)}}
 .portfolio-slot .slot-name{font-size:.56rem;color:var(--text)}
 .portfolio-slot .slot-meta{font-size:.5rem;color:var(--gold)}
 .portfolio-slot .slot-remove{position:absolute;top:1px;right:3px;background:none;border:none;color:var(--red);cursor:pointer;font-size:.65rem;opacity:.55}
@@ -131,7 +133,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 .spell-chapters{display:flex;flex-direction:column;gap:.2rem;border-right:1px solid var(--border);padding-right:.4rem}
 .chapter-btn{text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);font-family:inherit;font-size:.54rem;letter-spacing:.05em;padding:.3rem .4rem;cursor:pointer;transition:all .2s}
 .chapter-btn:hover,.chapter-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.08)}
-.spell-pages{display:flex;flex-direction:column;gap:.35rem;max-height:240px;overflow-y:auto}
+.spell-pages{display:flex;flex-direction:column;gap:.32rem;max-height:240px;overflow-y:auto}
+.spell-pages.utility-mode{max-height:340px}
 .spell-card{
   border:1px solid var(--border);background:rgba(15,15,20,.4);padding:.45rem .5rem;
   display:grid;grid-template-columns:1fr auto;gap:.3rem;align-items:center;font-size:.58rem;
@@ -149,12 +152,40 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 .spell-actions{display:flex;flex-direction:column;gap:.15rem}
 .spell-actions .btn-action{padding:.18rem .35rem;font-size:.5rem}
 
-/* LARGE rite visual */
+
+/* Drag panels */
+.r-panel.dragging{opacity:.92;z-index:80;box-shadow:0 0 40px var(--shadow)}
+.r-header{cursor:grab}
+.r-header:active{cursor:grabbing}
+/* Stop all */
+.btn-stop-all{border-color:rgba(230,57,70,.5)!important;color:var(--red)!important}
+.btn-stop-all:hover:not(:disabled){background:var(--red)!important;color:#fff!important}
+/* Energy code colors */
+.code-chip{font-family:monospace;font-size:.52rem;padding:.12rem .28rem;border:1px solid var(--border);letter-spacing:.06em}
+.code-digit-heavy{border-color:#34d399;color:#34d399;background:rgba(52,211,153,.08)}
+.code-vowel-heavy{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,.08)}
+.code-balanced{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,.06)}
+.code-sparse{border-color:#94a3b8;color:#94a3b8}
+/* AI feedback */
+.ai-fb{display:inline-flex;gap:.15rem;margin-left:.35rem;vertical-align:middle}
+.ai-fb button{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:.55rem;padding:.05rem .28rem;cursor:pointer;line-height:1.2}
+.ai-fb button:hover{color:var(--gold);border-color:var(--gold-dim)}
+.ai-fb button.up:hover{color:var(--green)}
+.ai-fb button.down:hover{color:var(--red)}
+/* Log custom highlight */
+.log-entry.kw-hit{background:rgba(34,211,238,.12);border-left-color:#22d3ee!important}
+/* Intense anim */
+body.anim-max .ripple{animation-duration:.25s}
+body.anim-max .spell-card.working{box-shadow:0 0 22px var(--gold-dim),0 0 40px rgba(212,175,55,.2)}
+body.anim-max .portfolio-slot.active-slot{animation-duration:.7s}
+body.anim-max .token-counter.pulse{transform:scale(1.15)}
+body.anim-max .cd-active{animation-duration:.8s}
+/* Rite visual full bleed */
 .rite-visual{
-  margin-top:.55rem;border:1px solid var(--gold-dim);background:rgba(0,0,0,.45);
-  font-family:monospace;font-size:11px;line-height:1.08;color:var(--gold);
-  white-space:pre;padding:.5rem .6rem;min-height:180px;max-height:260px;overflow:hidden;display:none;
-  letter-spacing:.02em;
+  margin-top:.5rem;border:1px solid var(--gold-dim);background:rgba(0,0,0,.55);
+  font-family:monospace;font-size:9.5px;line-height:1.05;color:var(--gold);
+  white-space:pre;padding:.45rem;min-height:220px;max-height:none;height:auto;
+  overflow:hidden;display:none;letter-spacing:.02em;width:100%;box-sizing:border-box;
 }
 .rite-visual.visible{display:block;animation:fadeUp .25s ease}
 [data-theme="light"] .rite-visual{background:rgba(0,0,0,.06);color:#7a5a10}
@@ -197,7 +228,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 .log-entry.type-task{border-left-color:var(--green)}.log-entry.type-process{border-left-color:#a78bfa}
 .log-entry.type-unlock{border-left-color:var(--purple)}.log-entry.type-error{border-left-color:var(--red)}
 .log-entry.type-power{border-left-color:#f0abfc}.log-entry.type-research{border-left-color:#f59e0b}
-.log-entry.type-notify{border-left-color:#22d3ee}.log-entry.type-ai{border-left-color:#38bdf8}
+.log-entry.type-notify{border-left-color:#22d3ee}.log-entry.type-ai{border-left-color:#38bdf8}.log-entry.type-code{border-left-color:#34d399}.log-entry.type-finance{border-left-color:#60a5fa}
 .log-entry.type-node{border-left-color:#fbbf24}
 .log-entry.hidden-by-search{display:none}
 @keyframes logSlide{to{opacity:1;transform:none}}
@@ -234,6 +265,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.3);transform:scale(0);animation:rippleOut .4s ease-out forwards;pointer-events:none;z-index:20}
 @keyframes rippleOut{to{transform:scale(4);opacity:0}}
+
+/* Cooldown indicators */
+.spell-card.cooldown{border-color:rgba(245,158,11,.55)!important;background:rgba(245,158,11,.08);animation:cdPulse 1.4s ease-in-out infinite}
+.spell-card.cooldown .spell-title{color:#fbbf24}
+.node-controls.cd-active{background:rgba(245,158,11,.12);animation:cdPulse 1.4s ease-in-out infinite;border-top-color:rgba(245,158,11,.5)}
+.node-status.cd{color:#fbbf24!important}
+.power-item.cd{border-left-color:#fbbf24;animation:cdPulse 1.4s ease-in-out infinite;background:rgba(245,158,11,.1)}
+@keyframes cdPulse{0%,100%{box-shadow:inset 0 0 0 transparent}50%{box-shadow:inset 0 0 18px rgba(245,158,11,.25)}}
+.cd-bar{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,#f59e0b,#fbbf24);width:0%;transition:width .4s linear;opacity:.9}
+
 .flash-green{animation:flashG .45s ease}
 @keyframes flashG{0%,100%{box-shadow:none}40%{box-shadow:0 0 16px rgba(74,246,38,.4)}}
 .shake{animation:shake .28s ease}
@@ -255,10 +296,24 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
   <h1>Bits &amp; Pieces</h1>
   <div class="subtitle">Order of the Fragmented Mind</div>
   <p class="manifesto">Truth is never revealed whole.<br>It is gathered, byte by byte, echo by echo.<br>Assemble the cipher to enter.</p>
+  <div style="display:flex;gap:.3rem;justify-content:center;margin-bottom:.7rem">
+    <button type="button" class="btn-action" id="tabLogin" style="opacity:1">Sign In</button>
+    <button type="button" class="btn-action" id="tabRegister" style="opacity:.55">Register</button>
+  </div>
   <form id="gateForm" autocomplete="off">
-    <input type="password" id="passphrase" placeholder="ENTER PASSPHRASE" maxlength="32">
-    <div class="status-msg" id="status">Awaiting Input</div>
+    <input type="text" id="loginUser" placeholder="USERNAME" maxlength="24" style="margin-bottom:.4rem;text-align:center;letter-spacing:.12em">
+    <input type="password" id="loginPass" placeholder="PASSWORD" maxlength="32" style="text-align:center;letter-spacing:.18em">
+    <div class="status-msg" id="status">Awaiting credentials</div>
+    <button type="submit" class="btn-action" style="margin-top:.5rem">Enter</button>
   </form>
+  <form id="registerForm" autocomplete="off" style="display:none">
+    <input type="text" id="regUser" placeholder="NEW USERNAME" maxlength="24" style="margin-bottom:.35rem;text-align:center">
+    <input type="password" id="regPass" placeholder="PASSWORD" maxlength="32" style="margin-bottom:.35rem;text-align:center">
+    <input type="password" id="regPass2" placeholder="CONFIRM" maxlength="32" style="text-align:center">
+    <div class="status-msg" id="regStatus" style="margin-top:.5rem">Create local account</div>
+    <button type="submit" class="btn-action" style="margin-top:.5rem">Register</button>
+  </form>
+  <p style="font-size:.48rem;color:var(--muted);margin-top:.6rem">Legacy passphrase still works: bits and pieces</p>
 </div>
 
 <div class="view hidden" id="dashboardView">
@@ -266,11 +321,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
   <div class="dashboard-header">
     <h2>Inner Sanctuary</h2>
     <div class="header-meta">
-      <div class="token-counter" id="tokenCounter">TOKENS: <span id="tokenBalance">0</span> ⟁</div>
+      <div class="token-counter" id="tokenCounter" title="Open Financing">TOKENS: <span id="tokenBalance">0</span> ⟁</div>
       <div class="clearance-badge" id="clearanceBadge">CLEARANCE: INITIATE</div>
       <div class="power-active" id="powerBadge">POWER</div>
       <button class="theme-btn" id="themeBtn">☾</button>
       <button class="chat-toggle-btn" id="chatToggleBtn" title="Toggle AI advisor">AI</button>
+      <button class="btn-action btn-stop-all" id="stopAllBtn" title="Halt all activity">Halt All</button>
       <button class="settings-btn" id="settingsBtn">Settings</button>
     </div>
   </div>
@@ -302,11 +358,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
         <button class="tab-btn" data-tab="keys">Keys</button>
         <button class="tab-btn" data-tab="research">Research</button>
         <button class="tab-btn" data-tab="viz">Nodes</button>
+        <button class="tab-btn" data-tab="nodeshop">Node Shop</button>
+        <button class="tab-btn" data-tab="market">Shards</button>
+        <button class="tab-btn" data-tab="codes">Codes</button>
         <button class="tab-btn" data-tab="chat" id="chatTabBtn" style="display:none">AI Advisor</button>
       </div>
 
       <div class="tab-panel active" id="tab-spellbook">
-        <div class="r-panel" id="spellbookPanel" style="height:480px" data-panel="spellbook">
+        <div class="r-panel" id="spellbookPanel" style="height:560px" data-panel="spellbook">
           <div class="r-header">
             <span class="r-header-title">// Spellbook of Transmutation Rites</span>
             <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
@@ -369,6 +428,38 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
         </div>
       </div>
 
+      
+      <div class="tab-panel" id="tab-nodeshop">
+        <div class="r-panel" style="height:340px" data-panel="nodeshop">
+          <div class="r-header"><span class="r-header-title">// Node Shop — Charms &amp; Incantations</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body"><div class="shop-grid" id="nodeShopGrid"></div></div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-market">
+        <div class="r-panel" style="height:360px" data-panel="market">
+          <div class="r-header"><span class="r-header-title">// Shard Market</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body">
+            <div id="shardBar" style="display:flex;flex-wrap:wrap;gap:.25rem;margin-bottom:.4rem;font-size:.5rem"></div>
+            <div class="shop-grid" id="marketGrid"></div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-panel" id="tab-codes">
+        <div class="r-panel" style="height:300px" data-panel="codes">
+          <div class="r-header"><span class="r-header-title">// Residual Energy Codes Archive</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem;gap:.3rem;flex-wrap:wrap"><p style="font-size:.5rem;color:var(--muted);margin:0">Each successful rite emits a 10-character residual energy code.</p><button class="btn-action" id="downloadCodesBtn">Download Archive</button></div>
+            <div id="codeArchive" style="display:flex;flex-wrap:wrap;gap:.2rem;max-height:220px;overflow-y:auto;font-family:monospace;font-size:.55rem"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="tab-panel" id="tab-chat">
         <div class="r-panel chat-panel visible" id="chatPanel" style="height:340px" data-panel="chat">
           <div class="r-header">
@@ -416,6 +507,42 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
   </div>
 </div>
 
+
+<!-- FINANCING -->
+<div class="settings-overlay" id="finOverlay">
+  <div class="settings-panel" style="width:min(620px,96vw)">
+    <button class="settings-close" id="finClose">×</button>
+    <h3>Financing Desk</h3>
+    <div style="display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:.6rem" id="finTabs">
+      <button class="tab-btn active" data-ftab="products">Products</button>
+      <button class="tab-btn" data-ftab="codesvc">Energy Code Services</button>
+      <button class="tab-btn" data-ftab="lending">Lending / Bit Vault</button>
+    </div>
+    <div id="ftab-products">
+      <div class="shop-grid" id="finProducts"></div>
+    </div>
+    <div id="ftab-codesvc" style="display:none">
+      <p style="font-size:.52rem;color:var(--muted);line-height:1.4;margin-bottom:.4rem">Predict traits of upcoming residual energy codes. Closer guesses raise your reward multiplier.</p>
+      <div style="font-size:.52rem;margin:.25rem 0">Predict digit count (0–10): <input type="number" id="predDigits" min="0" max="10" value="4" style="width:56px"></div>
+      <div style="font-size:.52rem;margin:.25rem 0">Predict vowel count (0–10): <input type="number" id="predVowels" min="0" max="10" value="3" style="width:56px"></div>
+      <div style="font-size:.52rem;margin:.25rem 0">Contract length: <select id="predLen"><option value="3">3 codes</option><option value="5" selected>5 codes</option><option value="10">10 codes</option></select></div>
+      <div style="margin:.4rem 0"><span style="font-size:.5rem;color:var(--gold)">Cost 25 ⟁</span> <button class="btn-action" id="buyContract">Buy Contract</button></div>
+      <div id="activeContracts" style="font-size:.5rem;color:var(--muted);margin-top:.4rem"></div>
+    </div>
+    <div id="ftab-lending" style="display:none">
+      <p style="font-size:.55rem">Vault balance: <span id="vaultBal" style="color:var(--gold)">0</span> ⟁</p>
+      <p style="font-size:.55rem">Lifetime interest: <span id="vaultInterest" style="color:var(--green)">0</span> ⟁</p>
+      <div style="display:flex;gap:.3rem;margin:.4rem 0;align-items:center">
+        <input type="number" id="vaultAmt" min="1" placeholder="amount" style="width:90px">
+        <button class="btn-action" id="vaultIn">Deposit</button>
+        <button class="btn-action" id="vaultOut">Withdraw</button>
+      </div>
+      <label style="font-size:.5rem"><input type="checkbox" id="vaultAuto" checked> Auto-credit interest to Vault</label>
+      <p style="font-size:.48rem;color:var(--muted);margin-top:.35rem;line-height:1.4">Tokens in the Bit Vault are simulated as lent to other adepts. Interest accrues periodically.</p>
+    </div>
+  </div>
+</div>
+
 <div class="settings-overlay" id="settingsOverlay">
   <div class="settings-panel">
     <button class="settings-close" id="settingsClose">×</button>
@@ -424,7 +551,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
       <h4>Appearance</h4>
       <div class="settings-row"><label>Theme</label><select id="setTheme"><option value="dark">Dark</option><option value="light">Light</option></select></div>
       <div class="settings-row"><label>Accent</label><input type="color" id="setGold" value="#d4af37"></div>
-      <div class="settings-row"><label>Anim Intensity</label><input type="range" id="setAnim" min="0" max="2" step="0.1" value="1"></div>
+      <div class="settings-row"><label>Anim Intensity</label><input type="range" id="setAnim" min="0" max="3" step="0.1" value="1"></div>
     </div>
     <div class="settings-section">
       <h4>ASCII Rite Visuals</h4>
@@ -437,6 +564,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
       <p style="font-size:.5rem;color:var(--muted);line-height:1.4;margin-top:.3rem">
         Enhanced on-page advisor with deeper log reasoning. Ready for future WebLLM / local model hooks.
       </p>
+    </div>
+    <div class="settings-section">
+      <h4>Activity Log Appearance</h4>
+      <div class="settings-row"><label>Log font size</label><input type="range" id="setLogFont" min="10" max="16" step="1" value="12"></div>
+      <div class="settings-row"><label>Log text color</label><input type="color" id="setLogColor" value="#c4c4cc"></div>
+      <div class="settings-row"><label>Highlight keywords</label><input type="checkbox" id="setLogHL" checked></div>
     </div>
     <div class="settings-section">
       <h4>Keyword Notifications</h4>
@@ -459,7 +592,8 @@ let tokens = 0;
 const unlocked = {};
 const ownedUpgrades = new Set();
 const keys = []; const powers = [];
-let activePower = null;
+let activePower = null; // legacy single
+const activePowers = []; // multi-power support
 let globalMultiplier = 1, cooldownFactor = 1, durationFactor = 1, researchBoost = 1;
 let autoFlags = {align:false,decipher:false,void:false,all:false};
 const logEntries = []; let logId = 0;
@@ -585,6 +719,16 @@ const NODES = [
   {id:"tide",name:"Tide Engine",cost:95,color:"#22d3ee",charge:30,activate:42,cd:19000},
   {id:"rift",name:"Rift Compass",cost:130,color:"#a78bfa",charge:40,activate:55,cd:24000},
   {id:"crown",name:"Crown Array",cost:180,color:"#fbbf24",charge:50,activate:70,cd:28000},
+  {id:"veil",name:"Veil Spindle",cost:75,color:"#e879f9",charge:24,activate:36,cd:16500},
+  {id:"echo",name:"Echo Well",cost:100,color:"#67e8f9",charge:32,activate:44,cd:19500},
+  {id:"ash",name:"Ash Monad",cost:120,color:"#fb923c",charge:36,activate:48,cd:21000},
+  {id:"glyph",name:"Glyph Forge",cost:140,color:"#c084fc",charge:38,activate:52,cd:23000},
+  {id:"prism",name:"Prism Gate",cost:160,color:"#38bdf8",charge:42,activate:58,cd:25000},
+  {id:"voidn",name:"Void Needle",cost:200,color:"#64748b",charge:55,activate:72,cd:30000},
+  {id:"star",name:"Star Loom",cost:220,color:"#fde047",charge:60,activate:80,cd:32000},
+  {id:"root",name:"Root Circuit",cost:95,color:"#4ade80",charge:28,activate:40,cd:18000},
+  {id:"halo",name:"Halo Disk",cost:170,color:"#f0abfc",charge:45,activate:60,cd:26000},
+  {id:"core",name:"Core Beacon",cost:250,color:"#f87171",charge:70,activate:90,cd:35000},
 ];
 NODES.forEach(n => unlocked[n.id] = false);
 const nodeState = {}; // id -> {status: idle|charging|ready|cooldown, endsAt}
@@ -604,7 +748,11 @@ function log(msg, type="info") {
   const entry = {id:++logId, ts, type, msg, raw:msg.toLowerCase()};
   logEntries.push(entry);
   const div = document.createElement("div");
-  div.className = `log-entry type-${type}`;
+  let kw = false;
+  if (typeof logHL === "undefined" || logHL) {
+    keywords.forEach(k => { if (entry.raw.includes(k.toLowerCase())) kw = true; });
+  }
+  div.className = "log-entry type-" + type + (kw ? " kw-hit" : "");
   div.dataset.id = entry.id;
   div.innerHTML = `<span class="ts">${ts}</span>${escapeHtml(msg)}`;
   $("#logEntries").appendChild(div);
@@ -648,12 +796,16 @@ function toast(m) {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1400);
 }
 function spawnRipple(e, parent) {
-  if (settings.anim < 0.3) return;
+  if (settings.anim < 0.15) return;
   const rect = parent.getBoundingClientRect();
-  const r = document.createElement("div"); r.className = "ripple";
-  r.style.cssText = `left:${(e.clientX||rect.left+rect.width/2)-rect.left-8}px;top:${(e.clientY||rect.top+rect.height/2)-rect.top-8}px;width:16px;height:16px`;
-  parent.style.position = parent.style.position || "relative";
-  parent.appendChild(r); setTimeout(() => r.remove(), 450);
+  const count = settings.anim >= 2.5 ? 3 : settings.anim >= 1.5 ? 2 : 1;
+  for (let ri = 0; ri < count; ri++) {
+    const r = document.createElement("div"); r.className = "ripple";
+    const sz = 12 + settings.anim * 6 + ri * 4;
+    r.style.cssText = "left:"+((e.clientX||rect.left+rect.width/2)-rect.left-sz/2 + ri*6)+"px;top:"+((e.clientY||rect.top+rect.height/2)-rect.top-sz/2)+"px;width:"+sz+"px;height:"+sz+"px;animation-duration:"+(0.45/Math.max(0.5,settings.anim))+"s";
+    parent.style.position = parent.style.position || "relative";
+    parent.appendChild(r); setTimeout(() => r.remove(), 500);
+  }
 }
 
 function applyTheme(theme) {
@@ -673,6 +825,7 @@ function setTokens(n, anim=true) {
   }
   updateClearance();
   try { localStorage.setItem("bp2-tokens", tokens); } catch(_){}
+  if (currentUser) { const acc=getAccounts(); if(acc[currentUser]){ acc[currentUser].tokens=tokens; saveAccounts(acc);} }
 }
 function updateClearance() {
   let l = "INITIATE";
@@ -682,12 +835,20 @@ function updateClearance() {
   $("#clearanceBadge").textContent = "CLEARANCE: " + l;
 }
 
-$$(".tab-btn").forEach(b => {
+$$(".tabs .tab-btn, .left-col > .tabs .tab-btn").forEach(b => {
+  if (!b.dataset.tab) return;
   b.addEventListener("click", () => {
-    $$(".tab-btn").forEach(x => x.classList.remove("active"));
-    $$(".tab-panel").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".tabs .tab-btn").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".left-col .tab-panel, .main-layout .tab-panel").forEach(x => x.classList.remove("active"));
+    // safer: all dashboard tab-panels
+    document.querySelectorAll("#dashboardView .tab-panel").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll("#dashboardView .tabs .tab-btn").forEach(x => x.classList.remove("active"));
     b.classList.add("active");
-    $("#tab-" + b.dataset.tab).classList.add("active");
+    const panel = document.getElementById("tab-" + b.dataset.tab);
+    if (panel) panel.classList.add("active");
+    if (b.dataset.tab === "nodeshop" && typeof renderNodeShop === "function") renderNodeShop();
+    if (b.dataset.tab === "market" && typeof renderMarket === "function") { renderShards(); renderMarket(); }
+    if (b.dataset.tab === "codes" && typeof renderCodeArchive === "function") renderCodeArchive();
   });
 });
 
@@ -707,14 +868,15 @@ function renderChapters() {
 }
 function renderSpellPages() {
   const pages = $("#spellPages"); pages.innerHTML = "";
+  pages.classList.toggle("utility-mode", currentChapter === "utility");
   TASKS.filter(t => t.chapter === currentChapter).forEach(t => {
     if (!taskState[t.id]) taskState[t.id] = {status:"idle", endsAt:0};
     const st = taskState[t.id];
     const open = isUnlocked(t);
     const card = document.createElement("div");
-    card.className = "spell-card" + (st.status === "working" ? " working" : "") + (open ? "" : " locked");
+    card.className = "spell-card" + (st.status === "working" ? " working" : "") + (st.status === "cooldown" ? " cooldown" : "") + (open ? "" : " locked");
     card.dataset.task = t.id;
-    const mult = globalMultiplier * researchBoost * (activePower?.mult || 1);
+    const mult = globalMultiplier * researchBoost * ((activePowers.reduce((m,p)=>m*(p.mult||1),1) || activePower?.mult || 1));
     const reward = Math.floor(t.base * mult);
     const dur = Math.floor(t.dur * durationFactor);
     const cd = Math.floor(t.cd * cooldownFactor);
@@ -742,7 +904,8 @@ function startTask(id, e) {
   const st = taskState[id];
   if (st.status !== "idle" || !isUnlocked(t)) return;
   const working = Object.values(taskState).filter(s => s.status === "working").length;
-  if (working >= 1 && !window.__parallel) { toast("Need Parallel Rites"); return; }
+  const maxParallel = window.__parallel3 ? 3 : (window.__parallel ? 2 : 1);
+  if (working >= maxParallel) { toast(maxParallel>1 ? "Parallel limit" : "Need Parallel Rites"); return; }
 
   const dur = Math.floor(t.dur * durationFactor);
   st.status = "working"; st.endsAt = performance.now() + dur;
@@ -769,15 +932,43 @@ function startTask(id, e) {
   requestAnimationFrame(tick);
 }
 
+
+/* Residual energy codes */
+const energyCodes = [];
+function generateEnergyCode(task) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let seed = 0;
+  for (let i = 0; i < task.id.length; i++) seed += task.id.charCodeAt(i) * (i + 1);
+  seed += task.base * 7 + task.dur + (task.chapter.charCodeAt(0) * 13);
+  seed ^= (Date.now() & 0xffff);
+  let code = "";
+  for (let i = 0; i < 10; i++) {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    let idx = seed % chars.length;
+    if (task.chapter === "apex" && i < 3) idx = (idx + 5) % chars.length;
+    if (task.base > 100 && i % 2 === 0) idx = idx % 10;
+    code += chars[idx];
+  }
+  return code;
+}
+function emitEnergyCode(task) {
+  const code = generateEnergyCode(task);
+  energyCodes.push(code);
+  log("Residual energy code: " + code, "code");
+  if (typeof settleContracts === "function") settleContracts(code);
+  return code;
+}
+
 function finishTask(id) {
   const t = TASKS.find(x => x.id === id);
   const st = taskState[id];
-  let reward = Math.floor(t.base * globalMultiplier * researchBoost * (activePower?.mult || 1));
+  let reward = Math.floor(t.base * globalMultiplier * researchBoost * ((activePowers.reduce((m,p)=>m*(p.mult||1),1) || activePower?.mult || 1)));
   if (window.__echo && Math.random() < window.__echo) { reward *= 2; log("Echo double yield", "power"); }
   setTokens(tokens + reward);
   completedOnce.add(id);
   log(`Rite complete: ${t.title} · +${reward}`, "task");
   toast(`+${reward} ⟁`);
+  emitEnergyCode(t);
   const card = $(`.spell-card[data-task="${id}"]`);
   if (card) card.classList.add("flash-green");
 
@@ -787,6 +978,17 @@ function finishTask(id) {
   st.status = "cooldown"; st.endsAt = performance.now() + cd;
   stopUniqueVisual();
   renderSpellPages();
+  const cdTick = () => {
+    if (st.status !== "cooldown") return;
+    const left = st.endsAt - performance.now();
+    const prog = document.getElementById("prog-" + id);
+    if (prog) {
+      prog.style.width = (Math.max(0, left / cd) * 100) + "%";
+      prog.style.background = "linear-gradient(90deg,#f59e0b,#fbbf24)";
+    }
+    if (left > 0) requestAnimationFrame(cdTick);
+  };
+  requestAnimationFrame(cdTick);
   setTimeout(() => { st.status = "idle"; renderSpellPages(); maybeAuto(id); }, cd);
 }
 function maybeAuto(id) {
@@ -799,9 +1001,9 @@ function startUniqueVisual(task) {
   const pre = $("#riteVisual");
   pre.classList.add("visible");
   let t = 0;
-  const cols = 58, rows = 16;
+  const cols = 110, rows = 18;
   const styleFn = VIZ_STYLES[task.viz] || VIZ_STYLES.wave;
-  const dens = settings.asciiDens, spd = settings.asciiSpeed;
+  const dens = settings.asciiDens * (0.7 + settings.anim * 0.4), spd = settings.asciiSpeed * (0.6 + settings.anim * 0.5);
   const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
   function frame() {
     let out = "";
@@ -842,13 +1044,14 @@ function renderPortfolio() {
   $("#slotCount").textContent = maxSlots;
   for (let i = 0; i < maxSlots; i++) {
     const slot = document.createElement("div");
-    slot.className = "portfolio-slot" + (portfolio[i] ? " filled" : "");
+    const isActive = (seqState === "running" || seqState === "paused") && seqIndex === i && portfolio[i];
+    slot.className = "portfolio-slot" + (portfolio[i] ? " filled" : "") + (isActive ? " active-slot" : "");
     if (portfolio[i]) {
       const t = TASKS.find(x => x.id === portfolio[i]);
-      const mult = globalMultiplier * researchBoost * (activePower?.mult || 1);
+      const mult = globalMultiplier * researchBoost * ((activePowers.reduce((m,p)=>m*(p.mult||1),1) || activePower?.mult || 1));
       slot.innerHTML = `<button class="slot-remove" data-i="${i}">×</button>
         <div class="slot-name">${t.title}</div>
-        <div class="slot-meta">+${Math.floor(t.base*mult)} ⟁</div>`;
+        <div class="slot-meta">${isActive ? "▶ ACTIVE" : "+"+Math.floor(t.base*mult)+" ⟁"}</div>`;
       slot.querySelector(".slot-remove").addEventListener("click", () => {
         if (seqState === "running" || seqState === "paused") { toast("Stop sequence first"); return; }
         portfolio.splice(i,1); renderPortfolio();
@@ -860,7 +1063,7 @@ function renderPortfolio() {
   }
   const total = portfolio.reduce((s,id) => {
     const t = TASKS.find(x => x.id === id);
-    return s + Math.floor(t.base * globalMultiplier * researchBoost * (activePower?.mult || 1));
+    return s + Math.floor(t.base * globalMultiplier * researchBoost * ((activePowers.reduce((m,p)=>m*(p.mult||1),1) || activePower?.mult || 1)));
   }, 0);
   $("#portfolioSummary").textContent = portfolio.length ? `${portfolio.length}/${maxSlots} · ~${total} ⟁` : "Empty";
   updateSeqButtons();
@@ -914,6 +1117,7 @@ async function runSequenceFrom(startIdx) {
     }
     if (seqAbort) break;
     seqIndex = i;
+    renderPortfolio();
     updateSeqButtons();
     const id = portfolio[i];
     const t = TASKS.find(x => x.id === id);
@@ -1033,7 +1237,10 @@ $("#submitAnalysis").addEventListener("click", () => {
 function addKey(type) {
   const map = {lattice:{name:"Lattice Key",power:"x5"},wave:{name:"Wave Key",power:"x7"},oracle:{name:"Oracle Key",power:"x55"},
     mirror:{name:"Mirror Key",power:"x5"},ember:{name:"Ember Key",power:"x7"},null:{name:"Null Key",power:"x55"},
-    bloom:{name:"Bloom Key",power:"x5"},tide:{name:"Tide Key",power:"x7"},rift:{name:"Rift Key",power:"x55"},crown:{name:"Crown Key",power:"x55"}};
+    bloom:{name:"Bloom Key",power:"x5"},tide:{name:"Tide Key",power:"x7"},rift:{name:"Rift Key",power:"x55"},crown:{name:"Crown Key",power:"x55"},
+    veil:{name:"Veil Key",power:"x5"},echo:{name:"Echo Key",power:"x7"},ash:{name:"Ash Key",power:"x5"},
+    glyph:{name:"Glyph Key",power:"x7"},prism:{name:"Prism Key",power:"x55"},voidn:{name:"Void Key",power:"x55"},
+    star:{name:"Star Key",power:"x55"},root:{name:"Root Key",power:"x5"},halo:{name:"Halo Key",power:"x7"},core:{name:"Core Key",power:"x55"}};
   const d = map[type] || map.lattice;
   keys.push({id:Date.now()+Math.random(), type, name:d.name, powerId:d.power});
   log(`Key: ${d.name}`, "power"); toast("Key received"); renderKeys();
@@ -1059,17 +1266,30 @@ function renderKeys() {
   powers.forEach(p => {
     const ready = performance.now() >= (p.readyAt || 0);
     const d = document.createElement("div"); d.className = "power-item";
-    d.innerHTML = `<span>${p.name} (${p.uses})</span><button class="btn-action" ${ready&&!activePower?"":"disabled"}>${activePower?.id===p.id?"ON":ready?"Use":"CD"}</button>`;
+    d.className = "power-item" + (ready ? "" : " cd");
+    d.innerHTML = `<span>${p.name} (${p.uses})</span><button class="btn-action" ${ready&&!activePower?"":"disabled"}>${activePowers.some(x=>x.id===p.id)?"ON":ready?"Use":"⏳ CD"}</button>`;
     pinv.appendChild(d);
-    if (ready && !activePower) d.querySelector("button").addEventListener("click", () => {
-      activePower = p; $("#powerBadge").style.display = "block"; $("#powerBadge").textContent = p.name;
-      log(`Power: ${p.name}`, "power"); renderSpellPages(); renderKeys(); renderPortfolio();
+    const already = activePowers.some(x => x.id === p.id);
+    const sameType = activePowers.some(x => x.name === p.name);
+    d.querySelector("button").disabled = !ready || already || sameType;
+    if (ready && !already && !sameType) d.querySelector("button").addEventListener("click", () => {
+      activePowers.push(p);
+      activePower = p; // keep legacy ref to latest
+      $("#powerBadge").style.display = "block";
+      $("#powerBadge").textContent = activePowers.map(x => x.name.split(" ")[0]).join("+");
+      log("Power on: " + p.name + " (" + activePowers.length + " active)", "power");
+      renderSpellPages(); renderKeys(); renderPortfolio();
       setTimeout(() => {
-        if (activePower === p) {
+        const idx = activePowers.findIndex(x => x.id === p.id);
+        if (idx >= 0) activePowers.splice(idx, 1);
+        p.readyAt = performance.now() + 50000; p.uses--;
+        if (activePowers.length) {
+          activePower = activePowers[activePowers.length - 1];
+          $("#powerBadge").textContent = activePowers.map(x => x.name.split(" ")[0]).join("+");
+        } else {
           activePower = null; $("#powerBadge").style.display = "none";
-          p.readyAt = performance.now() + 50000; p.uses--;
-          renderKeys(); renderSpellPages(); renderPortfolio();
         }
+        renderKeys(); renderSpellPages(); renderPortfolio();
       }, 16000);
     });
   });
@@ -1125,21 +1345,27 @@ function updateNodeControls(id) {
   }
   const st = nodeState[id] || {status:"idle"};
   if (st.status === "idle") {
+    ctrl.className = "node-controls";
     ctrl.innerHTML = `
       <button class="btn-action" data-charge="${id}">Charge (${n.charge} ⟁)</button>
       <span class="node-status">Ready to charge</span>`;
     ctrl.querySelector("[data-charge]").addEventListener("click", () => chargeNode(id));
   } else if (st.status === "charging") {
     const left = Math.max(0, Math.ceil((st.endsAt - performance.now()) / 1000));
-    ctrl.innerHTML = `<span class="node-status">Charging… ${left}s</span>`;
+    ctrl.className = "node-controls cd-active";
+    ctrl.innerHTML = `<span class="node-status cd">⚡ Charging ${left}s</span>`;
   } else if (st.status === "ready") {
+    ctrl.className = "node-controls";
     ctrl.innerHTML = `
       <button class="btn-action" data-act="${id}">Activate (${n.activate} ⟁)</button>
       <span class="node-status" style="color:var(--green)">Charged — activate</span>`;
     ctrl.querySelector("[data-act]").addEventListener("click", () => activateNode(id));
   } else if (st.status === "cooldown") {
     const left = Math.max(0, Math.ceil((st.endsAt - performance.now()) / 1000));
-    ctrl.innerHTML = `<span class="node-status">Cooldown ${left}s</span>`;
+    ctrl.className = "node-controls cd-active";
+    ctrl.innerHTML = `<span class="node-status cd">⏳ Cooldown ${left}s</span>`;
+  } else {
+    ctrl.className = "node-controls";
   }
 }
 
@@ -1173,6 +1399,7 @@ function activateNode(id) {
   if (tokens < n.activate) { toast("Need " + n.activate + " tokens"); return; }
   setTokens(tokens - n.activate);
   addKey(id);
+  if (nodeExtras[id] && nodeExtras[id].extraKeyChance && Math.random() < nodeExtras[id].extraKeyChance) { addKey(id); log("Bonus key from incantation","power"); }
   log(`Node activated: ${n.name} (−${n.activate} ⟁) → Key`, "node");
   toast("Key generated");
   nodeState[id] = {status:"cooldown", endsAt: performance.now() + Math.floor(n.cd * 0.6)};
@@ -1182,6 +1409,10 @@ function activateNode(id) {
     if (performance.now() >= nodeState[id].endsAt) {
       nodeState[id] = {status:"idle", endsAt:0};
       updateNodeControls(id);
+      if (typeof nodeExtras !== "undefined" && nodeExtras[id] && nodeExtras[id].autoCharge) {
+        const nn = NODES.find(x=>x.id===id);
+        if (nn && tokens >= nn.charge) setTimeout(()=>chargeNode(id), 700);
+      }
       return;
     }
     updateNodeControls(id);
@@ -1292,7 +1523,7 @@ function localInfer(q) {
   const lower = q.toLowerCase();
   const ctx = (aiContext || "").toLowerCase();
   const clearance = $("#clearanceBadge").textContent.replace("CLEARANCE: ","");
-  const mult = globalMultiplier * researchBoost * (activePower?.mult || 1);
+  const mult = globalMultiplier * researchBoost * ((activePowers.reduce((m,p)=>m*(p.mult||1),1) || activePower?.mult || 1));
   const available = TASKS.filter(t => isUnlocked(t) && (taskState[t.id]?.status === "idle" || !taskState[t.id]));
   const locked = TASKS.filter(t => !isUnlocked(t));
   const openNodes = NODES.filter(n => unlocked[n.id]);
@@ -1422,6 +1653,404 @@ function renderKeywords() {
   });
 }
 
+
+/* Financing / Vault / Contracts */
+const contracts = [];
+let vault = {bal:0, interest:0, auto:true};
+const FIN_PRODUCTS = [
+  {id:"code_pack",name:"Code Insight Pack",desc:"Stats of last 10 energy codes",cost:15,fn:()=>{
+    const last=energyCodes.slice(-10); if(!last.length){toast("No codes");return;}
+    const dig=last.reduce((s,c)=>s+[...c].filter(ch=>/\d/.test(ch)).length,0);
+    const vow=last.reduce((s,c)=>s+[...c].filter(ch=>/[aeiou]/i.test(ch)).length,0);
+    toast("Digits≈"+(dig/last.length).toFixed(1)+" Vowels≈"+(vow/last.length).toFixed(1));
+    log("Code insight used","finance");
+  }},
+  {id:"vault_amp",name:"Vault Interest Amp",desc:"+0.5% next interest tick",cost:40,fn:()=>{window.__vaultAmp=(window.__vaultAmp||0)+0.005;toast("Amp +0.5%");log("Vault amp","finance");}},
+  {id:"token_boost",name:"Clearance Petition",desc:"Symbolic petition (flavor)",cost:80,fn:()=>{toast("Petition filed");log("Clearance petition","finance");}},
+];
+function settleContracts(code){
+  if(!contracts.length) return;
+  const digits=[...code].filter(c=>/\d/.test(c)).length;
+  const vowels=[...code].filter(c=>/[AEIOU]/i.test(c)).length;
+  contracts.forEach(c=>{
+    if(c.remaining<=0) return;
+    const score=Math.max(0,1-(Math.abs(c.predDigits-digits)+Math.abs(c.predVowels-vowels))/12);
+    c.multAcc.push(1+score*1.5); c.remaining--;
+    if(c.remaining===0){
+      const avg=c.multAcc.reduce((a,b)=>a+b,0)/c.multAcc.length;
+      const bonus=Math.floor(30*avg);
+      setTokens(tokens+bonus);
+      log("Contract settled · ×"+avg.toFixed(2)+" · +"+bonus,"finance");
+      toast("Contract +"+bonus+" ⟁");
+    }
+  });
+  for(let i=contracts.length-1;i>=0;i--) if(contracts[i].remaining<=0) contracts.splice(i,1);
+  renderActiveContracts();
+}
+function renderActiveContracts(){
+  const el=$("#activeContracts"); if(!el) return;
+  el.innerHTML=contracts.length?contracts.map((c,i)=>`#${i+1}: digits ${c.predDigits}/vowels ${c.predVowels} · ${c.remaining} left`).join("<br>"):"No active contracts";
+}
+function renderFinProducts(){
+  const g=$("#finProducts"); if(!g) return; g.innerHTML="";
+  FIN_PRODUCTS.forEach(p=>{
+    const c=document.createElement("div"); c.className="upgrade-card";
+    c.innerHTML=`<div class="upgrade-name">${p.name}</div><div class="upgrade-desc">${p.desc}</div><div class="upgrade-cost">${p.cost} ⟁</div><button class="btn-action">Buy</button>`;
+    g.appendChild(c);
+    c.querySelector("button").addEventListener("click",()=>{
+      if(tokens<p.cost){toast("Need tokens");return;}
+      setTokens(tokens-p.cost); p.fn();
+    });
+  });
+}
+$("#tokenCounter") && $("#tokenCounter").addEventListener("click", ()=>{
+  $("#finOverlay").classList.add("visible");
+  renderFinProducts(); renderActiveContracts();
+  if($("#vaultBal")){$("#vaultBal").textContent=vault.bal; $("#vaultInterest").textContent=vault.interest;}
+});
+document.getElementById("finClose") && document.getElementById("finClose").addEventListener("click",()=>$("#finOverlay").classList.remove("visible"));
+$("#finOverlay") && $("#finOverlay").addEventListener("click",e=>{if(e.target===$("#finOverlay")) $("#finOverlay").classList.remove("visible");});
+document.querySelectorAll("[data-ftab]").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll("[data-ftab]").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  ["products","codesvc","lending"].forEach(id=>{
+    const el=document.getElementById("ftab-"+id); if(el) el.style.display = (t.dataset.ftab===id)?"":"none";
+  });
+}));
+document.getElementById("buyContract") && document.getElementById("buyContract").addEventListener("click",()=>{
+  if(tokens<25){toast("Need 25 ⟁");return;}
+  setTokens(tokens-25);
+  contracts.push({predDigits:+$("#predDigits").value, predVowels:+$("#predVowels").value, remaining:+$("#predLen").value, multAcc:[]});
+  log("Code contract purchased","finance"); toast("Contract active"); renderActiveContracts();
+});
+document.getElementById("vaultIn") && document.getElementById("vaultIn").addEventListener("click",()=>{
+  const amt=Math.floor(+$("#vaultAmt").value||0);
+  if(amt<1||tokens<amt){toast("Invalid");return;}
+  setTokens(tokens-amt); vault.bal+=amt; $("#vaultBal").textContent=vault.bal;
+  log("Vault deposit +"+amt,"finance"); toast("Deposited");
+});
+document.getElementById("vaultOut") && document.getElementById("vaultOut").addEventListener("click",()=>{
+  const amt=Math.floor(+$("#vaultAmt").value||0);
+  if(amt<1||vault.bal<amt){toast("Invalid");return;}
+  vault.bal-=amt; setTokens(tokens+amt); $("#vaultBal").textContent=vault.bal;
+  log("Vault withdraw +"+amt,"finance"); toast("Withdrawn");
+});
+document.getElementById("vaultAuto") && document.getElementById("vaultAuto").addEventListener("change",e=>{vault.auto=e.target.checked;});
+setInterval(()=>{
+  if(vault.bal<10) return;
+  const rate=0.008+(window.__vaultAmp||0)+Math.random()*0.006;
+  const earned=Math.max(1,Math.floor(vault.bal*rate));
+  vault.interest+=earned;
+  if(vault.auto) vault.bal+=earned; else setTokens(tokens+earned);
+  if($("#vaultBal")){$("#vaultBal").textContent=vault.bal; $("#vaultInterest").textContent=vault.interest;}
+  log("Vault interest +"+earned+" ⟁","finance");
+},45000);
+
+
+
+/* Node Shop + Shard Market */
+const nodeExtras = {};
+NODES.forEach(n => { if(!nodeExtras[n.id]) nodeExtras[n.id]={evolved:false,autoCharge:false,extraKeyChance:0,autoActivate:false}; });
+const shards = {crimson:0, azure:0, verdant:0, violet:0, solar:0};
+const NODE_SHOP = [
+  {id:"evolve",name:"Evolution Charm",desc:"Evolve node (+25% charge speed)",cost:120},
+  {id:"evolve2",name:"Ascension Seal",desc:"Second evolution (+40% total speed)",cost:220},
+  {id:"keylearn",name:"Key Incantation",desc:"+15% bonus key chance",cost:90},
+  {id:"keylearn2",name:"Key Litany",desc:"+30% bonus key chance",cost:180},
+  {id:"autocharge",name:"Auto-Charge Sigil",desc:"Auto-charge when idle",cost:150},
+  {id:"autoact",name:"Auto-Activate Rune",desc:"Auto-activate when charged",cost:180},
+  {id:"boostcharge",name:"Charge Catalyst",desc:"−20% charge cost",cost:75},
+  {id:"boostact",name:"Activation Lens",desc:"−15% activate cost",cost:85},
+  {id:"pulse",name:"Resonance Pulse",desc:"Instant free charge (one use)",cost:40},
+  {id:"shatter",name:"Seal Shatter",desc:"Skip cooldown once",cost:55},
+  {id:"link",name:"Node Link",desc:"Share auto-charge to all unlocked",cost:300},
+  {id:"color",name:"Chromatic Shift",desc:"Randomize node hue",cost:35},
+  {id:"guard",name:"Warding Glyph",desc:"−10% activate cost permanent",cost:100},
+  {id:"surge",name:"Surge Capacitor",desc:"Next activate grants 2 keys",cost:125},
+];
+const MARKET_ITEMS = [
+  {id:"c1",name:"Crimson Shard",desc:"Small red",cost:12,give:{crimson:1}},
+  {id:"a1",name:"Azure Shard",desc:"Small blue",cost:12,give:{azure:1}},
+  {id:"v1",name:"Verdant Shard",desc:"Small green",cost:12,give:{verdant:1}},
+  {id:"vi1",name:"Violet Shard",desc:"Medium purple",cost:28,give:{violet:1}},
+  {id:"s1",name:"Solar Shard",desc:"Large gold",cost:45,give:{solar:1}},
+  {id:"cy",name:"Yield Booster",desc:"3 crimson + 2 azure → +5% yield",cost:0,need:{crimson:3,azure:2},fn:()=>{globalMultiplier*=1.05;toast("+5% yield")}},
+  {id:"ccd",name:"Cooldown Relic",desc:"2 verdant + 1 violet → −8% CD",cost:0,need:{verdant:2,violet:1},fn:()=>{cooldownFactor*=0.92;toast("−8% CD")}},
+  {id:"cp",name:"Power Catalyst",desc:"2 solar + 3 crimson → free 5× power",cost:0,need:{solar:2,crimson:3},fn:()=>{powers.push({id:Date.now(),name:"5× Surge",mult:5,uses:2,readyAt:0});renderKeys();toast("Power")}},
+  {id:"c2",name:"Crimson Cluster",desc:"3 small crimson",cost:30,give:{crimson:3}},
+  {id:"a2",name:"Azure Cluster",desc:"3 small azure",cost:30,give:{azure:3}},
+  {id:"v2",name:"Verdant Cluster",desc:"3 small verdant",cost:30,give:{verdant:3}},
+  {id:"vi2",name:"Violet Pair",desc:"2 medium violet",cost:50,give:{violet:2}},
+  {id:"s2",name:"Solar Pair",desc:"2 large solar",cost:80,give:{solar:2}},
+  {id:"cauto",name:"Auto Core II",desc:"2 solar + 2 violet + 40⟁ → auto-activate all",cost:40,need:{solar:2,violet:2},fn:()=>{NODES.forEach(n=>{if(unlocked[n.id]){nodeExtras[n.id]=nodeExtras[n.id]||{};nodeExtras[n.id].autoActivate=true}});toast("Global auto-activate")}},
+  {id:"cmult",name:"Multiplier Shard",desc:"1 solar + 2 crimson + 1 azure → +8% yield",cost:0,need:{solar:1,crimson:2,azure:1},fn:()=>{globalMultiplier*=1.08;toast("+8% yield")}},
+  {id:"ccd2",name:"Deep Cooldown",desc:"3 verdant + 1 solar → −12% CD",cost:0,need:{verdant:3,solar:1},fn:()=>{cooldownFactor*=0.88;toast("−12% CD")}},
+];
+function renderNodeShop(){
+  const g=$("#nodeShopGrid"); if(!g) return; g.innerHTML="";
+  NODE_SHOP.forEach(item=>{
+    const c=document.createElement("div"); c.className="upgrade-card";
+    c.innerHTML=`<div class="upgrade-name">${item.name}</div><div class="upgrade-desc">${item.desc}</div>
+      <div class="upgrade-cost">${item.cost} ⟁</div>
+      <select style="font-size:.5rem;margin:.15rem 0;width:100%">${NODES.map(n=>`<option value="${n.id}">${n.name}</option>`).join("")}</select>
+      <button class="btn-action">Buy & Apply</button>`;
+    g.appendChild(c);
+    c.querySelector("button").addEventListener("click",()=>{
+      if(tokens<item.cost){toast("Need tokens");return;}
+      const nid=c.querySelector("select").value;
+      if(!unlocked[nid]){toast("Unlock node first");return;}
+      setTokens(tokens-item.cost);
+      nodeExtras[nid]=nodeExtras[nid]||{evolved:false,autoCharge:false,extraKeyChance:0,autoActivate:false};
+      if(item.id==="evolve"){nodeExtras[nid].evolved=true;toast("Evolved");}
+      else if(item.id==="evolve2"){nodeExtras[nid].evolved=true;const n=NODES.find(x=>x.id===nid);if(n)n.cd=Math.floor(n.cd*0.7);toast("Ascended");}
+      else if(item.id==="keylearn"){nodeExtras[nid].extraKeyChance=Math.max(nodeExtras[nid].extraKeyChance,0.15);toast("Incantation");}
+      else if(item.id==="keylearn2"){nodeExtras[nid].extraKeyChance=Math.max(nodeExtras[nid].extraKeyChance,0.30);toast("Litany");}
+      else if(item.id==="autocharge"){nodeExtras[nid].autoCharge=true;toast("Auto-charge");}
+      else if(item.id==="autoact"){nodeExtras[nid].autoActivate=true;toast("Auto-activate");}
+      else if(item.id==="boostcharge"){const n=NODES.find(x=>x.id===nid);if(n)n.charge=Math.floor(n.charge*0.8);toast("Charge −20%");}
+      else if(item.id==="boostact"||item.id==="guard"){const n=NODES.find(x=>x.id===nid);if(n)n.activate=Math.floor(n.activate*0.85);toast("Activate cheaper");}
+      else if(item.id==="pulse"){if(nodeState[nid]){nodeState[nid]={status:"ready",endsAt:0};updateNodeControls(nid);}toast("Instant charge");}
+      else if(item.id==="shatter"){if(nodeState[nid]){nodeState[nid]={status:"idle",endsAt:0};updateNodeControls(nid);}toast("Cooldown cleared");}
+      else if(item.id==="link"){NODES.forEach(n=>{if(unlocked[n.id]){nodeExtras[n.id]=nodeExtras[n.id]||{};nodeExtras[n.id].autoCharge=true;}});toast("Linked auto-charge");}
+      else if(item.id==="color"){const n=NODES.find(x=>x.id===nid);if(n){n.color="#"+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,"0");startNodeAnim(nid);}toast("Hue shifted");}
+      else if(item.id==="surge"){nodeExtras[nid].extraKeyChance=1;setTimeout(()=>{nodeExtras[nid].extraKeyChance=0.15;},60000);toast("Next activate: 2 keys");}
+      log("Node shop: "+item.name+" → "+nid,"node");
+      renderNodes();
+    });
+  });
+}
+function renderShards(){
+  const bar=$("#shardBar"); if(!bar) return;
+  const colors={crimson:"#ef4444",azure:"#3b82f6",verdant:"#22c55e",violet:"#a855f7",solar:"#fbbf24"};
+  bar.innerHTML=Object.entries(shards).map(([k,v])=>`<span style="border:1px solid var(--border);padding:.1rem .25rem"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${colors[k]};margin-right:3px"></span>${k} ×${v}</span>`).join("");
+}
+function renderMarket(){
+  const g=$("#marketGrid"); if(!g) return; g.innerHTML="";
+  MARKET_ITEMS.forEach(item=>{
+    const c=document.createElement("div"); c.className="upgrade-card";
+    const need=item.need?Object.entries(item.need).map(([k,v])=>v+" "+k).join(" + "):"";
+    c.innerHTML=`<div class="upgrade-name">${item.name}</div><div class="upgrade-desc">${item.desc}${need?" · "+need:""}</div>
+      <div class="upgrade-cost">${item.cost?item.cost+" ⟁":"Craft"}</div>
+      <button class="btn-action">${item.cost?"Buy":"Craft"}</button>`;
+    g.appendChild(c);
+    c.querySelector("button").addEventListener("click",()=>{
+      if(item.cost && tokens<item.cost){toast("Need tokens");return;}
+      if(item.need){for(const [k,v] of Object.entries(item.need)){if((shards[k]||0)<v){toast("Need shards");return;}} for(const [k,v] of Object.entries(item.need)) shards[k]-=v;}
+      if(item.cost) setTokens(tokens-item.cost);
+      if(item.give) for(const [k,v] of Object.entries(item.give)) shards[k]=(shards[k]||0)+v;
+      if(item.fn) item.fn();
+      renderShards(); renderMarket();
+      log("Market: "+item.name,"finance"); toast(item.name);
+    });
+  });
+}
+function renderCodeArchive(){
+  const el=$("#codeArchive"); if(!el) return;
+  el.innerHTML=energyCodes.length?"":"<span style='color:var(--muted)'>No codes yet</span>";
+  [...energyCodes].reverse().slice(0,100).forEach(c=>{
+    const s=document.createElement("span");
+    s.style.cssText="border:1px solid var(--gold-dim);padding:.1rem .28rem;color:var(--gold);letter-spacing:.05em";
+    s.textContent=c; el.appendChild(s);
+  });
+}
+// enhance emitEnergyCode to refresh archive
+const _emit = emitEnergyCode;
+emitEnergyCode = function(task){ const code=_emit(task); renderCodeArchive(); return code; };
+
+
+
+/* Local accounts */
+function getAccounts(){ try{return JSON.parse(localStorage.getItem("bp-accounts")||"{}");}catch(_){return{}} }
+function saveAccounts(a){ try{localStorage.setItem("bp-accounts",JSON.stringify(a));}catch(_){} }
+let currentUser = null;
+const tabLogin = document.getElementById("tabLogin");
+const tabRegister = document.getElementById("tabRegister");
+if(tabLogin && tabRegister){
+  tabLogin.addEventListener("click",()=>{ $("#gateForm").style.display=""; $("#registerForm").style.display="none"; tabLogin.style.opacity="1"; tabRegister.style.opacity=".55"; });
+  tabRegister.addEventListener("click",()=>{ $("#gateForm").style.display="none"; $("#registerForm").style.display=""; tabLogin.style.opacity=".55"; tabRegister.style.opacity="1"; });
+}
+const regForm = document.getElementById("registerForm");
+if(regForm) regForm.addEventListener("submit", e=>{
+  e.preventDefault();
+  const u=$("#regUser").value.trim().toLowerCase();
+  const p=$("#regPass").value; const p2=$("#regPass2").value;
+  const st=$("#regStatus");
+  if(u.length<3){st.textContent="Username too short";st.style.color="var(--red)";return;}
+  if(p.length<4){st.textContent="Password too short";st.style.color="var(--red)";return;}
+  if(p!==p2){st.textContent="Mismatch";st.style.color="var(--red)";return;}
+  const acc=getAccounts();
+  if(acc[u]){st.textContent="Taken";st.style.color="var(--red)";return;}
+  acc[u]={pass:p,tokens:0}; saveAccounts(acc);
+  st.textContent="Created — sign in"; st.style.color="var(--green)";
+  if(tabLogin) tabLogin.click();
+  if($("#loginUser")) $("#loginUser").value=u;
+});
+
+
+
+/* ── Stop All / Drag / Log style / Codes color / Anim max / AI feedback ── */
+function stopAllActivity() {
+  // abort sequence
+  seqAbort = true; seqPaused = false; seqState = "idle";
+  // cancel all working/cooldown tasks to idle
+  Object.keys(taskState).forEach(id => {
+    if (taskState[id].status === "working" || taskState[id].status === "cooldown") {
+      taskState[id].status = "idle";
+      taskState[id].endsAt = 0;
+    }
+  });
+  // cancel node charging
+  Object.keys(nodeState).forEach(id => {
+    if (nodeState[id].status === "charging" || nodeState[id].status === "cooldown") {
+      nodeState[id] = {status:"idle", endsAt:0};
+    }
+  });
+  // clear powers
+  activePowers.length = 0; activePower = null;
+  const pb = $("#powerBadge"); if (pb) pb.style.display = "none";
+  stopUniqueVisual();
+  renderSpellPages(); renderPortfolio(); renderNodes(); renderKeys(); updateSeqButtons();
+  log("HALT ALL — every rite, node, sequence, and power stopped", "system");
+  toast("All activity halted");
+}
+document.getElementById("stopAllBtn") && document.getElementById("stopAllBtn").addEventListener("click", stopAllActivity);
+
+/* Drag panels by header */
+(function enablePanelDrag() {
+  let drag = null, ox = 0, oy = 0;
+  document.addEventListener("mousedown", e => {
+    const hdr = e.target.closest(".r-header");
+    if (!hdr || e.target.closest(".r-btn")) return;
+    const panel = hdr.closest(".r-panel");
+    if (!panel || panel.classList.contains("maximized")) return;
+    drag = panel;
+    panel.classList.add("dragging");
+    const rect = panel.getBoundingClientRect();
+    // switch to fixed for free placement
+    if (panel.style.position !== "fixed") {
+      panel.style.position = "fixed";
+      panel.style.left = rect.left + "px";
+      panel.style.top = rect.top + "px";
+      panel.style.width = rect.width + "px";
+      panel.style.zIndex = "70";
+    }
+    ox = e.clientX - rect.left; oy = e.clientY - rect.top;
+    e.preventDefault();
+  });
+  document.addEventListener("mousemove", e => {
+    if (!drag) return;
+    drag.style.left = (e.clientX - ox) + "px";
+    drag.style.top = (e.clientY - oy) + "px";
+  });
+  document.addEventListener("mouseup", () => {
+    if (drag) drag.classList.remove("dragging");
+    drag = null;
+  });
+})();
+
+/* Anim intensity body class */
+$("#setAnim") && $("#setAnim").addEventListener("input", e => {
+  settings.anim = +e.target.value;
+  document.body.classList.toggle("anim-max", settings.anim >= 2.5);
+  document.body.style.setProperty("--anim-scale", settings.anim);
+});
+document.body.classList.toggle("anim-max", (settings.anim || 1) >= 2.5);
+
+/* Log appearance */
+$("#setLogFont") && $("#setLogFont").addEventListener("input", e => {
+  const el = $("#logEntries"); if (el) el.style.fontSize = e.target.value + "px";
+});
+$("#setLogColor") && $("#setLogColor").addEventListener("input", e => {
+  const el = $("#logEntries"); if (el) el.style.color = e.target.value;
+});
+let logHL = true;
+$("#setLogHL") && $("#setLogHL").addEventListener("change", e => { logHL = e.target.checked; });
+
+/* Color-code energy codes */
+function codeClass(code) {
+  const digits = [...code].filter(c => /\d/.test(c)).length;
+  const vowels = [...code].filter(c => /[AEIOU]/i.test(c)).length;
+  if (digits >= 5) return "code-digit-heavy";
+  if (vowels >= 4) return "code-vowel-heavy";
+  if (digits <= 1 && vowels <= 1) return "code-sparse";
+  return "code-balanced";
+}
+function renderCodeArchive() {
+  const el = $("#codeArchive"); if (!el) return;
+  el.innerHTML = energyCodes.length ? "" : "<span style='color:var(--muted)'>No codes yet</span>";
+  [...energyCodes].reverse().slice(0, 120).forEach(c => {
+    const s = document.createElement("span");
+    s.className = "code-chip " + codeClass(c);
+    s.textContent = c;
+    s.title = "digits/vowels coded";
+    el.appendChild(s);
+  });
+}
+document.getElementById("downloadCodesBtn") && document.getElementById("downloadCodesBtn").addEventListener("click", () => {
+  if (!energyCodes.length) { toast("No codes"); return; }
+  const lines = energyCodes.map((c,i) => (i+1) + "\t" + c + "\t" + codeClass(c));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n")], {type:"text/plain"}));
+  a.download = "energy-codes-" + Date.now() + ".txt";
+  a.click();
+  log("Energy code archive downloaded (" + energyCodes.length + ")", "code");
+  toast("Codes downloaded");
+});
+
+/* More node interactions: Inspect / Attune / Sacrifice */
+function inspectNode(id) {
+  const n = NODES.find(x => x.id === id); if (!n) return;
+  const st = nodeState[id] || {status:"idle"};
+  const ex = nodeExtras[id] || {};
+  log("Inspect " + n.name + ": status=" + st.status + " charge=" + n.charge + " act=" + n.activate + " evolved=" + !!ex.evolved + " autoC=" + !!ex.autoCharge + " autoA=" + !!ex.autoActivate, "node");
+  toast(n.name + " · " + st.status);
+}
+function attuneNode(id) {
+  const n = NODES.find(x => x.id === id);
+  if (!n || !unlocked[id]) return;
+  if (tokens < 8) { toast("Need 8 ⟁"); return; }
+  setTokens(tokens - 8);
+  // small permanent buff
+  n.cd = Math.floor(n.cd * 0.98);
+  log("Attuned " + n.name + " (−2% cd, −8 ⟁)", "node");
+  toast("Attuned");
+  updateNodeControls(id);
+}
+function sacrificeNode(id) {
+  const n = NODES.find(x => x.id === id);
+  if (!n || !unlocked[id]) return;
+  if (!confirm("Sacrifice " + n.name + " for tokens? Node locks again.")) return;
+  const refund = Math.floor(n.cost * 0.6);
+  unlocked[id] = false;
+  nodeState[id] = {status:"idle", endsAt:0};
+  setTokens(tokens + refund);
+  log("Sacrificed " + n.name + " · +" + refund + " ⟁", "node");
+  toast("+" + refund + " ⟁");
+  renderNodes();
+}
+
+/* AI feedback scores */
+const aiFeedback = {up:0, down:0};
+function attachAiFeedback(bubble) {
+  const fb = document.createElement("span");
+  fb.className = "ai-fb";
+  fb.innerHTML = '<button class="up" title="Helpful">▲</button><button class="down" title="Not helpful">▼</button>';
+  bubble.appendChild(fb);
+  fb.querySelector(".up").addEventListener("click", () => {
+    aiFeedback.up++;
+    log("AI feedback ▲ (total " + aiFeedback.up + ")", "ai");
+    toast("Thanks — noted");
+    fb.querySelector(".up").style.color = "var(--green)";
+  });
+  fb.querySelector(".down").addEventListener("click", () => {
+    aiFeedback.down++;
+    log("AI feedback ▼ (total " + aiFeedback.down + ")", "ai");
+    toast("Feedback recorded");
+    fb.querySelector(".down").style.color = "var(--red)";
+  });
+}
+
+
 /* ── Gate ──────────────────────────────────────────────── */
 const canvas = $("#sigilCanvas"), ctx = canvas.getContext("2d");
 let angle = 0, pulse = 0;
@@ -1443,8 +2072,17 @@ $("#sigilButton").addEventListener("click", e => {
 });
 $("#gateForm").addEventListener("submit", e => {
   e.preventDefault();
-  const val = $("#passphrase").value.trim().toLowerCase();
-  if (val === "bits and pieces" || val === "bits & pieces") {
+  const userEl = $("#loginUser");
+  const passEl = $("#loginPass") || $("#passphrase");
+  const val = (passEl ? passEl.value : "").trim();
+  const uname = userEl ? userEl.value.trim().toLowerCase() : "";
+  let ok = false;
+  if (val.toLowerCase() === "bits and pieces" || val.toLowerCase() === "bits & pieces") { ok = true; currentUser = uname || "adept"; }
+  else if (uname && val) {
+    const acc = getAccounts();
+    if (acc[uname] && acc[uname].pass === val) { ok = true; currentUser = uname; if (acc[uname].tokens) setTokens(acc[uname].tokens, false); }
+  }
+  if (ok) {
     $("#status").textContent = "Access Granted"; $("#status").style.color = "var(--green)";
     setTimeout(() => {
       $("#gateView").classList.add("hidden");
@@ -1452,13 +2090,18 @@ $("#gateForm").addEventListener("submit", e => {
       log("Sanctuary online", "system");
       renderChapters(); renderSpellPages(); renderPortfolio();
       renderShop(); renderKeys(); renderResearch(); renderNodes();
+      if (typeof renderNodeShop === "function") renderNodeShop();
+      if (typeof renderMarket === "function") { renderShards(); renderMarket(); }
+      if (typeof renderCodeArchive === "function") renderCodeArchive();
       setAIEnabled(settings.aiEnabled);
       toast("Welcome");
     }, 600);
   } else {
     $("#status").textContent = "Cipher Rejected"; $("#status").style.color = "var(--red)";
-    $("#passphrase").classList.add("shake"); log("Rejected", "error");
-    setTimeout(() => { $("#status").textContent = "Awaiting Input"; $("#status").style.color = "var(--muted)"; $("#passphrase").classList.remove("shake"); }, 1400);
+    const shakeEl = $("#loginPass") || $("#passphrase");
+    if (shakeEl) shakeEl.classList.add("shake");
+    log("Rejected", "error");
+    setTimeout(() => { $("#status").textContent = "Awaiting credentials"; $("#status").style.color = "var(--muted)"; if (shakeEl) shakeEl.classList.remove("shake"); }, 1400);
   }
 });
 $("#lockBtn").addEventListener("click", () => {
