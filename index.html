@@ -6,236 +6,244 @@
 <title>BITS & PIECES — Spellbook Sanctuary</title>
 <style>
 :root, [data-theme="dark"] {
-  --bg:#08080a; --bg-soft:#0c0c10; --panel:rgba(0,0,0,.48);
+  --bg:#08080a; --bg-soft:#0c0c10; --panel:rgba(0,0,0,.5);
   --text:#c4c4cc; --muted:#7a7a84; --gold:#d4af37; --gold-dim:rgba(212,175,55,.16);
   --green:#4af626; --red:#e63946; --purple:#c084fc; --blue:#7eb8ff;
-  --grid:rgba(255,255,255,.03); --log-bg:rgba(6,6,9,.96);
+  --grid:rgba(255,255,255,.03); --log-bg:rgba(6,6,9,.97);
   --input-bg:rgba(0,0,0,.4); --border:rgba(255,255,255,.08); --shadow:rgba(0,0,0,.7);
+  --scroll-thumb:rgba(212,175,55,.35); --scroll-track:rgba(0,0,0,.25);
 }
 [data-theme="light"] {
-  --bg:#eef1f5; --bg-soft:#e4e8ef; --panel:rgba(255,255,255,.88);
+  --bg:#eef1f5; --bg-soft:#e4e8ef; --panel:rgba(255,255,255,.9);
   --text:#1a1a22; --muted:#5a5a68; --gold:#a07820; --gold-dim:rgba(160,120,32,.22);
   --green:#1a9a30; --red:#c03030; --purple:#7c3aed; --blue:#2563eb;
   --grid:rgba(0,0,0,.04); --log-bg:rgba(245,247,250,.98);
   --input-bg:rgba(255,255,255,.75); --border:rgba(0,0,0,.1); --shadow:rgba(20,30,50,.12);
+  --scroll-thumb:rgba(160,120,32,.4); --scroll-track:rgba(0,0,0,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   background:var(--bg);color:var(--text);font-family:"Courier New",Courier,monospace;
   min-height:100vh;display:flex;align-items:center;justify-content:center;
-  overflow-x:hidden;overflow-y:auto;padding:0.8rem 0;transition:background .4s,color .3s;
+  overflow-x:hidden;overflow-y:auto;padding:.7rem 0;transition:background .35s,color .3s;
 }
+/* Unified scrollbars */
+*{scrollbar-width:thin;scrollbar-color:var(--scroll-thumb) var(--scroll-track)}
+*::-webkit-scrollbar{width:7px;height:7px}
+*::-webkit-scrollbar-track{background:var(--scroll-track);border-radius:4px}
+*::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:4px}
+*::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
 .bg-grid{position:fixed;inset:0;background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 .vignette{position:fixed;inset:0;background:radial-gradient(circle,transparent 28%,rgba(0,0,0,.78) 100%);pointer-events:none;z-index:1}
 [data-theme="light"] .vignette{opacity:.4}
 
-.view{position:relative;z-index:2;width:98%;max-width:1400px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--gold-dim);box-shadow:0 0 60px var(--shadow);transition:opacity .45s,transform .45s}
+.view{position:relative;z-index:2;width:98%;max-width:1420px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--gold-dim);box-shadow:0 0 60px var(--shadow);transition:opacity .4s,transform .4s}
 .hidden{display:none!important;opacity:0;transform:scale(.97) translateY(8px)}
 
 /* Gate */
-#gateView{max-width:460px;text-align:center;padding:2.2rem 1.8rem}
-.sigil-container{width:120px;height:120px;margin:0 auto 1.2rem;cursor:pointer;transition:transform .35s}
+#gateView{max-width:450px;text-align:center;padding:2rem 1.7rem}
+.sigil-container{width:110px;height:110px;margin:0 auto 1.1rem;cursor:pointer;transition:transform .3s}
 .sigil-container:hover{transform:scale(1.08) rotate(5deg)}
 canvas{width:100%;height:100%;display:block}
-h1{font-family:Georgia,serif;font-size:1.4rem;letter-spacing:.3em;color:var(--text);text-transform:uppercase;margin-bottom:.3rem;font-weight:400}
-.subtitle{font-size:.62rem;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:1.3rem}
-.manifesto{font-size:.7rem;line-height:1.75;color:var(--muted);margin-bottom:1.6rem}
+h1{font-family:Georgia,serif;font-size:1.35rem;letter-spacing:.28em;color:var(--text);text-transform:uppercase;margin-bottom:.25rem;font-weight:400}
+.subtitle{font-size:.6rem;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:1.2rem}
+.manifesto{font-size:.68rem;line-height:1.7;color:var(--muted);margin-bottom:1.5rem}
 input[type=password],input[type=text],input[type=number],select,textarea{
   width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--gold);
-  font-family:inherit;font-size:.76rem;padding:.45rem .55rem;outline:none;transition:border-color .25s;
+  font-family:inherit;font-size:.74rem;padding:.4rem .5rem;outline:none;transition:border-color .25s;
 }
-input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);background:transparent;text-align:center;letter-spacing:.26em;padding:.5rem 0}
+input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);background:transparent;text-align:center;letter-spacing:.24em;padding:.45rem 0}
 input:focus,select:focus,textarea:focus{border-color:var(--gold)}
-.status-msg{margin-top:.7rem;font-size:.58rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;height:1rem}
+.status-msg{margin-top:.65rem;font-size:.56rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;height:1rem}
 
 /* Dashboard */
-#dashboardView{padding:0.9rem 1rem 1.1rem;display:flex;flex-direction:column;gap:0.7rem;min-height:85vh}
-.dashboard-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-dim);padding-bottom:.55rem;flex-wrap:wrap;gap:.5rem}
-.dashboard-header h2{font-family:Georgia,serif;font-size:1rem;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
-.header-meta{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
-.token-counter,.clearance-badge,.power-active,.theme-btn,.settings-btn{
-  font-size:.58rem;letter-spacing:.08em;padding:.26rem .5rem;border:1px solid var(--gold-dim);
-  background:rgba(212,175,55,.05);color:var(--gold);cursor:pointer;transition:all .25s;
+#dashboardView{padding:.8rem .9rem 1rem;display:flex;flex-direction:column;gap:.6rem;min-height:86vh}
+.dashboard-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-dim);padding-bottom:.5rem;flex-wrap:wrap;gap:.45rem}
+.dashboard-header h2{font-family:Georgia,serif;font-size:.95rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.header-meta{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.token-counter,.clearance-badge,.power-active,.theme-btn,.settings-btn,.chat-toggle-btn{
+  font-size:.55rem;letter-spacing:.07em;padding:.24rem .45rem;border:1px solid var(--gold-dim);
+  background:rgba(212,175,55,.05);color:var(--gold);cursor:pointer;transition:all .22s;
 }
 .token-counter span{color:var(--text);font-weight:bold}
-.token-counter.pulse{transform:scale(1.08);box-shadow:0 0 16px var(--gold-dim)}
+.token-counter.pulse{transform:scale(1.07);box-shadow:0 0 14px var(--gold-dim)}
 .clearance-badge{color:var(--green);border-color:rgba(74,246,38,.3);cursor:default}
 .power-active{color:var(--purple);border-color:rgba(192,132,252,.4);display:none}
-.theme-btn,.settings-btn{background:transparent;color:var(--muted);border-color:var(--border)}
-.theme-btn:hover,.settings-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
+.theme-btn,.settings-btn,.chat-toggle-btn{background:transparent;color:var(--muted);border-color:var(--border)}
+.theme-btn:hover,.settings-btn:hover,.chat-toggle-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
+.chat-toggle-btn.on{color:var(--green);border-color:rgba(74,246,38,.4)}
 
-/* Resizable Panel system */
+/* Resizable panels */
 .r-panel{
   border:1px solid var(--border);background:var(--panel);position:relative;
-  display:flex;flex-direction:column;min-height:60px;min-width:180px;
-  resize:both;overflow:auto;transition:box-shadow .25s,border-color .25s;
+  display:flex;flex-direction:column;min-height:56px;min-width:170px;
+  resize:both;overflow:auto;transition:box-shadow .22s,border-color .22s;
 }
-.r-panel:hover{border-color:var(--gold-dim);box-shadow:0 0 16px rgba(212,175,55,.06)}
-.r-panel.minimized{height:36px!important;min-height:36px;resize:none;overflow:hidden}
+.r-panel:hover{border-color:var(--gold-dim)}
+.r-panel.minimized{height:34px!important;min-height:34px;resize:none;overflow:hidden}
 .r-panel.minimized .r-body{display:none}
-.r-panel.maximized{
-  position:fixed!important;inset:12px!important;z-index:40;width:auto!important;height:auto!important;
-  max-width:none!important;resize:none;box-shadow:0 0 80px var(--shadow);
-}
+.r-panel.maximized{position:fixed!important;inset:10px!important;z-index:40;width:auto!important;height:auto!important;max-width:none!important;resize:none;box-shadow:0 0 70px var(--shadow)}
 .r-header{
-  display:flex;align-items:center;justify-content:space-between;gap:.4rem;
-  padding:.35rem .55rem;border-bottom:1px solid var(--gold-dim);cursor:default;
-  font-size:.58rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;
-  background:rgba(0,0,0,.2);user-select:none;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;gap:.35rem;
+  padding:.3rem .5rem;border-bottom:1px solid var(--gold-dim);font-size:.55rem;
+  letter-spacing:.1em;color:var(--gold);text-transform:uppercase;background:rgba(0,0,0,.18);
+  user-select:none;flex-shrink:0;
 }
 [data-theme="light"] .r-header{background:rgba(0,0,0,.04)}
 .r-header-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.r-controls{display:flex;gap:.2rem}
-.r-btn{
-  width:18px;height:18px;border:1px solid var(--border);background:transparent;
-  color:var(--muted);font-size:.65rem;line-height:1;cursor:pointer;display:grid;place-items:center;
-  transition:all .2s;
-}
+.r-controls{display:flex;gap:.15rem}
+.r-btn{width:17px;height:17px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.6rem;cursor:pointer;display:grid;place-items:center}
 .r-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
-.r-body{flex:1;padding:.55rem .65rem;overflow:auto;min-height:0}
+.r-body{flex:1;padding:.5rem .55rem;overflow:auto;min-height:0}
 
-/* Top Rites Table (Portfolio) */
-#ritesTablePanel{width:100%;height:150px;min-height:90px}
-.portfolio-slots{display:flex;gap:.45rem;flex-wrap:wrap;align-items:stretch;min-height:70px}
+/* Rites Table */
+#ritesTablePanel{width:100%;height:145px;min-height:85px}
+.portfolio-slots{display:flex;gap:.4rem;flex-wrap:wrap;align-items:stretch;min-height:65px}
 .portfolio-slot{
-  flex:1;min-width:110px;max-width:160px;border:1px dashed var(--border);
-  background:rgba(0,0,0,.25);padding:.4rem;display:flex;flex-direction:column;gap:.25rem;
-  transition:border-color .25s,background .25s;position:relative;
+  flex:1;min-width:100px;max-width:150px;border:1px dashed var(--border);
+  background:rgba(0,0,0,.22);padding:.35rem;display:flex;flex-direction:column;gap:.2rem;position:relative;transition:all .22s;
 }
 .portfolio-slot.filled{border-style:solid;border-color:var(--gold-dim);background:rgba(212,175,55,.06)}
-.portfolio-slot .slot-name{font-size:.6rem;color:var(--text);letter-spacing:.03em}
-.portfolio-slot .slot-meta{font-size:.52rem;color:var(--gold)}
-.portfolio-slot .slot-remove{position:absolute;top:2px;right:4px;background:none;border:none;color:var(--red);cursor:pointer;font-size:.7rem;opacity:.6}
+.portfolio-slot .slot-name{font-size:.56rem;color:var(--text)}
+.portfolio-slot .slot-meta{font-size:.5rem;color:var(--gold)}
+.portfolio-slot .slot-remove{position:absolute;top:1px;right:3px;background:none;border:none;color:var(--red);cursor:pointer;font-size:.65rem;opacity:.55}
 .portfolio-slot .slot-remove:hover{opacity:1}
-.portfolio-actions{display:flex;gap:.35rem;margin-top:.45rem;flex-wrap:wrap}
+.portfolio-actions{display:flex;gap:.3rem;margin-top:.35rem;flex-wrap:wrap;align-items:center}
 .btn-action{
   background:transparent;border:1px solid var(--gold-dim);color:var(--gold);
-  padding:.28rem .55rem;font-family:inherit;font-size:.56rem;letter-spacing:.1em;
-  cursor:pointer;text-transform:uppercase;transition:all .25s;white-space:nowrap;
+  padding:.24rem .48rem;font-family:inherit;font-size:.52rem;letter-spacing:.08em;
+  cursor:pointer;text-transform:uppercase;transition:all .22s;white-space:nowrap;
 }
 .btn-action:hover:not(:disabled){background:var(--gold);color:#000;transform:translateY(-1px)}
 .btn-action:disabled{opacity:.4;cursor:not-allowed}
 
-/* Main layout */
-.main-layout{display:grid;grid-template-columns:1fr 270px;gap:.7rem;flex:1;min-height:0}
-@media(max-width:960px){.main-layout{grid-template-columns:1fr}}
-.left-col{display:flex;flex-direction:column;gap:.65rem;min-height:0}
-.tabs{display:flex;gap:.25rem;flex-wrap:wrap}
-.tab-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.55rem;letter-spacing:.08em;padding:.28rem .5rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
+.main-layout{display:grid;grid-template-columns:1fr 260px;gap:.6rem;flex:1;min-height:0}
+@media(max-width:980px){.main-layout{grid-template-columns:1fr}}
+.left-col{display:flex;flex-direction:column;gap:.55rem;min-height:0}
+.tabs{display:flex;gap:.2rem;flex-wrap:wrap}
+.tab-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.52rem;letter-spacing:.07em;padding:.24rem .45rem;cursor:pointer;text-transform:uppercase;transition:all .2s}
 .tab-btn:hover,.tab-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.07)}
 .tab-panel{display:none}
-.tab-panel.active{display:block;animation:fadeUp .3s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tab-panel.active{display:block;animation:fadeUp .28s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 
 /* Spellbook */
-.spellbook{display:grid;grid-template-columns:140px 1fr;gap:.6rem;min-height:280px}
+.spellbook{display:grid;grid-template-columns:130px 1fr;gap:.5rem;min-height:260px}
 @media(max-width:600px){.spellbook{grid-template-columns:1fr}}
-.spell-chapters{display:flex;flex-direction:column;gap:.25rem;border-right:1px solid var(--border);padding-right:.5rem}
-.chapter-btn{
-  text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);
-  font-family:inherit;font-size:.58rem;letter-spacing:.06em;padding:.35rem .45rem;cursor:pointer;
-  transition:all .22s;border-radius:2px;
-}
+.spell-chapters{display:flex;flex-direction:column;gap:.2rem;border-right:1px solid var(--border);padding-right:.4rem}
+.chapter-btn{text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);font-family:inherit;font-size:.54rem;letter-spacing:.05em;padding:.3rem .4rem;cursor:pointer;transition:all .2s}
 .chapter-btn:hover,.chapter-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.08)}
-.spell-pages{display:flex;flex-direction:column;gap:.4rem;max-height:340px;overflow-y:auto}
+.spell-pages{display:flex;flex-direction:column;gap:.35rem;max-height:300px;overflow-y:auto}
 .spell-card{
-  border:1px solid var(--border);background:rgba(15,15,20,.4);padding:.5rem .6rem;
-  display:grid;grid-template-columns:1fr auto;gap:.35rem;align-items:center;font-size:.62rem;
-  transition:all .25s;position:relative;overflow:hidden;
+  border:1px solid var(--border);background:rgba(15,15,20,.4);padding:.45rem .5rem;
+  display:grid;grid-template-columns:1fr auto;gap:.3rem;align-items:center;font-size:.58rem;
+  transition:all .22s;position:relative;overflow:hidden;
 }
 [data-theme="light"] .spell-card{background:rgba(255,255,255,.5)}
-.spell-card:hover{border-color:var(--gold-dim);transform:translateX(3px)}
-.spell-card.working{border-color:var(--gold);box-shadow:0 0 12px var(--gold-dim)}
-.spell-card.locked{opacity:.45;pointer-events:none}
+.spell-card:hover{border-color:var(--gold-dim);transform:translateX(2px)}
+.spell-card.working{border-color:var(--gold);box-shadow:0 0 10px var(--gold-dim)}
+.spell-card.locked{opacity:.42;pointer-events:none}
 .spell-card .task-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--green));width:0%}
-.spell-info{display:flex;flex-direction:column;gap:.08rem}
+.spell-info{display:flex;flex-direction:column;gap:.06rem}
 .spell-title{color:var(--text)}
-.spell-meta{color:var(--gold);font-size:.52rem}
-.spell-deps{font-size:.5rem;color:var(--muted)}
-.spell-actions{display:flex;flex-direction:column;gap:.2rem}
-.spell-actions .btn-action{padding:.2rem .4rem;font-size:.52rem}
+.spell-meta{color:var(--gold);font-size:.5rem}
+.spell-deps{font-size:.48rem;color:var(--muted)}
+.spell-actions{display:flex;flex-direction:column;gap:.15rem}
+.spell-actions .btn-action{padding:.18rem .35rem;font-size:.5rem}
 
-/* Process window */
-.process-window{border:1px solid var(--gold-dim);background:rgba(4,4,8,.88);margin-top:.5rem;display:none;flex-direction:column;max-height:280px;overflow:hidden}
-.process-window.visible{display:flex;animation:fadeUp .35s ease}
-.process-header{padding:.35rem .55rem;border-bottom:1px solid var(--gold-dim);font-size:.55rem;letter-spacing:.1em;color:var(--gold);display:flex;justify-content:space-between}
-.process-body{display:grid;grid-template-columns:1fr 1.05fr;min-height:180px}
-@media(max-width:700px){.process-body{grid-template-columns:1fr}}
-.process-text{padding:.5rem;font-size:.56rem;line-height:1.5;color:var(--muted);overflow-y:auto;border-right:1px solid var(--border);max-height:220px}
-.process-text .line{opacity:0;animation:lineIn .35s forwards}
-@keyframes lineIn{to{opacity:1}}
-.process-ascii{font-family:monospace;font-size:9px;line-height:1.05;color:var(--gold);padding:.4rem;white-space:pre;overflow:hidden;background:rgba(0,0,0,.3);min-height:160px}
+/* Inline rite visual (unique per rite, small, not a new window) */
+.rite-visual{
+  margin-top:.4rem;border:1px solid var(--gold-dim);background:rgba(0,0,0,.35);
+  font-family:monospace;font-size:8px;line-height:1.05;color:var(--gold);
+  white-space:pre;padding:.35rem;max-height:90px;overflow:hidden;display:none;
+}
+.rite-visual.visible{display:block;animation:fadeUp .25s ease}
 
-/* Shop / Research / Keys compact */
-.shop-grid,.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.45rem;max-height:320px;overflow-y:auto}
-.upgrade-card,.research-card{border:1px solid var(--border);background:rgba(10,10,14,.45);padding:.5rem;display:flex;flex-direction:column;gap:.25rem;transition:all .22s}
-.upgrade-card:hover,.research-card:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
-.upgrade-card.owned{opacity:.65;border-color:rgba(74,246,38,.25)}
-.upgrade-name,.research-name{font-size:.6rem;color:var(--text)}
-.upgrade-desc,.research-desc{font-size:.52rem;color:var(--muted);line-height:1.3}
-.upgrade-cost{font-size:.54rem;color:var(--gold);margin-top:auto}
-.keys-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-.key-slot,.power-slot{border:1px solid var(--border);padding:.5rem;min-height:70px}
-.key-slot h4,.power-slot h4{font-size:.55rem;letter-spacing:.1em;color:var(--purple);text-transform:uppercase;margin-bottom:.3rem}
-.key-item,.power-item{font-size:.55rem;padding:.25rem .35rem;margin-bottom:.2rem;border-left:2px solid var(--purple);background:rgba(192,132,252,.06);display:flex;justify-content:space-between;gap:.25rem;align-items:center}
+/* Shop / Research / Keys */
+.shop-grid,.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.4rem;max-height:280px;overflow-y:auto}
+.upgrade-card,.research-card{border:1px solid var(--border);background:rgba(10,10,14,.45);padding:.45rem;display:flex;flex-direction:column;gap:.2rem;transition:all .2s}
+.upgrade-card:hover,.research-card:hover{border-color:var(--gold-dim);transform:translateY(-1px)}
+.upgrade-card.owned{opacity:.6;border-color:rgba(74,246,38,.25)}
+.upgrade-name,.research-name{font-size:.56rem;color:var(--text)}
+.upgrade-desc,.research-desc{font-size:.5rem;color:var(--muted);line-height:1.3}
+.upgrade-cost{font-size:.5rem;color:var(--gold);margin-top:auto}
+.keys-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+.key-slot,.power-slot{border:1px solid var(--border);padding:.45rem;min-height:65px}
+.key-slot h4,.power-slot h4{font-size:.52rem;letter-spacing:.08em;color:var(--purple);text-transform:uppercase;margin-bottom:.25rem}
+.key-item,.power-item{font-size:.52rem;padding:.22rem .3rem;margin-bottom:.18rem;border-left:2px solid var(--purple);background:rgba(192,132,252,.06);display:flex;justify-content:space-between;gap:.2rem;align-items:center}
 
-/* Viz */
-.viz-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
-@media(max-width:700px){.viz-row{grid-template-columns:1fr}}
-.viz-box{height:120px;position:relative;background:rgba(5,5,8,.55);overflow:hidden}
+/* Mystical Nodes grid */
+.viz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.45rem;max-height:340px;overflow-y:auto}
+.viz-card{border:1px solid var(--border);background:rgba(8,8,12,.5);overflow:hidden}
+.viz-card-title{font-size:.5rem;letter-spacing:.08em;color:var(--muted);padding:.25rem .35rem;border-bottom:1px solid var(--border)}
+.viz-box{height:100px;position:relative;background:rgba(5,5,8,.55);overflow:hidden}
 .viz-box canvas{position:absolute;inset:0;width:100%;height:100%}
-.lock-overlay{position:absolute;inset:0;background:rgba(8,8,10,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;padding:.5rem;text-align:center;transition:opacity .45s,transform .45s}
+.lock-overlay{position:absolute;inset:0;background:rgba(8,8,10,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;padding:.4rem;text-align:center;transition:opacity .4s,transform .4s}
 .lock-overlay.unlocked{opacity:0;transform:scale(1.05);pointer-events:none}
-.lock-overlay p{font-size:.55rem;color:var(--muted);margin-bottom:.25rem}
-.unlock-cost{color:var(--gold);font-size:.52rem;margin-bottom:.35rem}
-.challenge-modal{position:absolute;inset:0;background:rgba(6,6,10,.94);z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem;text-align:center}
+.lock-overlay p{font-size:.5rem;color:var(--muted);margin-bottom:.2rem}
+.unlock-cost{color:var(--gold);font-size:.48rem;margin-bottom:.3rem}
+.challenge-modal{position:absolute;inset:0;background:rgba(6,6,10,.95);z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.5rem;text-align:center}
+.challenge-modal .pattern{font-family:monospace;font-size:13px;line-height:1.2;color:var(--gold);margin:.35rem 0;white-space:pre;letter-spacing:.05em}
 
 /* Log */
-.log-panel{height:100%;min-height:400px;display:flex;flex-direction:column}
-.log-header-inner{padding:.4rem .55rem;border-bottom:1px solid var(--gold-dim);display:flex;flex-direction:column;gap:.3rem}
+.log-panel{height:100%;min-height:380px;display:flex;flex-direction:column}
+.log-header-inner{padding:.35rem .45rem;border-bottom:1px solid var(--gold-dim);display:flex;flex-direction:column;gap:.25rem}
 .log-title-row{display:flex;justify-content:space-between;align-items:center}
-.log-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.5rem;letter-spacing:.06em;padding:.18rem .35rem;cursor:pointer;text-transform:uppercase}
+.log-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.48rem;letter-spacing:.05em;padding:.16rem .3rem;cursor:pointer;text-transform:uppercase}
 .log-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
-.log-search{width:100%;font-size:.58rem;padding:.25rem .4rem}
-.log-meta{font-size:.5rem;color:var(--muted)}
-.log-entries{flex:1;overflow-y:auto;padding:.35rem .45rem;display:flex;flex-direction:column;gap:.2rem}
-.log-entry{font-size:.54rem;line-height:1.3;padding:.22rem .3rem;border-left:2px solid transparent;background:rgba(255,255,255,.012);animation:logSlide .25s forwards;opacity:0;transform:translateX(5px)}
-.log-entry .ts{color:var(--muted);margin-right:.25rem;font-size:.5rem}
+.log-search{width:100%;font-size:.55rem;padding:.22rem .35rem}
+.log-meta{font-size:.48rem;color:var(--muted)}
+.log-entries{flex:1;overflow-y:auto;padding:.3rem .4rem;display:flex;flex-direction:column;gap:.18rem}
+.log-entry{font-size:.52rem;line-height:1.3;padding:.2rem .28rem;border-left:2px solid transparent;background:rgba(255,255,255,.012);animation:logSlide .22s forwards;opacity:0;transform:translateX(4px)}
+.log-entry .ts{color:var(--muted);margin-right:.22rem;font-size:.48rem}
 .log-entry.type-system{border-left-color:#6a6a72}.log-entry.type-click{border-left-color:var(--gold)}
-.log-entry.type-task{border-left-color:var(--green)}.log-entry.type-unlock{border-left-color:var(--purple)}
-.log-entry.type-error{border-left-color:var(--red)}.log-entry.type-power{border-left-color:#f0abfc}
-.log-entry.type-research{border-left-color:#f59e0b}.log-entry.type-notify{border-left-color:#22d3ee}
+.log-entry.type-task{border-left-color:var(--green)}.log-entry.type-process{border-left-color:#a78bfa}
+.log-entry.type-unlock{border-left-color:var(--purple)}.log-entry.type-error{border-left-color:var(--red)}
+.log-entry.type-power{border-left-color:#f0abfc}.log-entry.type-research{border-left-color:#f59e0b}
+.log-entry.type-notify{border-left-color:#22d3ee}.log-entry.type-ai{border-left-color:#38bdf8}
 .log-entry.hidden-by-search{display:none}
 @keyframes logSlide{to{opacity:1;transform:none}}
 
+/* AI Chatbot panel */
+.chat-panel{display:none;flex-direction:column;height:280px;min-height:180px}
+.chat-panel.visible{display:flex}
+.chat-messages{flex:1;overflow-y:auto;padding:.4rem;display:flex;flex-direction:column;gap:.35rem;font-size:.55rem}
+.chat-bubble{padding:.35rem .45rem;border-radius:2px;max-width:92%;line-height:1.4}
+.chat-bubble.user{align-self:flex-end;background:rgba(212,175,55,.12);border:1px solid var(--gold-dim);color:var(--text)}
+.chat-bubble.ai{align-self:flex-start;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);color:var(--text)}
+.chat-input-row{display:flex;gap:.3rem;padding:.35rem;border-top:1px solid var(--border)}
+.chat-input-row input{flex:1;font-size:.55rem}
+.chat-actions{display:flex;gap:.25rem;padding:0 .35rem .35rem}
+
 .dashboard-footer{display:flex;justify-content:flex-end}
-.btn-lock{background:transparent;border:1px solid var(--gold-dim);color:var(--muted);padding:.3rem .7rem;font-family:inherit;font-size:.55rem;letter-spacing:.12em;cursor:pointer;text-transform:uppercase}
+.btn-lock{background:transparent;border:1px solid var(--gold-dim);color:var(--muted);padding:.28rem .65rem;font-family:inherit;font-size:.52rem;letter-spacing:.1em;cursor:pointer;text-transform:uppercase}
 .btn-lock:hover{color:var(--gold);border-color:var(--gold)}
 
 /* Settings */
 .settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:none;align-items:center;justify-content:center;padding:1rem}
 .settings-overlay.visible{display:flex}
-.settings-panel{background:var(--bg-soft);border:1px solid var(--gold-dim);width:min(480px,94vw);max-height:82vh;overflow-y:auto;padding:1.1rem;position:relative}
-.settings-panel h3{font-size:.8rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:.9rem}
-.settings-section{margin-bottom:1rem}
-.settings-section h4{font-size:.58rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem;border-bottom:1px dashed var(--border);padding-bottom:.2rem}
-.settings-row{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:.35rem;font-size:.62rem}
-.settings-close{position:absolute;top:.6rem;right:.7rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer}
-.keyword-list{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
-.keyword-chip{font-size:.52rem;padding:.18rem .35rem;border:1px solid var(--gold-dim);color:var(--gold);display:flex;align-items:center;gap:.2rem}
-.keyword-chip button{background:none;border:none;color:var(--red);cursor:pointer;font-size:.65rem}
+.settings-panel{background:var(--bg-soft);border:1px solid var(--gold-dim);width:min(480px,94vw);max-height:82vh;overflow-y:auto;padding:1rem;position:relative}
+.settings-panel h3{font-size:.75rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:.8rem}
+.settings-section{margin-bottom:.9rem}
+.settings-section h4{font-size:.55rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:.35rem;border-bottom:1px dashed var(--border);padding-bottom:.18rem}
+.settings-row{display:flex;justify-content:space-between;align-items:center;gap:.45rem;margin-bottom:.3rem;font-size:.58rem}
+.settings-close{position:absolute;top:.55rem;right:.65rem;background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer}
+.keyword-list{display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.25rem}
+.keyword-chip{font-size:.5rem;padding:.15rem .3rem;border:1px solid var(--gold-dim);color:var(--gold);display:flex;align-items:center;gap:.15rem}
+.keyword-chip button{background:none;border:none;color:var(--red);cursor:pointer;font-size:.6rem}
 
-.notify-toast{position:fixed;top:14px;right:14px;background:var(--bg-soft);border:1px solid var(--blue);color:var(--text);padding:.45rem .8rem;font-size:.58rem;z-index:60;opacity:0;transform:translateX(16px);transition:all .3s;max-width:260px}
+.notify-toast{position:fixed;top:12px;right:12px;background:var(--bg-soft);border:1px solid var(--blue);color:var(--text);padding:.4rem .7rem;font-size:.55rem;z-index:60;opacity:0;transform:translateX(14px);transition:all .28s;max-width:250px}
 .notify-toast.show{opacity:1;transform:none}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg-soft);border:1px solid var(--gold-dim);color:var(--text);padding:.45rem .85rem;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;opacity:0;pointer-events:none;z-index:100;transition:all .3s}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg-soft);border:1px solid var(--gold-dim);color:var(--text);padding:.4rem .75rem;font-size:.56rem;letter-spacing:.07em;text-transform:uppercase;opacity:0;pointer-events:none;z-index:100;transition:all .28s}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.32);transform:scale(0);animation:rippleOut .45s ease-out forwards;pointer-events:none;z-index:20}
-@keyframes rippleOut{to{transform:scale(4.5);opacity:0}}
-.flash-green{animation:flashG .5s ease}
-@keyframes flashG{0%,100%{box-shadow:none}40%{box-shadow:0 0 18px rgba(74,246,38,.4)}}
-.shake{animation:shake .3s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}
-.corner{position:absolute;width:6px;height:6px;border:1px solid var(--gold);opacity:.45;pointer-events:none}
+.ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.3);transform:scale(0);animation:rippleOut .4s ease-out forwards;pointer-events:none;z-index:20}
+@keyframes rippleOut{to{transform:scale(4);opacity:0}}
+.flash-green{animation:flashG .45s ease}
+@keyframes flashG{0%,100%{box-shadow:none}40%{box-shadow:0 0 16px rgba(74,246,38,.4)}}
+.shake{animation:shake .28s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-3px)}70%{transform:translateX(3px)}}
+.corner{position:absolute;width:5px;height:5px;border:1px solid var(--gold);opacity:.4;pointer-events:none}
 .tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
 .tr{top:-1px;right:-1px;border-left:none;border-bottom:none}
 .bl{bottom:-1px;left:-1px;border-right:none;border-top:none}
@@ -246,10 +254,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 <div class="bg-grid"></div>
 <div class="vignette"></div>
 
-<!-- GATE -->
 <div class="view" id="gateView">
   <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="sigil-container" id="sigilButton"><canvas id="sigilCanvas" width="240" height="240"></canvas></div>
+  <div class="sigil-container" id="sigilButton"><canvas id="sigilCanvas" width="220" height="220"></canvas></div>
   <h1>Bits &amp; Pieces</h1>
   <div class="subtitle">Order of the Fragmented Mind</div>
   <p class="manifesto">Truth is never revealed whole.<br>It is gathered, byte by byte, echo by echo.<br>Assemble the cipher to enter.</p>
@@ -259,10 +266,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
   </form>
 </div>
 
-<!-- DASHBOARD -->
 <div class="view hidden" id="dashboardView">
   <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-
   <div class="dashboard-header">
     <h2>Inner Sanctuary</h2>
     <div class="header-meta">
@@ -270,25 +275,24 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
       <div class="clearance-badge" id="clearanceBadge">CLEARANCE: INITIATE</div>
       <div class="power-active" id="powerBadge">POWER</div>
       <button class="theme-btn" id="themeBtn">☾</button>
+      <button class="chat-toggle-btn" id="chatToggleBtn" title="Toggle AI advisor">AI</button>
       <button class="settings-btn" id="settingsBtn">Settings</button>
     </div>
   </div>
 
-  <!-- RITES TABLE (Portfolio) -->
+  <!-- Rites Table -->
   <div class="r-panel" id="ritesTablePanel" data-panel="table">
     <div class="r-header">
-      <span class="r-header-title">// Rites Table — Portfolio</span>
-      <div class="r-controls">
-        <button class="r-btn" data-act="min" title="Minimize">−</button>
-        <button class="r-btn" data-act="max" title="Maximize">□</button>
-      </div>
+      <span class="r-header-title">// Rites Table — Portfolio (<span id="slotCount">6</span> slots)</span>
+      <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
     </div>
     <div class="r-body">
       <div class="portfolio-slots" id="portfolioSlots"></div>
       <div class="portfolio-actions">
         <button class="btn-action" id="runPortfolio">Run Sequence</button>
-        <button class="btn-action" id="clearPortfolio">Clear Table</button>
-        <span style="font-size:.52rem;color:var(--muted);margin-left:.4rem" id="portfolioSummary">Empty portfolio</span>
+        <button class="btn-action" id="clearPortfolio">Clear</button>
+        <button class="btn-action" id="buySlotBtn">Buy Slot (80 ⟁)</button>
+        <span style="font-size:.5rem;color:var(--muted)" id="portfolioSummary">Empty</span>
       </div>
     </div>
   </div>
@@ -301,37 +305,27 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
         <button class="tab-btn" data-tab="keys">Keys</button>
         <button class="tab-btn" data-tab="research">Research</button>
         <button class="tab-btn" data-tab="viz">Nodes</button>
+        <button class="tab-btn" data-tab="chat" id="chatTabBtn" style="display:none">AI Advisor</button>
       </div>
 
-      <!-- SPELLBOOK -->
       <div class="tab-panel active" id="tab-spellbook">
-        <div class="r-panel" id="spellbookPanel" data-panel="spellbook" style="height:380px">
+        <div class="r-panel" id="spellbookPanel" style="height:360px" data-panel="spellbook">
           <div class="r-header">
             <span class="r-header-title">// Spellbook of Transmutation Rites</span>
-            <div class="r-controls">
-              <button class="r-btn" data-act="min">−</button>
-              <button class="r-btn" data-act="max">□</button>
-            </div>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
           <div class="r-body">
             <div class="spellbook">
               <div class="spell-chapters" id="spellChapters"></div>
               <div class="spell-pages" id="spellPages"></div>
             </div>
-            <div class="process-window" id="processWindow">
-              <div class="process-header"><span id="processTitle">RITE</span><button class="log-btn" id="closeProcess">Close</button></div>
-              <div class="process-body">
-                <div class="process-text" id="processText"></div>
-                <pre class="process-ascii" id="processAscii"></pre>
-              </div>
-            </div>
+            <pre class="rite-visual" id="riteVisual"></pre>
           </div>
         </div>
       </div>
 
-      <!-- SHOP -->
       <div class="tab-panel" id="tab-shop">
-        <div class="r-panel" style="height:340px" data-panel="shop">
+        <div class="r-panel" style="height:300px" data-panel="shop">
           <div class="r-header"><span class="r-header-title">// Relic Shop</span>
             <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
@@ -339,9 +333,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
         </div>
       </div>
 
-      <!-- KEYS -->
       <div class="tab-panel" id="tab-keys">
-        <div class="r-panel" style="height:280px" data-panel="keys">
+        <div class="r-panel" style="height:260px" data-panel="keys">
           <div class="r-header"><span class="r-header-title">// Keys &amp; Powers</span>
             <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
@@ -354,52 +347,46 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
         </div>
       </div>
 
-      <!-- RESEARCH -->
       <div class="tab-panel" id="tab-research">
-        <div class="r-panel" style="height:320px" data-panel="research">
+        <div class="r-panel" style="height:300px" data-panel="research">
           <div class="r-header"><span class="r-header-title">// Log Analysis Research</span>
             <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
           <div class="r-body">
             <div class="research-grid" id="researchGrid"></div>
-            <div id="analysisArea" style="margin-top:.6rem;display:none">
-              <p id="analysisPrompt" style="font-size:.58rem;color:var(--muted);margin-bottom:.4rem;line-height:1.45"></p>
+            <div id="analysisArea" style="margin-top:.5rem;display:none">
+              <p id="analysisPrompt" style="font-size:.54rem;color:var(--muted);margin-bottom:.3rem;line-height:1.4"></p>
               <textarea id="analysisInput" rows="2" placeholder="Submit findings…"></textarea>
-              <button class="btn-action" id="submitAnalysis" style="margin-top:.3rem">Submit</button>
+              <button class="btn-action" id="submitAnalysis" style="margin-top:.25rem">Submit</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- VIZ -->
       <div class="tab-panel" id="tab-viz">
-        <div class="r-panel" style="height:280px" data-panel="viz">
+        <div class="r-panel" style="height:360px" data-panel="viz">
           <div class="r-header"><span class="r-header-title">// Mystical Nodes</span>
             <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
-          <div class="r-body">
-            <div class="viz-row">
-              <div>
-                <div style="font-size:.5rem;color:var(--muted);margin-bottom:.2rem;letter-spacing:.08em">CHRONO LATTICE</div>
-                <div class="viz-box" id="vizLatticeBox">
-                  <canvas id="vizLatticeCanvas"></canvas>
-                  <div class="lock-overlay" id="lockLattice"><p>RESTRICTED</p><div class="unlock-cost">30 ⟁</div><button class="btn-action" data-feature="lattice" data-cost="30">Unlock</button></div>
-                </div>
-              </div>
-              <div>
-                <div style="font-size:.5rem;color:var(--muted);margin-bottom:.2rem;letter-spacing:.08em">ASTRAL WAVE</div>
-                <div class="viz-box" id="vizWaveBox">
-                  <canvas id="vizWaveCanvas"></canvas>
-                  <div class="lock-overlay" id="lockWave"><p>SEALED</p><div class="unlock-cost">50 ⟁</div><button class="btn-action" data-feature="wave" data-cost="50">Unlock</button></div>
-                </div>
-              </div>
-              <div>
-                <div style="font-size:.5rem;color:var(--muted);margin-bottom:.2rem;letter-spacing:.08em">ORACLE FIELD</div>
-                <div class="viz-box" id="vizOracleBox">
-                  <canvas id="vizOracleCanvas"></canvas>
-                  <div class="lock-overlay" id="lockOracle"><p>LOCKED</p><div class="unlock-cost">90 ⟁</div><button class="btn-action" data-feature="oracle" data-cost="90">Unlock</button></div>
-                </div>
-              </div>
+          <div class="r-body"><div class="viz-grid" id="vizGrid"></div></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-chat">
+        <div class="r-panel chat-panel visible" id="chatPanel" style="height:300px" data-panel="chat">
+          <div class="r-header">
+            <span class="r-header-title">// Local AI Advisor</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body" style="padding:0;display:flex;flex-direction:column">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-actions">
+              <button class="btn-action" id="feedLogBtn">Feed Log to AI</button>
+              <button class="btn-action" id="clearChatBtn">Clear Chat</button>
+            </div>
+            <div class="chat-input-row">
+              <input type="text" id="chatInput" placeholder="Ask the advisor…">
+              <button class="btn-action" id="chatSend">Send</button>
             </div>
           </div>
         </div>
@@ -407,19 +394,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
     </div>
 
     <!-- LOG -->
-    <div class="r-panel log-panel" id="logPanel" data-panel="log" style="height:520px">
+    <div class="r-panel log-panel" id="logPanel" data-panel="log" style="height:500px">
       <div class="r-header">
         <span class="r-header-title">// Activity Log</span>
-        <div class="r-controls">
-          <button class="r-btn" data-act="min">−</button>
-          <button class="r-btn" data-act="max">□</button>
-        </div>
+        <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
       </div>
       <div class="r-body" style="padding:0;display:flex;flex-direction:column">
         <div class="log-header-inner">
           <div class="log-title-row">
-            <span style="font-size:.52rem;color:var(--muted)"><span id="logCount">0</span> entries</span>
-            <div style="display:flex;gap:.2rem">
+            <span style="font-size:.5rem;color:var(--muted)"><span id="logCount">0</span> entries</span>
+            <div style="display:flex;gap:.15rem">
               <button class="log-btn" id="downloadLogBtn">↓</button>
               <button class="log-btn" id="clearLogBtn">Clear</button>
             </div>
@@ -436,7 +420,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
   </div>
 </div>
 
-<!-- SETTINGS -->
 <div class="settings-overlay" id="settingsOverlay">
   <div class="settings-panel">
     <button class="settings-close" id="settingsClose">×</button>
@@ -448,12 +431,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
       <div class="settings-row"><label>Anim Intensity</label><input type="range" id="setAnim" min="0" max="2" step="0.1" value="1"></div>
     </div>
     <div class="settings-section">
-      <h4>ASCII Process</h4>
+      <h4>ASCII Rite Visuals</h4>
       <div class="settings-row"><label>Density</label><input type="range" id="setAsciiDens" min="0.5" max="1.5" step="0.1" value="1"></div>
       <div class="settings-row"><label>Speed</label><input type="range" id="setAsciiSpeed" min="0.4" max="2" step="0.1" value="1"></div>
-      <div class="settings-row"><label>Style</label>
-        <select id="setAsciiStyle"><option value="wave">Wave</option><option value="lattice">Lattice</option><option value="noise">Noise</option><option value="spiral">Spiral</option></select>
-      </div>
+    </div>
+    <div class="settings-section">
+      <h4>Local AI Advisor</h4>
+      <div class="settings-row"><label>Enable AI Chat</label><input type="checkbox" id="setAI" checked></div>
+      <p style="font-size:.5rem;color:var(--muted);line-height:1.4;margin-top:.3rem">
+        Runs a lightweight on-page advisor that reads your activity log. For heavier local models (WebLLM / transformers.js style), you can later point this UI at a downloaded GGUF or browser model of your choice — the chat panel is ready to receive context.
+      </p>
     </div>
     <div class="settings-section">
       <h4>Keyword Notifications</h4>
@@ -472,9 +459,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
-/* ── State ─────────────────────────────────────────────── */
 let tokens = 0;
-const unlocked = {lattice:false,wave:false,oracle:false};
+const unlocked = {};
 const ownedUpgrades = new Set();
 const keys = []; const powers = [];
 let activePower = null;
@@ -482,32 +468,33 @@ let globalMultiplier = 1, cooldownFactor = 1, durationFactor = 1, researchBoost 
 let autoFlags = {align:false,decipher:false,void:false,all:false};
 const logEntries = []; let logId = 0;
 const keywords = [];
-const portfolio = []; // array of task ids
-let settings = {theme:"dark",anim:1,asciiDens:1,asciiSpeed:1,asciiStyle:"wave",gold:"#d4af37"};
+const portfolio = [];
+let maxSlots = 6;
+let settings = {theme:"dark",anim:1,asciiDens:1,asciiSpeed:1,gold:"#d4af37",aiEnabled:true};
+let aiContext = ""; // fed log summary
 
-/* ── Rites + Chapters (Spellbook) ──────────────────────── */
 const CHAPTERS = [
-  {id:"foundations", name:"Foundations"},
-  {id:"binding", name:"Binding Arts"},
-  {id:"ascent", name:"Ascent Paths"},
-  {id:"apex", name:"Apex & Beyond"},
-  {id:"utility", name:"Utility Rites"},
+  {id:"foundations",name:"Foundations"},
+  {id:"binding",name:"Binding Arts"},
+  {id:"ascent",name:"Ascent Paths"},
+  {id:"apex",name:"Apex & Beyond"},
+  {id:"utility",name:"Utility"},
 ];
 const TASKS = [
-  {id:"align",title:"Align Aetheric Signal",base:15,dur:2800,cd:3800,deps:[],chapter:"foundations"},
-  {id:"silent",title:"Silent Observation",base:22,dur:3800,cd:4800,deps:[],chapter:"foundations"},
-  {id:"decipher",title:"Decipher Arcane Packet",base:28,dur:5200,cd:7200,deps:[],chapter:"foundations"},
-  {id:"void",title:"Offer Focus to the Void",base:55,dur:9000,cd:12000,deps:[],chapter:"foundations"},
-  {id:"weave",title:"Weave Chrono Thread",base:42,dur:6500,cd:9500,deps:["align"],chapter:"binding"},
-  {id:"bind",title:"Bind Shadow Glyph",base:80,dur:11000,cd:16000,deps:["decipher"],chapter:"binding"},
-  {id:"pulse",title:"Pulse the Grid",base:48,dur:6000,cd:8500,deps:["align","silent"],chapter:"binding"},
-  {id:"lattice_sync",title:"Lattice Synchronization",base:70,dur:8000,cd:11000,deps:["weave","align"],chapter:"ascent"},
-  {id:"echo_bind",title:"Echo Binding Ritual",base:110,dur:13000,cd:18000,deps:["bind","decipher"],chapter:"ascent"},
-  {id:"fracture",title:"Fracture the Veil",base:95,dur:10000,cd:14000,deps:["void","bind"],chapter:"ascent"},
-  {id:"ascend",title:"Ascend the Lattice",base:130,dur:16000,cd:24000,deps:["void"],chapter:"apex"},
-  {id:"reweave",title:"Reweave Broken Signal",base:160,dur:15000,cd:21000,deps:["fracture","weave"],chapter:"apex"},
-  {id:"apex",title:"Apex Convergence",base:200,dur:22000,cd:32000,deps:["ascend","lattice_sync"],chapter:"apex"},
-  {id:"oracle_call",title:"Call the Oracle",base:180,dur:18000,cd:26000,deps:["apex"],chapter:"apex"},
+  {id:"align",title:"Align Aetheric Signal",base:15,dur:2800,cd:3800,deps:[],chapter:"foundations",viz:"wave"},
+  {id:"silent",title:"Silent Observation",base:22,dur:3800,cd:4800,deps:[],chapter:"foundations",viz:"dots"},
+  {id:"decipher",title:"Decipher Arcane Packet",base:28,dur:5200,cd:7200,deps:[],chapter:"foundations",viz:"matrix"},
+  {id:"void",title:"Offer Focus to the Void",base:55,dur:9000,cd:12000,deps:[],chapter:"foundations",viz:"void"},
+  {id:"weave",title:"Weave Chrono Thread",base:42,dur:6500,cd:9500,deps:["align"],chapter:"binding",viz:"weave"},
+  {id:"bind",title:"Bind Shadow Glyph",base:80,dur:11000,cd:16000,deps:["decipher"],chapter:"binding",viz:"glyph"},
+  {id:"pulse",title:"Pulse the Grid",base:48,dur:6000,cd:8500,deps:["align","silent"],chapter:"binding",viz:"pulse"},
+  {id:"lattice_sync",title:"Lattice Synchronization",base:70,dur:8000,cd:11000,deps:["weave","align"],chapter:"ascent",viz:"lattice"},
+  {id:"echo_bind",title:"Echo Binding Ritual",base:110,dur:13000,cd:18000,deps:["bind","decipher"],chapter:"ascent",viz:"echo"},
+  {id:"fracture",title:"Fracture the Veil",base:95,dur:10000,cd:14000,deps:["void","bind"],chapter:"ascent",viz:"fracture"},
+  {id:"ascend",title:"Ascend the Lattice",base:130,dur:16000,cd:24000,deps:["void"],chapter:"apex",viz:"ascend"},
+  {id:"reweave",title:"Reweave Broken Signal",base:160,dur:15000,cd:21000,deps:["fracture","weave"],chapter:"apex",viz:"reweave"},
+  {id:"apex",title:"Apex Convergence",base:200,dur:22000,cd:32000,deps:["ascend","lattice_sync"],chapter:"apex",viz:"apex"},
+  {id:"oracle_call",title:"Call the Oracle",base:180,dur:18000,cd:26000,deps:["apex"],chapter:"apex",viz:"oracle"},
 ];
 const taskState = {};
 const completedOnce = new Set();
@@ -530,6 +517,24 @@ const RITE_FLAVOR = {
   oracle_call:["Oracle attention requested…","Constellation aligning…","Question transmitted…","Oracle has answered."],
 };
 
+/* Unique ASCII styles per rite */
+const VIZ_STYLES = {
+  wave: (x,y,t,s) => Math.sin(x*0.25+t*s)+Math.cos(y*0.2+t*0.6*s),
+  dots: (x,y,t,s) => (Math.sin(x*0.4+t*s)*Math.cos(y*0.35)+0.5) > 0.7 ? 1.5 : -0.5,
+  matrix: (x,y,t,s) => ((x+Math.floor(t*s*3))%5===0 || (y+Math.floor(t*s*2))%4===0) ? 1.3 : Math.sin(x+y+t)*0.3,
+  void: (x,y,t,s) => { const cx=20,cy=7,d=Math.hypot(x-cx,y-cy); return Math.sin(d*0.5-t*s*1.2)*1.2; },
+  weave: (x,y,t,s) => Math.sin(x*0.3+y*0.15+t*s)*Math.cos(x*0.1-y*0.25+t*0.5*s),
+  glyph: (x,y,t,s) => { const h=((x*7+y*13+Math.floor(t*s))%11); return h<3?1.4:h<6?0.4:-0.6; },
+  pulse: (x,y,t,s) => Math.sin((x+y)*0.15 - t*s*2)*1.1 + Math.cos(x*0.08)*0.3,
+  lattice: (x,y,t,s) => ((x+Math.floor(t*s))%6===0 || (y+Math.floor(t*s*0.7))%5===0) ? 1.5 : -0.3,
+  echo: (x,y,t,s) => Math.sin(x*0.2+t*s) * Math.sin(y*0.2+t*s*0.8) * 1.5,
+  fracture: (x,y,t,s) => { const n=Math.sin(x*0.5+t)+Math.cos(y*0.4-t*s); return n>0.6?1.4:n<-0.4?-0.8:0.1; },
+  ascend: (x,y,t,s) => (1 - y/14) * Math.sin(x*0.3+t*s) + (y/14)*0.5,
+  reweave: (x,y,t,s) => Math.sin(x*0.35+t*s) * (y%3===0?1.2:0.4) + Math.cos(y*0.2)*0.3,
+  apex: (x,y,t,s) => { const cx=20,cy=7,d=Math.hypot(x-cx,y-cy); return Math.cos(d*0.35-t*s) * Math.sin(Math.atan2(y-cy,x-cx)*3+t); },
+  oracle: (x,y,t,s) => Math.sin(Math.hypot(x-20,y-7)*0.4 - t*s) + Math.cos(x*0.15+y*0.15+t*0.3)*0.5,
+};
+
 const UPGRADES = [
   {id:"eff1",name:"Efficiency I",desc:"Cooldowns −12%",cost:40,fn:()=>cooldownFactor*=0.88},
   {id:"eff2",name:"Efficiency II",desc:"Cooldowns −15%",cost:95,fn:()=>cooldownFactor*=0.85},
@@ -539,14 +544,56 @@ const UPGRADES = [
   {id:"autoA",name:"Auto-Align",desc:"Auto-run Align",cost:110,fn:()=>autoFlags.align=true},
   {id:"parallel",name:"Parallel Rites",desc:"Run 2 at once",cost:260,fn:()=>window.__parallel=true},
   {id:"echo",name:"Echo Chamber",desc:"8% double reward",cost:175,fn:()=>window.__echo=0.08},
-  {id:"research+",name:"Deep Analysis",desc:"Research +25%",cost:200,fn:()=>researchBoost*=1.25},
+  {id:"slot1",name:"Extra Table Slot",desc:"+1 portfolio slot",cost:80,fn:()=>{maxSlots=Math.min(12,maxSlots+1);renderPortfolio();$("#slotCount").textContent=maxSlots;}},
+  {id:"slot2",name:"Extra Table Slot II",desc:"+1 portfolio slot",cost:150,fn:()=>{maxSlots=Math.min(12,maxSlots+1);renderPortfolio();$("#slotCount").textContent=maxSlots;}},
+  {id:"slot3",name:"Extra Table Slot III",desc:"+1 portfolio slot",cost:250,fn:()=>{maxSlots=Math.min(12,maxSlots+1);renderPortfolio();$("#slotCount").textContent=maxSlots;}},
 ];
+
 const RESEARCH = [
-  {id:"r1",name:"Pattern Scan",desc:"Analyze task frequency in log",cost:40,boost:0.08},
+  {id:"r1",name:"Pattern Scan",desc:"Analyze task frequency",cost:40,boost:0.08},
   {id:"r2",name:"Anomaly Hunt",desc:"Find error patterns",cost:70,boost:0.12},
   {id:"r3",name:"Power Trace",desc:"Track key activations",cost:110,boost:0.18},
 ];
 let activeResearch = null;
+
+/* Many mystical nodes */
+const NODES = [
+  {id:"lattice",name:"Chrono Lattice",cost:30,color:"#d4af37"},
+  {id:"wave",name:"Astral Wave",cost:50,color:"#4af626"},
+  {id:"oracle",name:"Oracle Field",cost:90,color:"#c084fc"},
+  {id:"mirror",name:"Mirror Depths",cost:70,color:"#7eb8ff"},
+  {id:"ember",name:"Ember Spiral",cost:60,color:"#f59e0b"},
+  {id:"null",name:"Null Choir",cost:110,color:"#94a3b8"},
+  {id:"bloom",name:"Sigil Bloom",cost:85,color:"#f472b6"},
+  {id:"tide",name:"Tide Engine",cost:95,color:"#22d3ee"},
+  {id:"rift",name:"Rift Compass",cost:130,color:"#a78bfa"},
+  {id:"crown",name:"Crown Array",cost:180,color:"#fbbf24"},
+];
+NODES.forEach(n => unlocked[n.id] = false);
+
+/* SAT-style shape & pattern challenges only */
+const PATTERN_CHALLENGES = [
+  { pattern:"▲ ▲ ▲\n▲ ■ ▲\n▲ ▲ ?", options:["▲","■","●","◆"], answer:"▲", hint:"Complete the border" },
+  { pattern:"○ □ ○\n□ ○ □\n○ □ ?", options:["○","□","△","◇"], answer:"○", hint:"Alternating checker" },
+  { pattern:"■ ■ ■\n■   ■\n■ ■ ?", options:["■","□","●","▲"], answer:"■", hint:"Open box frame" },
+  { pattern:"→ → ↓\n↑   ↓\n↑ ← ?", options:["←","→","↑","↓"], answer:"←", hint:"Clockwise border" },
+  { pattern:"A B A\nB A B\nA B ?", options:["A","B","C","D"], answer:"A", hint:"Strict alternation" },
+  { pattern:"◆ ○ ◆\n○ ◆ ○\n◆ ○ ?", options:["◆","○","■","▲"], answer:"◆", hint:"Diagonal diamonds" },
+  { pattern:"1 2 3\n2 3 4\n3 4 ?", options:["5","4","3","6"], answer:"5", hint:"Row +1 sequence" },
+  { pattern:"▲ ● ▲\n● ▲ ●\n▲ ● ?", options:["▲","●","■","○"], answer:"▲", hint:"Triangle corners" },
+  { pattern:"□ ■ □\n■ □ ■\n□ ■ ?", options:["□","■","▲","○"], answer:"□", hint:"Checkerboard" },
+  { pattern:"← ← ←\n↑   ↓\n→ → ?", options:["→","←","↑","↓"], answer:"→", hint:"Outer flow" },
+  { pattern:"◇ ◇ ◇\n◇ ■ ◇\n◇ ◇ ?", options:["◇","■","○","▲"], answer:"◇", hint:"Frame of diamonds" },
+  { pattern:"A A B\nA B B\nB B ?", options:["A","B","C","D"], answer:"A", hint:"Shift pattern" },
+  { pattern:"● ○ ●\n○ ● ○\n● ○ ?", options:["●","○","■","▲"], answer:"●", hint:"Alternating dots" },
+  { pattern:"■ □ ■\n□ ■ □\n■ □ ?", options:["■","□","●","◇"], answer:"■", hint:"Standard checker" },
+  { pattern:"↑ → ↓\n←   ←\n↑ → ?", options:["↓","↑","←","→"], answer:"↓", hint:"Rotate sequence" },
+  { pattern:"△ △ ○\n△ ○ ○\n○ ○ ?", options:["△","○","□","◇"], answer:"△", hint:"Growing circles" },
+  { pattern:"Z Y X\nY X W\nX W ?", options:["V","W","X","Y"], answer:"V", hint:"Alphabet reverse step" },
+  { pattern:"◆ ■ ◆\n■ ◆ ■\n◆ ■ ?", options:["◆","■","○","▲"], answer:"◆", hint:"Diamond lattice" },
+  { pattern:"○ ○ ○\n○ ▲ ○\n○ ○ ?", options:["○","▲","■","●"], answer:"○", hint:"Centered triangle" },
+  { pattern:"1 3 5\n2 4 6\n3 5 ?", options:["7","6","8","4"], answer:"7", hint:"Odd/even columns" },
+];
 
 /* ── Panel min/max ─────────────────────────────────────── */
 document.addEventListener("click", e => {
@@ -554,17 +601,11 @@ document.addEventListener("click", e => {
   if (!btn) return;
   const panel = btn.closest(".r-panel");
   if (!panel) return;
-  const act = btn.dataset.act;
-  if (act === "min") {
-    panel.classList.toggle("minimized");
-    panel.classList.remove("maximized");
-  } else if (act === "max") {
-    panel.classList.toggle("maximized");
-    panel.classList.remove("minimized");
-  }
+  if (btn.dataset.act === "min") { panel.classList.toggle("minimized"); panel.classList.remove("maximized"); }
+  else if (btn.dataset.act === "max") { panel.classList.toggle("maximized"); panel.classList.remove("minimized"); }
 });
 
-/* ── Logging ───────────────────────────────────────────── */
+/* ── Logging (rite process goes here) ──────────────────── */
 function log(msg, type="info") {
   const now = new Date();
   const ts = now.toLocaleTimeString("en-GB",{hour12:false}) + "." + String(now.getMilliseconds()).padStart(3,"0").slice(0,2);
@@ -580,8 +621,8 @@ function log(msg, type="info") {
   applyLogFilter();
   keywords.forEach(kw => {
     if (entry.raw.includes(kw.toLowerCase())) {
-      showNotify(`Keyword “${kw}” detected`);
-      log(`Notify: “${kw}”`,"notify");
+      showNotify(`Keyword “${kw}”`);
+      log(`Notify: “${kw}”`, "notify");
     }
   });
 }
@@ -607,23 +648,23 @@ $("#clearLogBtn").addEventListener("click", () => {
 });
 function showNotify(msg) {
   const n = $("#notifyToast"); n.textContent = msg; n.classList.add("show");
-  setTimeout(() => n.classList.remove("show"), 3000);
+  setTimeout(() => n.classList.remove("show"), 2800);
 }
 let toastTimer;
 function toast(m) {
   const t = $("#toast"); t.textContent = m; t.classList.add("show");
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1500);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1400);
 }
 function spawnRipple(e, parent) {
   if (settings.anim < 0.3) return;
   const rect = parent.getBoundingClientRect();
   const r = document.createElement("div"); r.className = "ripple";
-  r.style.cssText = `left:${(e.clientX||rect.left+rect.width/2)-rect.left-10}px;top:${(e.clientY||rect.top+rect.height/2)-rect.top-10}px;width:20px;height:20px`;
+  r.style.cssText = `left:${(e.clientX||rect.left+rect.width/2)-rect.left-8}px;top:${(e.clientY||rect.top+rect.height/2)-rect.top-8}px;width:16px;height:16px`;
   parent.style.position = parent.style.position || "relative";
-  parent.appendChild(r); setTimeout(() => r.remove(), 500);
+  parent.appendChild(r); setTimeout(() => r.remove(), 450);
 }
 
-/* ── Theme ─────────────────────────────────────────────── */
+/* ── Theme / Tokens ────────────────────────────────────── */
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   settings.theme = theme;
@@ -632,15 +673,14 @@ function applyTheme(theme) {
 }
 $("#themeBtn").addEventListener("click", () => applyTheme(settings.theme === "dark" ? "light" : "dark"));
 
-/* ── Tokens ────────────────────────────────────────────── */
 function setTokens(n, anim=true) {
   const prev = tokens; tokens = Math.max(0, Math.floor(n));
   $("#tokenBalance").textContent = tokens;
   if (anim && tokens !== prev) {
     $("#tokenCounter").classList.add("pulse");
-    setTimeout(() => $("#tokenCounter").classList.remove("pulse"), 340);
+    setTimeout(() => $("#tokenCounter").classList.remove("pulse"), 320);
   }
-  updateClearance(); updateMult();
+  updateClearance();
   try { localStorage.setItem("bp2-tokens", tokens); } catch(_){}
 }
 function updateClearance() {
@@ -649,11 +689,6 @@ function updateClearance() {
   if (tokens >= 350 || ownedUpgrades.size >= 5) l = "ORACLE";
   if (tokens >= 800 || completedOnce.size >= 8) l = "ARCHON";
   $("#clearanceBadge").textContent = "CLEARANCE: " + l;
-}
-function updateMult() {
-  let m = globalMultiplier * researchBoost;
-  if (activePower && activePower.mult > 1) m *= activePower.mult;
-  // no dedicated display in this layout; kept for calculations
 }
 
 /* ── Tabs ──────────────────────────────────────────────── */
@@ -672,25 +707,18 @@ function isUnlocked(t) {
   return t.deps.every(d => completedOnce.has(d));
 }
 function renderChapters() {
-  const el = $("#spellChapters");
-  el.innerHTML = "";
+  const el = $("#spellChapters"); el.innerHTML = "";
   CHAPTERS.forEach(ch => {
     const btn = document.createElement("button");
     btn.className = "chapter-btn" + (ch.id === currentChapter ? " active" : "");
     btn.textContent = ch.name;
-    btn.addEventListener("click", () => {
-      currentChapter = ch.id;
-      renderChapters();
-      renderSpellPages();
-    });
+    btn.addEventListener("click", () => { currentChapter = ch.id; renderChapters(); renderSpellPages(); });
     el.appendChild(btn);
   });
 }
 function renderSpellPages() {
-  const pages = $("#spellPages");
-  pages.innerHTML = "";
-  const list = TASKS.filter(t => t.chapter === currentChapter);
-  list.forEach(t => {
+  const pages = $("#spellPages"); pages.innerHTML = "";
+  TASKS.filter(t => t.chapter === currentChapter).forEach(t => {
     if (!taskState[t.id]) taskState[t.id] = {status:"idle", endsAt:0};
     const st = taskState[t.id];
     const open = isUnlocked(t);
@@ -708,19 +736,15 @@ function renderSpellPages() {
         ${t.deps.length ? `<span class="spell-deps">Requires: ${t.deps.join(", ")}</span>` : ""}
       </div>
       <div class="spell-actions">
-        <button class="btn-action" data-act="cast" ${!open || st.status !== "idle" ? "disabled" : ""}>${st.status === "idle" ? (open ? "Cast" : "Locked") : st.status === "working" ? "…" : "CD"}</button>
-        <button class="btn-action" data-act="add" ${!open ? "disabled" : ""}>+ Table</button>
+        <button class="btn-action" data-act="cast" ${!open||st.status!=="idle"?"disabled":""}>${st.status==="idle"?(open?"Cast":"Locked"):st.status==="working"?"…":"CD"}</button>
+        <button class="btn-action" data-act="add" ${!open?"disabled":""}>+ Table</button>
       </div>
       <div class="task-progress" id="prog-${t.id}"></div>`;
     pages.appendChild(card);
-    const castBtn = card.querySelector("[data-act=cast]");
-    const addBtn = card.querySelector("[data-act=add]");
     if (open && st.status === "idle") {
-      castBtn.addEventListener("click", e => startTask(t.id, e));
+      card.querySelector("[data-act=cast]").addEventListener("click", e => startTask(t.id, e));
     }
-    if (open) {
-      addBtn.addEventListener("click", () => addToPortfolio(t.id));
-    }
+    if (open) card.querySelector("[data-act=add]").addEventListener("click", () => addToPortfolio(t.id));
   });
 }
 
@@ -736,7 +760,15 @@ function startTask(id, e) {
   renderSpellPages();
   if (e) spawnRipple(e, e.target);
   log(`Rite cast: ${t.title}`, "task");
-  openProcessWindow(t);
+
+  // Stream process lines into main log (no separate window)
+  const lines = RITE_FLAVOR[t.id] || ["Initiating…","Resonance…","Complete."];
+  lines.forEach((line, i) => {
+    setTimeout(() => log(`› ${line}`, "process"), 400 + i * 550);
+  });
+
+  // Unique inline ASCII visual for this rite
+  startUniqueVisual(t);
 
   const prog = $(`#prog-${id}`);
   const tick = () => {
@@ -762,63 +794,96 @@ function finishTask(id) {
   const card = $(`.spell-card[data-task="${id}"]`);
   if (card) card.classList.add("flash-green");
 
-  TASKS.filter(x => x.deps.includes(id) && isUnlocked(x)).forEach(x => {
-    log(`New rite available: ${x.title}`, "info");
-  });
+  TASKS.filter(x => x.deps.includes(id) && isUnlocked(x)).forEach(x => log(`New rite available: ${x.title}`, "info"));
 
   const cd = Math.floor(t.cd * cooldownFactor);
   st.status = "cooldown"; st.endsAt = performance.now() + cd;
-  closeProcessWindowSoon();
+  stopUniqueVisual();
   renderSpellPages();
   setTimeout(() => { st.status = "idle"; renderSpellPages(); maybeAuto(id); }, cd);
 }
 function maybeAuto(id) {
-  if (autoFlags.all || autoFlags[id]) setTimeout(() => { if (taskState[id].status === "idle") startTask(id); }, 300);
+  if (autoFlags.all || autoFlags[id]) setTimeout(() => { if (taskState[id].status === "idle") startTask(id); }, 280);
 }
 
-/* ── Portfolio (Rites Table) ───────────────────────────── */
+/* Unique per-rite ASCII visual (inline, not a new window) */
+let visualRaf = null;
+function startUniqueVisual(task) {
+  const pre = $("#riteVisual");
+  pre.classList.add("visible");
+  let t = 0;
+  const cols = 44, rows = 8;
+  const styleFn = VIZ_STYLES[task.viz] || VIZ_STYLES.wave;
+  const dens = settings.asciiDens, spd = settings.asciiSpeed;
+  const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+  function frame() {
+    let out = "";
+    for (let y = 0; y < rows; y++) {
+      let row = "";
+      for (let x = 0; x < cols; x++) {
+        let v = styleFn(x, y, t, spd) * dens + (hash(x + y * 3 + task.id.length) - 0.5) * 0.2;
+        if (v > 1.1) row += "█"; else if (v > 0.55) row += "▓"; else if (v > 0.15) row += "▒"; else if (v > -0.25) row += "░"; else if (v > -0.7) row += "·"; else row += " ";
+      }
+      out += row + "\n";
+    }
+    pre.textContent = out;
+    t += 0.09;
+    visualRaf = requestAnimationFrame(frame);
+  }
+  if (visualRaf) cancelAnimationFrame(visualRaf);
+  frame();
+}
+function stopUniqueVisual() {
+  setTimeout(() => {
+    $("#riteVisual").classList.remove("visible");
+    if (visualRaf) cancelAnimationFrame(visualRaf);
+  }, 900);
+}
+
+/* ── Portfolio ─────────────────────────────────────────── */
 function addToPortfolio(id) {
-  if (portfolio.length >= 6) { toast("Table full (max 6)"); return; }
+  if (portfolio.length >= maxSlots) { toast("Table full — buy more slots"); return; }
   if (portfolio.includes(id)) { toast("Already on table"); return; }
   portfolio.push(id);
   renderPortfolio();
-  log(`Added to Rites Table: ${TASKS.find(t=>t.id===id).title}`, "info");
+  log(`Added to Table: ${TASKS.find(t=>t.id===id).title}`, "info");
   toast("Added to Table");
 }
 function renderPortfolio() {
-  const el = $("#portfolioSlots");
-  el.innerHTML = "";
-  for (let i = 0; i < 6; i++) {
+  const el = $("#portfolioSlots"); el.innerHTML = "";
+  $("#slotCount").textContent = maxSlots;
+  for (let i = 0; i < maxSlots; i++) {
     const slot = document.createElement("div");
     slot.className = "portfolio-slot" + (portfolio[i] ? " filled" : "");
     if (portfolio[i]) {
       const t = TASKS.find(x => x.id === portfolio[i]);
       const mult = globalMultiplier * researchBoost * (activePower?.mult || 1);
-      slot.innerHTML = `
-        <button class="slot-remove" data-i="${i}">×</button>
+      slot.innerHTML = `<button class="slot-remove" data-i="${i}">×</button>
         <div class="slot-name">${t.title}</div>
         <div class="slot-meta">+${Math.floor(t.base*mult)} ⟁</div>`;
-      slot.querySelector(".slot-remove").addEventListener("click", () => {
-        portfolio.splice(i, 1);
-        renderPortfolio();
-      });
+      slot.querySelector(".slot-remove").addEventListener("click", () => { portfolio.splice(i,1); renderPortfolio(); });
     } else {
-      slot.innerHTML = `<div class="slot-name" style="color:var(--muted);font-size:.55rem">Empty slot</div>`;
+      slot.innerHTML = `<div class="slot-name" style="color:var(--muted);font-size:.5rem">Empty</div>`;
     }
     el.appendChild(slot);
   }
-  const total = portfolio.reduce((s, id) => {
+  const total = portfolio.reduce((s,id) => {
     const t = TASKS.find(x => x.id === id);
     return s + Math.floor(t.base * globalMultiplier * researchBoost * (activePower?.mult || 1));
   }, 0);
-  $("#portfolioSummary").textContent = portfolio.length
-    ? `${portfolio.length} rites · ~${total} ⟁ potential`
-    : "Empty portfolio";
+  $("#portfolioSummary").textContent = portfolio.length ? `${portfolio.length}/${maxSlots} · ~${total} ⟁` : "Empty";
 }
-$("#clearPortfolio").addEventListener("click", () => {
-  portfolio.length = 0;
+$("#clearPortfolio").addEventListener("click", () => { portfolio.length = 0; renderPortfolio(); log("Table cleared","system"); });
+$("#buySlotBtn").addEventListener("click", () => {
+  const cost = 80 + (maxSlots - 6) * 40;
+  if (maxSlots >= 12) { toast("Max slots reached"); return; }
+  if (tokens < cost) { toast("Need " + cost + " tokens"); return; }
+  setTokens(tokens - cost);
+  maxSlots++;
   renderPortfolio();
-  log("Rites Table cleared", "system");
+  log(`Purchased extra table slot (${maxSlots} total)`, "unlock");
+  toast("Slot added");
+  $("#buySlotBtn").textContent = maxSlots >= 12 ? "Max slots" : `Buy Slot (${80+(maxSlots-6)*40} ⟁)`;
 });
 $("#runPortfolio").addEventListener("click", async () => {
   if (!portfolio.length) { toast("Table empty"); return; }
@@ -827,13 +892,9 @@ $("#runPortfolio").addEventListener("click", async () => {
   for (const id of [...portfolio]) {
     if (taskState[id]?.status === "idle" && isUnlocked(TASKS.find(t => t.id === id))) {
       startTask(id);
-      // wait until idle again (simple poll)
       await new Promise(res => {
-        const check = () => {
-          if (taskState[id].status === "idle") res();
-          else setTimeout(check, 400);
-        };
-        setTimeout(check, 500);
+        const check = () => { if (taskState[id].status === "idle") res(); else setTimeout(check, 350); };
+        setTimeout(check, 400);
       });
     }
   }
@@ -841,81 +902,21 @@ $("#runPortfolio").addEventListener("click", async () => {
   toast("Sequence complete");
 });
 
-/* ── Process ASCII window ──────────────────────────────── */
-let asciiRaf = null;
-function openProcessWindow(task) {
-  const win = $("#processWindow");
-  win.classList.add("visible");
-  $("#processTitle").textContent = task.title.toUpperCase();
-  const textEl = $("#processText");
-  textEl.innerHTML = "";
-  const lines = RITE_FLAVOR[task.id] || ["Initiating…", "Resonance…", "Complete."];
-  let i = 0;
-  const add = () => {
-    if (i >= lines.length) return;
-    const d = document.createElement("div"); d.className = "line"; d.textContent = "› " + lines[i++];
-    textEl.appendChild(d); textEl.scrollTop = textEl.scrollHeight;
-    if (i < lines.length) setTimeout(add, 700);
-  };
-  add();
-  startAscii(task.id);
-}
-function closeProcessWindowSoon() {
-  setTimeout(() => {
-    $("#processWindow").classList.remove("visible");
-    if (asciiRaf) cancelAnimationFrame(asciiRaf);
-  }, 1100);
-}
-$("#closeProcess").addEventListener("click", () => {
-  $("#processWindow").classList.remove("visible");
-  if (asciiRaf) cancelAnimationFrame(asciiRaf);
-});
-function startAscii(seed) {
-  const pre = $("#processAscii");
-  let t = 0;
-  const cols = 40, rows = 14;
-  const dens = settings.asciiDens, spd = settings.asciiSpeed, style = settings.asciiStyle;
-  const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
-  function frame() {
-    let out = "";
-    for (let y = 0; y < rows; y++) {
-      let row = "";
-      for (let x = 0; x < cols; x++) {
-        let v = 0;
-        if (style === "wave") v = Math.sin(x * 0.22 + t * spd) + Math.cos(y * 0.18 + t * 0.7 * spd);
-        else if (style === "lattice") v = ((x + Math.floor(t * spd * 2)) % 7 === 0 || (y + Math.floor(t * spd)) % 5 === 0) ? 1.2 : hash(x * 3 + y) * 0.5;
-        else if (style === "spiral") {
-          const dx = x - cols / 2, dy = y - rows / 2;
-          v = Math.sin(Math.hypot(dx, dy) * 0.4 - Math.atan2(dy, dx) * 2 + t * spd * 0.4);
-        } else v = hash(x * 0.15 + t * spd * 0.1) + hash(y * 0.2) - 0.7;
-        v *= dens;
-        if (v > 1.1) row += "█"; else if (v > 0.6) row += "▓"; else if (v > 0.2) row += "▒"; else if (v > -0.2) row += "░"; else if (v > -0.6) row += "·"; else row += " ";
-      }
-      out += row + "\n";
-    }
-    pre.textContent = out;
-    t += 0.08;
-    asciiRaf = requestAnimationFrame(frame);
-  }
-  if (asciiRaf) cancelAnimationFrame(asciiRaf);
-  frame();
-}
-
-/* ── Shop / Research / Keys (compact) ──────────────────── */
+/* ── Shop / Research / Keys ────────────────────────────── */
 function renderShop() {
   const g = $("#shopGrid"); g.innerHTML = "";
   UPGRADES.forEach(u => {
     const owned = ownedUpgrades.has(u.id);
     const c = document.createElement("div"); c.className = "upgrade-card" + (owned ? " owned" : "");
     c.innerHTML = `<div class="upgrade-name">${u.name}</div><div class="upgrade-desc">${u.desc}</div>
-      <div class="upgrade-cost">${owned ? "OWNED" : u.cost + " ⟁"}</div>
-      <button class="btn-action" ${owned ? "disabled" : ""}>${owned ? "Owned" : "Buy"}</button>`;
+      <div class="upgrade-cost">${owned?"OWNED":u.cost+" ⟁"}</div>
+      <button class="btn-action" ${owned?"disabled":""}>${owned?"Owned":"Buy"}</button>`;
     g.appendChild(c);
     if (!owned) c.querySelector("button").addEventListener("click", e => {
       if (tokens < u.cost) { toast("Need tokens"); return; }
       setTokens(tokens - u.cost); ownedUpgrades.add(u.id); u.fn();
       log(`Relic: ${u.name}`, "unlock"); toast(u.name); spawnRipple(e, e.target);
-      renderShop(); renderSpellPages();
+      renderShop(); renderSpellPages(); renderPortfolio();
       try { localStorage.setItem("bp2-upg", JSON.stringify([...ownedUpgrades])); } catch(_){}
     });
   });
@@ -933,7 +934,7 @@ function renderResearch() {
       setTokens(tokens - r.cost);
       activeResearch = r;
       $("#analysisArea").style.display = "block";
-      $("#analysisPrompt").textContent = `Analyze the log for: ${r.desc}. Submit findings.`;
+      $("#analysisPrompt").textContent = `Analyze the log: ${r.desc}. Submit findings.`;
       log(`Research: ${r.name}`, "research");
     });
   });
@@ -957,14 +958,16 @@ $("#submitAnalysis").addEventListener("click", () => {
   renderSpellPages();
 });
 function addKey(type) {
-  const map = {lattice:{name:"Lattice Key",power:"x5"},wave:{name:"Wave Key",power:"x7"},oracle:{name:"Oracle Key",power:"x55"}};
+  const map = {lattice:{name:"Lattice Key",power:"x5"},wave:{name:"Wave Key",power:"x7"},oracle:{name:"Oracle Key",power:"x55"},
+    mirror:{name:"Mirror Key",power:"x5"},ember:{name:"Ember Key",power:"x7"},null:{name:"Null Key",power:"x55"},
+    bloom:{name:"Bloom Key",power:"x5"},tide:{name:"Tide Key",power:"x7"},rift:{name:"Rift Key",power:"x55"},crown:{name:"Crown Key",power:"x55"}};
   const d = map[type] || map.lattice;
   keys.push({id:Date.now()+Math.random(), type, name:d.name, powerId:d.power});
   log(`Key: ${d.name}`, "power"); toast("Key received"); renderKeys();
 }
 function renderKeys() {
   const inv = $("#keysInventory");
-  inv.innerHTML = keys.length ? "" : "<span style='font-size:.52rem;color:var(--muted)'>None</span>";
+  inv.innerHTML = keys.length ? "" : "<span style='font-size:.5rem;color:var(--muted)'>None</span>";
   keys.forEach(k => {
     const d = document.createElement("div"); d.className = "key-item";
     d.innerHTML = `<span>${k.name}</span><button class="btn-action">Act</button>`;
@@ -979,11 +982,11 @@ function renderKeys() {
     });
   });
   const pinv = $("#powersInventory");
-  pinv.innerHTML = powers.length ? "" : "<span style='font-size:.52rem;color:var(--muted)'>None</span>";
+  pinv.innerHTML = powers.length ? "" : "<span style='font-size:.5rem;color:var(--muted)'>None</span>";
   powers.forEach(p => {
     const ready = performance.now() >= (p.readyAt || 0);
     const d = document.createElement("div"); d.className = "power-item";
-    d.innerHTML = `<span>${p.name} (${p.uses})</span><button class="btn-action" ${ready && !activePower ? "" : "disabled"}>${activePower?.id === p.id ? "ON" : ready ? "Use" : "CD"}</button>`;
+    d.innerHTML = `<span>${p.name} (${p.uses})</span><button class="btn-action" ${ready&&!activePower?"":"disabled"}>${activePower?.id===p.id?"ON":ready?"Use":"CD"}</button>`;
     pinv.appendChild(d);
     if (ready && !activePower) d.querySelector("button").addEventListener("click", () => {
       activePower = p; $("#powerBadge").style.display = "block"; $("#powerBadge").textContent = p.name;
@@ -991,12 +994,228 @@ function renderKeys() {
       setTimeout(() => {
         if (activePower === p) {
           activePower = null; $("#powerBadge").style.display = "none";
-          p.readyAt = performance.now() + 55000; p.uses--;
+          p.readyAt = performance.now() + 50000; p.uses--;
           renderKeys(); renderSpellPages(); renderPortfolio();
         }
-      }, 18000);
+      }, 16000);
     });
   });
+}
+
+/* ── Mystical Nodes (many) ─────────────────────────────── */
+function renderNodes() {
+  const grid = $("#vizGrid"); grid.innerHTML = "";
+  NODES.forEach(n => {
+    const card = document.createElement("div"); card.className = "viz-card";
+    card.innerHTML = `
+      <div class="viz-card-title">${n.name}</div>
+      <div class="viz-box" id="vizBox-${n.id}">
+        <canvas id="vizCanvas-${n.id}"></canvas>
+        <div class="lock-overlay" id="lock-${n.id}">
+          <p>SEALED</p>
+          <div class="unlock-cost">${n.cost} ⟁</div>
+          <button class="btn-action" data-node="${n.id}" data-cost="${n.cost}">Unlock</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+    if (unlocked[n.id]) {
+      const o = card.querySelector(".lock-overlay");
+      if (o) o.style.display = "none";
+    }
+  });
+  $$("[data-node]").forEach(btn => {
+    btn.addEventListener("click", e => {
+      const id = btn.dataset.node, cost = +btn.dataset.cost;
+      if (unlocked[id] || tokens < cost) { if (tokens < cost) toast("Need tokens"); return; }
+      setTokens(tokens - cost); unlocked[id] = true;
+      const o = btn.closest(".lock-overlay"); o.classList.add("unlocked");
+      log(`Node unlocked: ${id}`, "unlock"); toast(id + " online"); spawnRipple(e, o);
+      setTimeout(() => o.style.display = "none", 450);
+      startNodeAnim(id);
+    });
+  });
+  NODES.forEach(n => { if (unlocked[n.id]) startNodeAnim(n.id); });
+}
+
+function startNodeAnim(id) {
+  const canvas = $(`#vizCanvas-${id}`);
+  if (!canvas || canvas._running) return;
+  canvas._running = true;
+  const ctx = canvas.getContext("2d");
+  let t = 0;
+  const node = NODES.find(n => n.id === id);
+  const color = node ? node.color : "#d4af37";
+  (function loop() {
+    if (!unlocked[id]) { canvas._running = false; return; }
+    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const cx = canvas.width/2, cy = canvas.height/2;
+    if (id === "lattice" || id === "rift") {
+      for (let i = 0; i < 12; i++) {
+        const a = (i/12)*Math.PI*2 + t;
+        ctx.beginPath(); ctx.arc(cx+Math.cos(a)*30, cy+Math.sin(a)*20, 2, 0, 7);
+        ctx.fillStyle = color; ctx.fill();
+      }
+    } else if (id === "wave" || id === "tide") {
+      ctx.beginPath(); ctx.strokeStyle = color;
+      for (let x = 0; x < canvas.width; x++) {
+        const y = cy + Math.sin(x*0.04+t)*14 + Math.cos(x*0.02+t*0.5)*8;
+        x ? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+      }
+      ctx.stroke();
+    } else if (id === "oracle" || id === "crown") {
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(t*0.5);
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath(); ctx.arc(Math.cos(i)*22, Math.sin(i)*22, 10, 0, 7);
+        ctx.strokeStyle = color; ctx.stroke();
+      }
+      ctx.restore();
+    } else {
+      for (let i = 0; i < 8; i++) {
+        const a = t + i * 0.8;
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(a)* (15+i*3), cy + Math.sin(a*1.3)*(12+i*2), 1.5, 0, 7);
+        ctx.fillStyle = color; ctx.globalAlpha = 0.5 + i*0.05; ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+    t += 0.03;
+    requestAnimationFrame(loop);
+  })();
+}
+
+/* Pattern challenges from nodes */
+function maybeChallenge(nodeId) {
+  if (!unlocked[nodeId] || Math.random() > 0.32) return;
+  const box = $(`#vizBox-${nodeId}`);
+  if (!box || box.querySelector(".challenge-modal")) return;
+  const ch = PATTERN_CHALLENGES[Math.floor(Math.random() * PATTERN_CHALLENGES.length)];
+  const m = document.createElement("div"); m.className = "challenge-modal";
+  m.innerHTML = `
+    <div style="font-size:.55rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.25rem">PATTERN CHALLENGE</div>
+    <div class="pattern">${ch.pattern}</div>
+    <div style="font-size:.48rem;color:var(--muted);margin-bottom:.3rem">${ch.hint}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.25rem;justify-content:center;margin-bottom:.3rem">
+      ${ch.options.map(o => `<button class="btn-action" data-opt="${o}">${o}</button>`).join("")}
+    </div>
+    <button class="btn-action" data-skip="1">Skip</button>`;
+  box.appendChild(m);
+  m.querySelectorAll("[data-opt]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (btn.dataset.opt === ch.answer) {
+        addKey(nodeId);
+        log(`Pattern solved on ${nodeId}`, "power");
+        toast("Correct — Key earned");
+      } else {
+        log("Pattern failed", "error");
+        toast("Incorrect pattern");
+      }
+      m.remove();
+    });
+  });
+  m.querySelector("[data-skip]").addEventListener("click", () => m.remove());
+}
+
+/* ── Local AI Advisor ──────────────────────────────────── */
+function setAIEnabled(on) {
+  settings.aiEnabled = on;
+  $("#chatToggleBtn").classList.toggle("on", on);
+  $("#chatTabBtn").style.display = on ? "" : "none";
+  if (!on) {
+    // switch away from chat tab if active
+    if ($("#tab-chat").classList.contains("active")) {
+      $$(".tab-btn")[0].click();
+    }
+  }
+}
+$("#chatToggleBtn").addEventListener("click", () => {
+  setAIEnabled(!settings.aiEnabled);
+  if (settings.aiEnabled) {
+    $$(".tab-btn").forEach(b => b.classList.remove("active"));
+    $$(".tab-panel").forEach(p => p.classList.remove("active"));
+    $("#chatTabBtn").classList.add("active");
+    $("#tab-chat").classList.add("active");
+    addChat("ai", "Advisor online. Feed me your activity log for better guidance, or ask about rites, portfolio, or nodes.");
+  }
+});
+$("#setAI").addEventListener("change", e => setAIEnabled(e.target.checked));
+
+function addChat(role, text) {
+  const box = $("#chatMessages");
+  const div = document.createElement("div");
+  div.className = "chat-bubble " + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  if (role === "ai") log(`AI: ${text.slice(0,80)}${text.length>80?"…":""}`, "ai");
+}
+$("#feedLogBtn").addEventListener("click", () => {
+  const recent = logEntries.slice(-40).map(e => `[${e.type}] ${e.msg}`).join("\n");
+  aiContext = recent;
+  addChat("ai", `Ingested last ${Math.min(40, logEntries.length)} log entries. I can now reference your recent rites, unlocks, and errors.`);
+  log("Log fed to AI advisor", "ai");
+  toast("Log fed to AI");
+});
+$("#clearChatBtn").addEventListener("click", () => { $("#chatMessages").innerHTML = ""; aiContext = ""; });
+$("#chatSend").addEventListener("click", sendChat);
+$("#chatInput").addEventListener("keydown", e => { if (e.key === "Enter") sendChat(); });
+
+function sendChat() {
+  if (!settings.aiEnabled) return;
+  const input = $("#chatInput");
+  const q = input.value.trim();
+  if (!q) return;
+  addChat("user", q);
+  input.value = "";
+  // Lightweight local inference (rule + log aware)
+  setTimeout(() => {
+    const reply = localInfer(q);
+    addChat("ai", reply);
+  }, 280 + Math.random() * 400);
+}
+
+function localInfer(q) {
+  const lower = q.toLowerCase();
+  const ctx = (aiContext || "").toLowerCase();
+  // simple retrieval from fed log
+  if (lower.includes("last rite") || lower.includes("what did i just")) {
+    const last = [...logEntries].reverse().find(e => e.type === "task" && e.msg.includes("complete"));
+    return last ? `From the log: ${last.msg}` : "No completed rite found in recent log.";
+  }
+  if (lower.includes("token") || lower.includes("balance")) {
+    return `You currently hold ${tokens} tokens. Clearance is ${$("#clearanceBadge").textContent.replace("CLEARANCE: ","")}.`;
+  }
+  if (lower.includes("portfolio") || lower.includes("table")) {
+    return portfolio.length
+      ? `Your Rites Table has ${portfolio.length}/${maxSlots} slots filled: ${portfolio.map(id => TASKS.find(t=>t.id===id)?.title).join(", ")}.`
+      : "Your Rites Table is empty. Add rites from the Spellbook with “+ Table”.";
+  }
+  if (lower.includes("unlock") || lower.includes("node")) {
+    const open = NODES.filter(n => unlocked[n.id]).map(n => n.name);
+    return open.length ? `Unlocked nodes: ${open.join(", ")}.` : "No mystical nodes unlocked yet. Spend tokens on the Nodes tab.";
+  }
+  if (lower.includes("recommend") || lower.includes("next") || lower.includes("suggest")) {
+    const available = TASKS.filter(t => isUnlocked(t) && taskState[t.id]?.status === "idle");
+    if (!available.length) return "All currently unlocked rites are on cooldown or locked by dependencies.";
+    const best = available.sort((a,b) => b.base - a.base)[0];
+    return `Highest available yield right now: “${best.title}” (+${Math.floor(best.base*globalMultiplier*researchBoost)} ⟁).`;
+  }
+  if (lower.includes("error") || lower.includes("fail")) {
+    const errs = logEntries.filter(e => e.type === "error").slice(-3);
+    return errs.length ? `Recent issues: ${errs.map(e=>e.msg).join(" | ")}` : "No recent errors in the log.";
+  }
+  if (ctx && (lower.includes("log") || lower.includes("history"))) {
+    return "I am holding your fed log context. Ask about specific rites, failures, or keys and I will reference it.";
+  }
+  // fallback
+  const tips = [
+    "Complete foundational rites to unlock higher chapters in the Spellbook.",
+    "Buy extra Rites Table slots in the Relic Shop or with the Buy Slot button when you have surplus tokens.",
+    "Pattern challenges on unlocked nodes award Keys — activate them for powerful temporary multipliers.",
+    "Feed me the activity log after a long session so I can track your patterns more accurately.",
+    "Research findings permanently raise your yield multiplier. Quality of analysis matters.",
+  ];
+  return tips[Math.floor(Math.random() * tips.length)];
 }
 
 /* ── Settings ──────────────────────────────────────────── */
@@ -1007,7 +1226,6 @@ $("#setTheme").addEventListener("change", e => applyTheme(e.target.value));
 $("#setAnim").addEventListener("input", e => settings.anim = +e.target.value);
 $("#setAsciiDens").addEventListener("input", e => settings.asciiDens = +e.target.value);
 $("#setAsciiSpeed").addEventListener("input", e => settings.asciiSpeed = +e.target.value);
-$("#setAsciiStyle").addEventListener("change", e => settings.asciiStyle = e.target.value);
 $("#setGold").addEventListener("input", e => {
   settings.gold = e.target.value;
   document.documentElement.style.setProperty("--gold", settings.gold);
@@ -1025,28 +1243,28 @@ function renderKeywords() {
     const chip = document.createElement("span"); chip.className = "keyword-chip";
     chip.innerHTML = `${k}<button data-i="${i}">×</button>`;
     list.appendChild(chip);
-    chip.querySelector("button").addEventListener("click", () => { keywords.splice(i, 1); renderKeywords(); });
+    chip.querySelector("button").addEventListener("click", () => { keywords.splice(i,1); renderKeywords(); });
   });
 }
 
-/* ── Gate + Viz ────────────────────────────────────────── */
+/* ── Gate ──────────────────────────────────────────────── */
 const canvas = $("#sigilCanvas"), ctx = canvas.getContext("2d");
 let angle = 0, pulse = 0;
 (function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const cx = canvas.width/2, cy = canvas.height/2, r = 80;
-  ctx.save(); ctx.translate(cx, cy);
-  ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.strokeStyle = "rgba(212,175,55,.4)"; ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.stroke();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cx = canvas.width/2, cy = canvas.height/2, r = 75;
+  ctx.save(); ctx.translate(cx,cy);
+  ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.strokeStyle="rgba(212,175,55,.4)"; ctx.lineWidth=1; ctx.setLineDash([4,4]); ctx.stroke();
   ctx.rotate(angle);
-  ctx.beginPath(); for (let i=0;i<3;i++){const a=i*2*Math.PI/3-Math.PI/2;const x=r*.8*Math.cos(a),y=r*.8*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.closePath(); ctx.strokeStyle="rgba(212,175,55,.7)"; ctx.setLineDash([]); ctx.stroke();
-  ctx.beginPath(); ctx.arc(0,0,4+Math.sin(pulse)*2,0,Math.PI*2); ctx.fillStyle="#d4af37"; ctx.fill();
+  ctx.beginPath(); for(let i=0;i<3;i++){const a=i*2*Math.PI/3-Math.PI/2;const x=r*.8*Math.cos(a),y=r*.8*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.closePath(); ctx.strokeStyle="rgba(212,175,55,.7)"; ctx.setLineDash([]); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0,0,3.5+Math.sin(pulse)*2,0,Math.PI*2); ctx.fillStyle="#d4af37"; ctx.fill();
   ctx.restore(); angle+=0.003; pulse+=0.05; requestAnimationFrame(draw);
 })();
 $("#sigilButton").addEventListener("click", e => {
   angle += 0.5; spawnRipple(e, $("#sigilButton"));
   $("#status").textContent = "Resonance Shifted"; $("#status").style.color = "var(--gold)";
   log("Sigil pulse", "click");
-  setTimeout(() => { $("#status").textContent = "Awaiting Input"; $("#status").style.color = "var(--muted)"; }, 1400);
+  setTimeout(() => { $("#status").textContent = "Awaiting Input"; $("#status").style.color = "var(--muted)"; }, 1300);
 });
 $("#gateForm").addEventListener("submit", e => {
   e.preventDefault();
@@ -1057,20 +1275,18 @@ $("#gateForm").addEventListener("submit", e => {
       $("#gateView").classList.add("hidden");
       $("#dashboardView").classList.remove("hidden");
       log("Sanctuary online", "system");
-      initVisualizations();
       renderChapters(); renderSpellPages(); renderPortfolio();
-      renderShop(); renderKeys(); renderResearch();
+      renderShop(); renderKeys(); renderResearch(); renderNodes();
+      setAIEnabled(settings.aiEnabled);
       toast("Welcome");
       setInterval(() => {
-        if (unlocked.lattice && Math.random() < 0.28) maybeChallenge("#vizLatticeBox", "lattice");
-        if (unlocked.wave && Math.random() < 0.28) maybeChallenge("#vizWaveBox", "wave");
-        if (unlocked.oracle && Math.random() < 0.22) maybeChallenge("#vizOracleBox", "oracle");
-      }, 34000);
-    }, 650);
+        NODES.forEach(n => { if (unlocked[n.id]) maybeChallenge(n.id); });
+      }, 36000);
+    }, 600);
   } else {
     $("#status").textContent = "Cipher Rejected"; $("#status").style.color = "var(--red)";
     $("#passphrase").classList.add("shake"); log("Rejected", "error");
-    setTimeout(() => { $("#status").textContent = "Awaiting Input"; $("#status").style.color = "var(--muted)"; $("#passphrase").classList.remove("shake"); }, 1500);
+    setTimeout(() => { $("#status").textContent = "Awaiting Input"; $("#status").style.color = "var(--muted)"; $("#passphrase").classList.remove("shake"); }, 1400);
   }
 });
 $("#lockBtn").addEventListener("click", () => {
@@ -1078,78 +1294,6 @@ $("#lockBtn").addEventListener("click", () => {
   $("#dashboardView").classList.add("hidden");
   $("#gateView").classList.remove("hidden");
 });
-$$("[data-feature]").forEach(btn => {
-  btn.addEventListener("click", e => {
-    const f = btn.dataset.feature, cost = +btn.dataset.cost;
-    if (unlocked[f] || tokens < cost) { if (tokens < cost) toast("Need tokens"); return; }
-    setTokens(tokens - cost); unlocked[f] = true;
-    const o = btn.closest(".lock-overlay"); o.classList.add("unlocked");
-    log(`Node ${f} unlocked`, "unlock"); toast(f + " online"); spawnRipple(e, o);
-    setTimeout(() => o.style.display = "none", 500);
-  });
-});
-function maybeChallenge(boxId, type) {
-  const box = $(boxId); if (box.querySelector(".challenge-modal")) return;
-  const qs = [{q:"7×8−3?",a:"53"},{q:"Type AETHER",a:"aether"},{q:"Hexagon sides?",a:"6"}];
-  const ch = qs[Math.floor(Math.random()*qs.length)];
-  const m = document.createElement("div"); m.className = "challenge-modal";
-  m.innerHTML = `<h3 style="font-size:.62rem;color:var(--gold);margin-bottom:.3rem">Node Challenge</h3><p style="font-size:.55rem;color:var(--muted);margin-bottom:.35rem">${ch.q}</p><input placeholder="Answer" style="width:80%;margin-bottom:.3rem;text-align:center"><div style="display:flex;gap:.25rem"><button class="btn-action" data-a="ok">Submit</button><button class="btn-action" data-a="no">Skip</button></div>`;
-  box.appendChild(m);
-  m.querySelector("[data-a=ok]").addEventListener("click", () => {
-    if (m.querySelector("input").value.trim().toLowerCase() === ch.a) { addKey(type); toast("Key earned"); }
-    else toast("Wrong");
-    m.remove();
-  });
-  m.querySelector("[data-a=no]").addEventListener("click", () => m.remove());
-}
-
-/* ── Viz engines ───────────────────────────────────────── */
-function initVisualizations() {
-  const c1 = $("#vizLatticeCanvas"), x1 = c1.getContext("2d");
-  const nodes = Array.from({length:16}, () => ({x:Math.random()*180,y:Math.random()*110,vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45}));
-  (function r() {
-    if (unlocked.lattice) {
-      c1.width = c1.offsetWidth; c1.height = c1.offsetHeight; x1.clearRect(0,0,c1.width,c1.height);
-      nodes.forEach((n,i) => {
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < 0 || n.x > c1.width) n.vx *= -1;
-        if (n.y < 0 || n.y > c1.height) n.vy *= -1;
-        x1.beginPath(); x1.arc(n.x,n.y,1.8,0,7); x1.fillStyle = settings.gold; x1.fill();
-        for (let j = i+1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[j].x-n.x, nodes[j].y-n.y);
-          if (d < 60) { x1.beginPath(); x1.moveTo(n.x,n.y); x1.lineTo(nodes[j].x,nodes[j].y); x1.strokeStyle = `rgba(212,175,55,${1-d/60})`; x1.stroke(); }
-        }
-      });
-    }
-    requestAnimationFrame(r);
-  })();
-  const c2 = $("#vizWaveCanvas"), x2 = c2.getContext("2d"); let st = 0;
-  (function r() {
-    if (unlocked.wave) {
-      c2.width = c2.offsetWidth; c2.height = c2.offsetHeight; x2.clearRect(0,0,c2.width,c2.height);
-      x2.beginPath(); x2.strokeStyle = "rgba(74,246,38,.7)";
-      for (let x = 0; x < c2.width; x++) {
-        const y = c2.height/2 + Math.sin(x*.03+st)*16 + Math.cos(x*.01+st*.5)*10;
-        x ? x2.lineTo(x,y) : x2.moveTo(x,y);
-      }
-      x2.stroke(); st += .04;
-    }
-    requestAnimationFrame(r);
-  })();
-  const c3 = $("#vizOracleCanvas"), x3 = c3.getContext("2d"); let ot = 0;
-  (function r() {
-    if (unlocked.oracle) {
-      c3.width = c3.offsetWidth; c3.height = c3.offsetHeight; x3.clearRect(0,0,c3.width,c3.height);
-      x3.save(); x3.translate(c3.width/2, c3.height/2); x3.rotate(ot);
-      for (let i = 0; i < 6; i++) {
-        x3.beginPath(); x3.arc(Math.cos(i)*28, Math.sin(i)*28, 12, 0, 7);
-        x3.strokeStyle = "rgba(212,175,55,.5)"; x3.stroke();
-      }
-      x3.restore(); ot += .01;
-    }
-    requestAnimationFrame(r);
-  })();
-}
 
 /* ── Boot ──────────────────────────────────────────────── */
 try {
