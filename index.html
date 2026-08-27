@@ -171,6 +171,29 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
 .melody-display{font-family:monospace;font-size:.55rem;color:var(--gold);letter-spacing:.08em;margin:.25rem 0;padding:.3rem;border:1px dashed var(--gold-dim)}
 .group-build{border:1px solid var(--border);padding:.4rem;margin-top:.4rem;font-size:.5rem}
 
+/* ── Juicy micro-interaction styles ─────────────────────── */
+@keyframes unlockBurst{0%{transform:scale(1);box-shadow:0 0 0 rgba(212,175,55,0)}40%{transform:scale(1.08);box-shadow:0 0 28px rgba(212,175,55,.7)}100%{transform:scale(1);box-shadow:0 0 0 rgba(212,175,55,0)}}
+@keyframes snapIn{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes powerPulse{0%,100%{box-shadow:0 0 6px rgba(192,132,252,.4),0 0 14px rgba(192,132,252,.15)}50%{box-shadow:0 0 18px rgba(192,132,252,.8),0 0 36px rgba(192,132,252,.35)}}
+@keyframes synergyActivate{0%{transform:scale(1);box-shadow:0 0 0 rgba(74,246,38,0)}35%{transform:scale(1.05);box-shadow:0 0 22px rgba(74,246,38,.6)}100%{transform:scale(1);box-shadow:0 0 6px rgba(74,246,38,.15)}}
+@keyframes meldyLockIn{0%{transform:scale(.85);opacity:.4;box-shadow:0 0 0 rgba(212,175,55,0)}60%{transform:scale(1.1);opacity:1;box-shadow:0 0 32px rgba(212,175,55,.65)}100%{transform:scale(1);box-shadow:0 0 10px rgba(212,175,55,.2)}}
+@keyframes errorShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes logSlideIn{0%{transform:translateX(-22px);opacity:0}100%{transform:translateX(0);opacity:1}}
+@keyframes tokenFloat{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-52px);opacity:0}}
+@keyframes starBurst{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.btn-action{transition:transform .08s,box-shadow .08s}
+.btn-action:active:not(:disabled){transform:scale(.93)!important;box-shadow:0 0 10px rgba(212,175,55,.45)!important}
+.btn-action:focus-visible{outline:none;box-shadow:0 0 0 2px var(--gold-dim),0 0 10px rgba(212,175,55,.3)}
+input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.55)!important;box-shadow:0 0 0 2px rgba(212,175,55,.12),0 0 8px rgba(212,175,55,.2)!important;transition:box-shadow .18s,border-color .18s}
+.token-popup{position:fixed;font-size:.58rem;font-weight:bold;color:var(--gold);pointer-events:none;z-index:200;white-space:nowrap;animation:tokenFloat 1.1s ease-out forwards}
+.toast.error-toast{border-color:rgba(230,57,70,.6);color:var(--red);animation:errorShake .35s ease-out}
+.portfolio-slot.snap-in{animation:snapIn .28s cubic-bezier(.34,1.56,.64,1)}
+.power-active.pulsing{animation:powerPulse 1.4s ease-in-out infinite}
+.log-entry{animation:logSlideIn .2s ease-out}
+.viz-card.unlock-burst{animation:unlockBurst .5s ease-out}
+.syn-card.syn-activate{animation:synergyActivate .5s ease-out forwards}
+.melody-display.meldy-lock{animation:meldyLockIn .55s cubic-bezier(.34,1.56,.64,1)}
+
 </style>
 </head>
 <body>
@@ -743,7 +766,8 @@ const CHAR_COLORS = {};
 });
 
 /* ── Helpers ───────────────────────────────────────────── */
-function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1500)}
+function toast(m){const t=$("#toast");t.classList.remove("error-toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1500)}
+function toastError(m){const t=$("#toast");t.textContent=m;t.classList.remove("error-toast");void t.offsetWidth;t.classList.add("show","error-toast");setTimeout(()=>t.classList.remove("show"),1800)}
 function log(msg,type="info"){
   const now=new Date();
   const ts=now.toLocaleTimeString("en-GB",{hour12:false})+"."+String(now.getMilliseconds()).padStart(3,"0").slice(0,2);
@@ -770,7 +794,21 @@ function log(msg,type="info"){
 function setTokens(n,anim=true){
   const prev=tokens;tokens=Math.max(0,Math.floor(n));
   $("#tokenBalance").textContent=tokens;
-  if(anim&&tokens!==prev){$("#tokenCounter").classList.add("pulse");setTimeout(()=>$("#tokenCounter").classList.remove("pulse"),300)}
+  if(anim&&tokens!==prev){
+    $("#tokenCounter").classList.add("pulse");
+    setTimeout(()=>$("#tokenCounter").classList.remove("pulse"),300);
+    const diff=tokens-prev;
+    if(diff>0){
+      const pop=document.createElement("div");
+      pop.className="token-popup";
+      pop.textContent=(diff>0?"+":"")+diff+" ⟁";
+      const r=$("#tokenCounter").getBoundingClientRect();
+      pop.style.left=(r.left+r.width/2)+"px";
+      pop.style.top=(r.top-6)+"px";
+      document.body.appendChild(pop);
+      setTimeout(()=>pop.remove(),1150);
+    }
+  }
   updateClearance();
   try{localStorage.setItem("bp_tokens_"+user,tokens)}catch(_){}
 }
@@ -843,6 +881,28 @@ function bootUI(){
   renderKeys();renderResearch();renderNodes();renderNodeShop();renderShards();
   renderCodeArchive();renderLab();setAIEnabled(settings.aiEnabled);
   startVaultTick();
+  makeJuicy();
+}
+function makeJuicy(){
+  // Button press scale feedback on all .btn-action elements (mousedown/mouseup)
+  document.addEventListener("mousedown",e=>{
+    const b=e.target.closest(".btn-action");
+    if(!b||b.disabled)return;
+    b.style.transform="scale(.93)";
+    b.style.boxShadow="0 0 10px rgba(212,175,55,.45)";
+  });
+  document.addEventListener("mouseup",()=>{
+    document.querySelectorAll(".btn-action").forEach(b=>{b.style.transform="";b.style.boxShadow=""});
+  });
+  // Power badge pulse when active
+  const pwBadge=$("#powerBadge");
+  if(pwBadge){
+    const obs=new MutationObserver(()=>{
+      if(pwBadge.style.display!=="none"&&pwBadge.offsetParent){pwBadge.classList.add("pulsing")}
+      else{pwBadge.classList.remove("pulsing")}
+    });
+    obs.observe(pwBadge,{attributes:true,attributeFilter:["style"]});
+  }
 }
 
 /* Tokens click → Financing */
@@ -866,7 +926,7 @@ function startVaultTick(){
 $("#predBuy").onclick=()=>{
   const stake=Math.max(25,+$("#predStake").value||25);
   const guess=Math.min(10,Math.max(0,+$("#predDigits").value||5));
-  if(tokens<stake){toast("Need tokens");return}
+  if(tokens<stake){toastError("Need tokens");return}
   setTokens(tokens-stake);
   predContract={guess,stake,left:3};
   $("#predStatus").textContent=`Contract active: guess ${guess} digits · ${predContract.left} codes left`;
@@ -952,7 +1012,7 @@ function startTask(id,e){
   if(st.status!=="idle"||!isUnlocked(t))return;
   const working=Object.values(taskState).filter(s=>s.status==="working").length;
   const lim=window.__parallel||1;
-  if(working>=lim){toast("Need more Parallel");return}
+  if(working>=lim){toastError("Need more Parallel");return}
   const dur=Math.floor(t.dur*durationFactor);
   st.status="working";st.endsAt=performance.now()+dur;
   renderSongPages();
@@ -978,6 +1038,31 @@ function stopTask(id){
   renderSongPages();
   log("Rite stopped: "+id,"system");toast("Stopped "+id);
 }
+function screenShake(){
+  const el=$("#dashboardView");if(!el)return;
+  const frames=[
+    {transform:"translate(-3px,2px)"},{transform:"translate(3px,-2px)"},
+    {transform:"translate(-2px,-3px)"},{transform:"translate(2px,2px)"},
+    {transform:"translate(0,0)"}
+  ];
+  el.animate(frames,{duration:320,easing:"ease-out"});
+}
+function spawnConfetti(originEl){
+  if(!originEl)return;
+  const r=originEl.getBoundingClientRect();
+  const colors=["#d4af37","#4af626","#c084fc","#7eb8ff","#f59e0b"];
+  for(let i=0;i<18;i++){
+    const p=document.createElement("div");
+    const c=colors[i%colors.length];
+    p.style.cssText=`position:fixed;pointer-events:none;z-index:300;width:6px;height:6px;border-radius:50%;background:${c};left:${r.left+r.width/2}px;top:${r.top+r.height/2}px`;
+    document.body.appendChild(p);
+    const angle=(i/18)*Math.PI*2;
+    const dist=60+Math.random()*60;
+    const tx=Math.cos(angle)*dist,ty=Math.sin(angle)*dist-30;
+    p.animate([{transform:"translate(0,0)",opacity:1},{transform:`translate(${tx}px,${ty}px)`,opacity:0}],{duration:700+Math.random()*400,easing:"ease-out",fill:"forwards"});
+    setTimeout(()=>p.remove(),1200);
+  }
+}
 function finishTask(id){
   const t=TASKS.find(x=>x.id===id);const st=taskState[id];
   const sleepMul=(t.chapter==="sleep"?(window.__sleepMul||1):1);
@@ -987,6 +1072,9 @@ function finishTask(id){
   completedOnce.add(id);
   log(`Rite complete: ${t.title} · +${reward}`,"task");
   toast("+"+reward+" ⟁");
+  screenShake();
+  const originCard=document.querySelector(`[data-task="${id}"]`);
+  spawnConfetti(originCard||$("#tokenCounter"));
   emitEnergyCode(t);
   const cd=Math.floor(t.cd*cooldownFactor);
   st.status="cooldown";st.endsAt=performance.now()+cd;
@@ -1096,6 +1184,11 @@ function renderPortfolio(){
         }else toast("Full");
       }
       renderPortfolio();
+      // snap-in feedback on the target slot
+      requestAnimationFrame(()=>{
+        const s=document.querySelector(`[data-idx="${i}"]`);
+        if(s&&s.classList.contains("filled")){s.classList.remove("snap-in");void s.offsetWidth;s.classList.add("snap-in")}
+      });
     };
     el.appendChild(slot);
   }
@@ -1153,7 +1246,7 @@ function renderShop(){
       <button class="btn-action" ${maxed?"disabled":""}>${lv?"Upgrade":"Buy"}</button>`;
     g.appendChild(c);
     if(!maxed)c.querySelector("button").onclick=()=>{
-      if(tokens<cost){toast("Need tokens");return}
+      if(tokens<cost){toastError("Need tokens");return}
       setTokens(tokens-cost);ownedRelicLv[r.id]=lv+1;r.fn(ownedRelicLv[r.id]);
       log(`Relic ${r.name} → Lv ${ownedRelicLv[r.id]}`,"unlock");toast(r.name+" Lv "+ownedRelicLv[r.id]);
       renderShop();renderSongPages();renderPortfolio();
@@ -1178,7 +1271,7 @@ function renderResearch(){
       <button class="btn-action">Begin</button>`;
     g.appendChild(c);
     c.querySelector("button").onclick=()=>{
-      const cost=track.costs[d];if(tokens<cost){toast("Need tokens");return}
+      const cost=track.costs[d];if(tokens<cost){toastError("Need tokens");return}
       setTokens(tokens-cost);
       activeResearch={track,depth:d};
       $("#analysisArea").style.display="block";
@@ -1190,7 +1283,7 @@ function renderResearch(){
 $("#submitAnalysis").onclick=()=>{
   if(!activeResearch)return;
   const text=$("#analysisInput").value.trim().toLowerCase();
-  if(text.length<8){toast("Too brief");return}
+  if(text.length<8){toastError("Too brief");return}
   let q=0.35;
   if(text.length>40)q+=0.15;
   if(/\\d+/.test(text))q+=0.1;
@@ -1229,7 +1322,13 @@ function renderNodes(){
   });
   $$("[data-unlock]").forEach(b=>b.onclick=()=>{
     const id=b.dataset.unlock;const n=NODES.find(x=>x.id===id);const c=nodeCost(n.cost);
-    if(tokens<c){toast("Need tokens");return}setTokens(tokens-c);unlocked[id]=true;log("Node "+n.name,"unlock");renderNodes();startNodeAnim(id);
+    if(tokens<c){toastError("Need tokens");return}setTokens(tokens-c);unlocked[id]=true;log("Node "+n.name,"unlock");renderNodes();
+    // unlock burst on the newly rendered card
+    requestAnimationFrame(()=>{
+      const card=document.querySelector(`#vizCanvas-${id}`)?.closest(".viz-card");
+      if(card){card.classList.remove("unlock-burst");void card.offsetWidth;card.classList.add("unlock-burst");setTimeout(()=>card.classList.remove("unlock-burst"),550)}
+    });
+    startNodeAnim(id);
   });
   $$("[data-charge]").forEach(b=>b.onclick=()=>chargeNode(b.dataset.charge));
   $$("[data-activate]").forEach(b=>b.onclick=()=>activateNode(b.dataset.activate));
@@ -1253,7 +1352,7 @@ function nodeCtrlHTML(n,st){
 }
 function chargeNode(id){
   const n=NODES.find(x=>x.id===id);const st=nodeState[id];
-  const c=nodeCost(n.charge);if(tokens<c){toast("Need tokens");return}
+  const c=nodeCost(n.charge);if(tokens<c){toastError("Need tokens");return}
   if(st.status!=="idle")return;
   setTokens(tokens-c);st.status="charging";
   const cd=8000*(st._cdMul||1);
@@ -1265,7 +1364,7 @@ function chargeNode(id){
 function activateNode(id){
   const n=NODES.find(x=>x.id===id);const st=nodeState[id];
   if(st.status!=="ready")return;
-  const c=nodeCost(n.activate);if(tokens<c){toast("Need tokens");return}
+  const c=nodeCost(n.activate);if(tokens<c){toastError("Need tokens");return}
   setTokens(tokens-c);st.status="idle";
   // XP + key
   const xpGain=Math.floor(12*(st._xpMul||1));
@@ -1280,7 +1379,7 @@ function buyTalent(tid,nid){
   const st=nodeState[nid];const t=TALENTS.find(x=>x.id===tid);
   if(st.talents.has(tid))return;
   const pts=st.level-1-st.talents.size;
-  if(pts<t.cost){toast("Need talent points (level up)");return}
+  if(pts<t.cost){toastError("Need talent points");return}
   st.talents.add(tid);t.effect(st);log("Talent "+t.name+" on "+nid,"unlock");renderNodes();
 }
 function inspectNode(id){
@@ -1397,10 +1496,19 @@ function toggleSyn(id){
     log("Synergy activated: "+s.name+" ×"+(s.mult*Math.pow(1.08,s.level-1)).toFixed(3),"power");
   }
   renderSavedSyn();renderSongPages();renderPortfolio();updateSynergyBadge();
+  // cascade glow: flash the synergy card then the songbook badge
+  requestAnimationFrame(()=>{
+    const card=document.querySelector(`[data-synact="${id}"]`)?.closest(".syn-card");
+    if(card){card.classList.remove("syn-activate");void card.offsetWidth;card.classList.add("syn-activate");setTimeout(()=>card.classList.remove("syn-activate"),550)}
+    setTimeout(()=>{
+      const badge=$("#synBadge")||document.querySelector(".clearance-badge");
+      if(badge){badge.style.transition="box-shadow .2s";badge.style.boxShadow="0 0 18px rgba(74,246,38,.6)";setTimeout(()=>badge.style.boxShadow="",500)}
+    },280);
+  });
 }
 function upgradeSyn(id){
   const s=savedSynergies.find(x=>x.id===id);if(!s)return;
-  if((shards.violet||0)<2||(shards.void||0)<1){toast("Need 2 violet + 1 void shard");return}
+  if((shards.violet||0)<2||(shards.void||0)<1){toastError("Need 2 violet + 1 void shard");return}
   shards.violet-=2;shards.void-=1;s.level++;
   log("Synergy upgraded: "+s.name+" → Lv"+s.level,"unlock");
   toast(s.name+" Lv"+s.level);renderSavedSyn();renderShards();renderSongPages();
@@ -1452,7 +1560,7 @@ function renderGroupSlots(){
   $$("[data-grow]").forEach(b=>b.onclick=()=>{
     const id=b.dataset.grow;const cost=35;
     if(!unlocked[id]){toast("Unlock original first");return}
-    if(tokens<cost){toast("Need tokens");return}
+    if(tokens<cost){toastError("Need tokens");return}
     setTokens(tokens-cost);nodeClones[id]=(nodeClones[id]||0)+1;
     log("Node clone grown: "+id,"unlock");toast("Clone +1 "+id);renderGroupSlots();
   });
@@ -1478,6 +1586,10 @@ function sealGroupHandler(){
   sealedGroups.push(g);
   $("#melodyPreview").style.display="block";
   $("#melodyPreview").textContent="12-note seal: "+melody;
+  // melody lock-in flourish
+  const mp=$("#melodyPreview");
+  mp.classList.remove("meldy-lock");void mp.offsetWidth;mp.classList.add("meldy-lock");
+  setTimeout(()=>mp.classList.remove("meldy-lock"),600);
   log("Group sealed: "+g.name+" · "+melody,"power");
   toast("Sealed");
   buildingPub=null;$("#groupBuild").style.display="none";
@@ -1571,7 +1683,7 @@ function renderShards(){
     const c=document.createElement("div");c.className="shop-item";
     c.innerHTML=`<div class="upgrade-name">${b.id} shard</div><div class="upgrade-cost">${b.cost} ⟁</div><button class="btn-action">Buy</button>`;
     g.appendChild(c);
-    c.querySelector("button").onclick=()=>{if(tokens<b.cost){toast("Need tokens");return}setTokens(tokens-b.cost);shards[b.id]++;renderShards();log("Bought "+b.id+" shard","info")};
+    c.querySelector("button").onclick=()=>{if(tokens<b.cost){toastError("Need tokens");return}setTokens(tokens-b.cost);shards[b.id]++;renderShards();log("Bought "+b.id+" shard","info")};
   });
   const crafts=[
     {name:"Yield Draft",need:{crimson:2,azure:1},fn:()=>{globalMultiplier*=1.05}},
@@ -1583,7 +1695,7 @@ function renderShards(){
     c.innerHTML=`<div class="upgrade-name">${cr.name}</div><div class="upgrade-desc">${Object.entries(cr.need).map(([k,v])=>v+" "+k).join(", ")}</div><button class="btn-action">Craft</button>`;
     g.appendChild(c);
     c.querySelector("button").onclick=()=>{
-      for(const [k,v] of Object.entries(cr.need))if((shards[k]||0)<v){toast("Need shards");return}
+      for(const [k,v] of Object.entries(cr.need))if((shards[k]||0)<v){toastError("Need shards");return}
       for(const [k,v] of Object.entries(cr.need))shards[k]-=v;
       cr.fn();toast(cr.name);renderShards();renderKeys();renderSongPages();
     };
