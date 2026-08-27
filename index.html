@@ -134,7 +134,17 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold)}
 .chapter-btn{text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);font-family:inherit;font-size:.54rem;letter-spacing:.05em;padding:.3rem .4rem;cursor:pointer;transition:all .2s}
 .chapter-btn:hover,.chapter-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.08)}
 .spell-pages{display:flex;flex-direction:column;gap:.32rem;max-height:240px;overflow-y:auto}
-.spell-pages.utility-mode{max-height:340px}
+
+.spell-pages.utility-mode{max-height:380px;gap:.55rem!important}
+.spell-pages.utility-mode .spell-card{padding:.55rem .6rem;min-height:64px;gap:.4rem}
+.spell-pages.utility-mode .spell-actions{flex-direction:row;flex-wrap:wrap;gap:.25rem!important}
+.spell-pages.utility-mode .spell-actions .btn-action{padding:.28rem .45rem;font-size:.52rem;min-width:52px}
+.spell-actions{display:flex;flex-direction:column;gap:.2rem}
+.spell-actions .btn-action{padding:.2rem .35rem}
+.code-char{display:inline}
+.log-compact .log-entry{padding:.08rem .2rem;font-size:.9em}
+.log-hide-ts .log-entry .ts{display:none}
+
 .spell-card{
   border:1px solid var(--border);background:rgba(15,15,20,.4);padding:.45rem .5rem;
   display:grid;grid-template-columns:1fr auto;gap:.3rem;align-items:center;font-size:.58rem;
@@ -567,9 +577,37 @@ body.anim-max .cd-active{animation-duration:.8s}
     </div>
     <div class="settings-section">
       <h4>Activity Log Appearance</h4>
-      <div class="settings-row"><label>Log font size</label><input type="range" id="setLogFont" min="10" max="16" step="1" value="12"></div>
+      <div class="settings-row"><label>Log font size</label><input type="range" id="setLogFont" min="10" max="18" step="1" value="12"></div>
       <div class="settings-row"><label>Log text color</label><input type="color" id="setLogColor" value="#c4c4cc"></div>
+      <div class="settings-row"><label>Log background</label><input type="color" id="setLogBg" value="#060609"></div>
+      <div class="settings-row"><label>Timestamp color</label><input type="color" id="setLogTs" value="#7a7a84"></div>
+      <div class="settings-row"><label>Line spacing</label><input type="range" id="setLogGap" min="0" max="12" step="1" value="3"></div>
+      <div class="settings-row"><label>Font family</label>
+        <select id="setLogFamily">
+          <option value='"Courier New",Courier,monospace'>Courier</option>
+          <option value="Consolas,monospace">Consolas</option>
+          <option value="Georgia,serif">Georgia</option>
+          <option value="system-ui,sans-serif">System UI</option>
+        </select>
+      </div>
+      <div class="settings-row"><label>Show timestamps</label><input type="checkbox" id="setLogShowTs" checked></div>
+      <div class="settings-row"><label>Compact mode</label><input type="checkbox" id="setLogCompact"></div>
       <div class="settings-row"><label>Highlight keywords</label><input type="checkbox" id="setLogHL" checked></div>
+      <div class="settings-row"><label>Highlight color</label><input type="color" id="setLogHLColor" value="#22d3ee"></div>
+      <div class="settings-row"><label>Filter type</label>
+        <select id="setLogFilterType">
+          <option value="">All types</option>
+          <option value="task">task</option>
+          <option value="process">process</option>
+          <option value="code">code</option>
+          <option value="node">node</option>
+          <option value="power">power</option>
+          <option value="finance">finance</option>
+          <option value="ai">ai</option>
+          <option value="error">error</option>
+          <option value="system">system</option>
+        </select>
+      </div>
     </div>
     <div class="settings-section">
       <h4>Keyword Notifications</h4>
@@ -889,6 +927,7 @@ function renderSpellPages() {
       <div class="spell-actions">
         <button class="btn-action" data-act="cast" ${!open||st.status!=="idle"?"disabled":""}>${st.status==="idle"?(open?"Cast":"Locked"):st.status==="working"?"…":"CD"}</button>
         <button class="btn-action" data-act="add" ${!open?"disabled":""}>+ Table</button>
+        <button class="btn-action warn" data-act="stop" ${st.status==="idle"?"disabled":""}>Stop</button>
       </div>
       <div class="task-progress" id="prog-${t.id}"></div>`;
     pages.appendChild(card);
@@ -896,7 +935,23 @@ function renderSpellPages() {
       card.querySelector("[data-act=cast]").addEventListener("click", e => startTask(t.id, e));
     }
     if (open) card.querySelector("[data-act=add]").addEventListener("click", () => addToPortfolio(t.id));
+    const stopBtn = card.querySelector("[data-act=stop]");
+    if (stopBtn) stopBtn.addEventListener("click", () => stopRite(t.id));
   });
+}
+function stopRite(id) {
+  const st = taskState[id];
+  if (!st || st.status === "idle") { toast("Nothing to stop"); return; }
+  const was = st.status;
+  st.status = "idle";
+  st.endsAt = 0;
+  const t = TASKS.find(x => x.id === id);
+  log("Rite stopped: " + (t ? t.title : id) + " (was " + was + ")", "task");
+  toast("Stopped " + (t ? t.title : id));
+  // if this was the only working visual, stop visual
+  const anyWorking = Object.values(taskState).some(s => s.status === "working");
+  if (!anyWorking) stopUniqueVisual();
+  renderSpellPages();
 }
 
 function startTask(id, e) {
@@ -1521,107 +1576,103 @@ function sendChat() {
 
 function localInfer(q) {
   const lower = q.toLowerCase();
-  const ctx = (aiContext || "").toLowerCase();
-  const clearance = $("#clearanceBadge").textContent.replace("CLEARANCE: ","");
-  const mult = globalMultiplier * researchBoost * ((activePowers.reduce((m,p)=>m*(p.mult||1),1) || activePower?.mult || 1));
+  const fbBias = (typeof aiFeedback !== "undefined") ? (aiFeedback.up - aiFeedback.down) : 0;
+  const mult = globalMultiplier * researchBoost * (activePowers.reduce((m,p)=>m*(p.mult||1),1) || activePower?.mult || 1);
   const available = TASKS.filter(t => isUnlocked(t) && (taskState[t.id]?.status === "idle" || !taskState[t.id]));
-  const locked = TASKS.filter(t => !isUnlocked(t));
+  const working = TASKS.filter(t => taskState[t.id]?.status === "working");
+  const cooling = TASKS.filter(t => taskState[t.id]?.status === "cooldown");
   const openNodes = NODES.filter(n => unlocked[n.id]);
-  const completed = [...completedOnce];
+  const clearance = ($("#clearanceBadge")?.textContent || "").replace("CLEARANCE: ","");
+  const recent = logEntries.slice(-25);
+  const codeStats = (() => {
+    if (!energyCodes.length) return null;
+    const last = energyCodes.slice(-20);
+    const dig = last.reduce((s,c)=>s+[...c].filter(ch=>/\d/.test(ch)).length,0)/last.length;
+    const vow = last.reduce((s,c)=>s+[...c].filter(ch=>/[AEIOU]/i.test(ch)).length,0)/last.length;
+    return {n: energyCodes.length, dig: dig.toFixed(1), vow: vow.toFixed(1), last: energyCodes[energyCodes.length-1]};
+  })();
 
-  // Status snapshot
-  if (/status|summary|overview|how am i|report/.test(lower)) {
+  // Intent routing with multi-condition reasoning
+  if (/status|summary|overview|report|how am i/.test(lower)) {
     return [
-      `Sanctuary status`,
-      `• Tokens: ${tokens} ⟁ · Clearance: ${clearance}`,
-      `• Yield multiplier: ×${mult.toFixed(2)} (base × research × power)`,
-      `• Rites completed (unique): ${completed.length}/${TASKS.length}`,
-      `• Portfolio: ${portfolio.length}/${maxSlots} slots · Sequence: ${seqState}`,
-      `• Nodes unlocked: ${openNodes.length}/${NODES.length}`,
-      `• Keys held: ${keys.length} · Powers ready: ${powers.length}`,
-      ``,
-      available.length
-        ? `Next high-yield idle rite: “${available.sort((a,b)=>b.base-a.base)[0].title}”`
-        : `No idle unlocked rites — wait on cooldowns or unlock dependencies.`
-    ].join("\n");
+      "══ Sanctuary status ══",
+      "User: " + (currentUser||"adept") + " · Clearance: " + clearance,
+      "Tokens: " + tokens + " ⟁ · Vault: " + (vault?.bal||0) + " ⟁",
+      "Yield multiplier: ×" + mult.toFixed(2),
+      "Rites: " + available.length + " idle · " + working.length + " casting · " + cooling.length + " cooling",
+      "Nodes unlocked: " + openNodes.length + "/" + NODES.length,
+      "Powers active: " + (activePowers.length ? activePowers.map(p=>p.name).join(", ") : "none"),
+      "Energy codes: " + energyCodes.length + (codeStats ? " (avg digits " + codeStats.dig + ", vowels " + codeStats.vow + ")" : ""),
+      "Sequence: " + seqState + " · Portfolio " + portfolio.length + "/" + maxSlots,
+      fbBias ? ("AI feedback score: ▲" + aiFeedback.up + " ▼" + aiFeedback.down) : ""
+    ].filter(Boolean).join("\n");
   }
 
-  if (/token|balance|wealth/.test(lower)) {
-    const needForSlot = 80 + (maxSlots - 6) * 40;
-    return `You hold ${tokens} tokens at clearance ${clearance}.\n\nRough priorities:\n• Keep a buffer of ~50–80 for node charge/activate cycles.\n• Next table slot costs ${maxSlots >= 12 ? "— (maxed)" : needForSlot + " ⟁"}.\n• Highest single-cast idle yield right now: ${available.length ? Math.floor(available.sort((a,b)=>b.base-a.base)[0].base * mult) + " ⟁" : "none idle"}.`;
+  if (/plan|strategy|optimize|best path|what should i/.test(lower)) {
+    const lines = ["══ Strategic plan ══"];
+    if (available.length) {
+      const ranked = [...available].sort((a,b)=>b.base-a.base).slice(0,4);
+      lines.push("Cast priority (idle):");
+      ranked.forEach((t,i) => lines.push("  " + (i+1) + ". " + t.title + " → +" + Math.floor(t.base*mult) + " ⟁"));
+    } else {
+      lines.push("No idle rites — wait cooldowns or open Utility fillers.");
+    }
+    if (tokens >= 80 && maxSlots < 14) lines.push("Affordable: extra table slot.");
+    if (openNodes.length && tokens > 40) lines.push("Node tip: charge idle nodes to bank Keys before a long sequence.");
+    if (energyCodes.length >= 5) lines.push("Codes: enough history for a prediction contract (Financing).");
+    if (vault?.bal < 50 && tokens > 100) lines.push("Consider parking surplus tokens in the Bit Vault for passive interest.");
+    lines.push("Use Halt All only for emergencies; prefer per-rite Stop buttons for surgical cancels.");
+    return lines.join("\n");
+  }
+
+  if (/code|energy|residual/.test(lower)) {
+    if (!codeStats) return "No residual energy codes yet. Every successful cast emits a 10-char code — each character is uniquely colored in the Codes archive.";
+    return "Codes archived: " + codeStats.n + "\nLatest: " + codeStats.last + "\nAvg digits/vowels (last 20): " + codeStats.dig + " / " + codeStats.vow + "\n\nColor key: each letter & digit has a fixed unique color. Green chips = digit-heavy, purple = vowel-heavy.\nDownload the archive from the Codes tab. Prediction contracts live under Financing.";
+  }
+
+  if (/node|charge|activate|shop/.test(lower)) {
+    const idleN = openNodes.filter(n => (nodeState[n.id]||{}).status === "idle").length;
+    return "Nodes unlocked: " + openNodes.length + "/" + NODES.length + " (" + idleN + " idle).\nFlow: Unlock → Charge → Activate → Key → Power.\nNode Shop supports multi-select: check several nodes, then Buy & Apply (cost × count).\nExtra actions: Inspect, Attune (−8 ⟁), Sacrifice (refund).\nPowers: different types can stack; combined multipliers multiply.";
+  }
+
+  if (/stop|halt|cancel/.test(lower)) {
+    return "Two levels of stop:\n• Per-rite Stop on each spell card — cancels that rite only.\n• Halt All (header) — kills every rite, sequence, node charge, and power.\nSequence also has Pause / Stop on the Rites Table.";
+  }
+
+  if (/vault|lend|interest|financ/.test(lower)) {
+    return "Bit Vault: " + (vault?.bal||0) + " ⟁ · lifetime interest " + (vault?.interest||0) + " ⟁.\nClick your token balance to open Financing (products, code contracts, lending).\nInterest ticks ~45s. Auto-credit can be toggled in the Lending tab.";
   }
 
   if (/portfolio|table|sequence/.test(lower)) {
-    if (!portfolio.length) {
-      return `Rites Table is empty.\n\nSuggested starter portfolio:\n1. Align Aetheric Signal\n2. Silent Observation\n3. Sweep Residual Noise (Utility)\n4. Decipher Arcane Packet\n\nAdd with “+ Table”, then use Start / Pause / Stop to control the run.`;
-    }
-    const names = portfolio.map(id => TASKS.find(t => t.id === id)?.title || id);
-    const pot = portfolio.reduce((s, id) => {
-      const t = TASKS.find(x => x.id === id);
-      return s + Math.floor((t?.base || 0) * mult);
-    }, 0);
-    return `Portfolio (${portfolio.length}/${maxSlots}):\n${names.map((n,i)=>`${i+1}. ${n}`).join("\n")}\n\nPotential pass: ~${pot} ⟁ at current multiplier.\nSequence state: ${seqState}${seqState!=="idle" ? ` (step ${seqIndex+1})` : ""}.\n\nUse Start to run, Pause mid-run, Stop to abort.`;
+    if (!portfolio.length) return "Rites Table is empty. Add rites with + Table, then Start. Drag panels by their headers to arrange your workspace.";
+    return "Portfolio " + portfolio.length + "/" + maxSlots + ":\n" + portfolio.map((id,i) => "  " + (i+1) + ". " + (TASKS.find(t=>t.id===id)?.title||id)).join("\n") + "\nState: " + seqState + "\nActive powers multiply all yields in the run.";
   }
 
-  if (/node|charge|activate|key/.test(lower)) {
-    if (!openNodes.length) {
-      return `No mystical nodes unlocked yet.\n\nCheapest unlocks:\n• Chrono Lattice — 30 ⟁\n• Astral Wave — 50 ⟁\n• Ember Spiral — 60 ⟁\n\nAfter unlock: Charge (token fee) → wait cooldown → Activate (token fee) → receive a Key. Keys convert to temporary power multipliers.`;
-    }
-    const lines = openNodes.map(n => {
-      const st = nodeState[n.id]?.status || "idle";
-      return `• ${n.name}: ${st} · charge ${n.charge} / activate ${n.activate}`;
-    });
-    return `Unlocked nodes:\n${lines.join("\n")}\n\nFlow: Charge → cooldown → Activate → Key.\nKeys become Powers (5× / 7× / 55×) in the Keys tab.`;
+  if (/token|balance|wealth/.test(lower)) {
+    return "Liquid: " + tokens + " ⟁ · Vault: " + (vault?.bal||0) + " ⟁ · Clearance: " + clearance + "\nEffective yield ×" + mult.toFixed(2) + "\nHighest idle cast: " + (available.length ? Math.floor([...available].sort((a,b)=>b.base-a.base)[0].base*mult) + " ⟁" : "none");
   }
 
-  if (/recommend|next|suggest|plan|strategy|what should/.test(lower)) {
-    const tips = [];
-    if (available.length) {
-      const best = [...available].sort((a,b) => b.base - a.base).slice(0, 3);
-      tips.push("Cast priority (idle & unlocked):");
-      best.forEach((t, i) => tips.push(`  ${i+1}. ${t.title} (+${Math.floor(t.base*mult)} ⟁)`));
-    } else {
-      tips.push("All unlocked rites are busy — wait cooldowns or open new deps.");
-    }
-    if (locked.length && completed.length) {
-      const almost = locked.filter(t => t.deps.every(d => completedOnce.has(d) || available.some(a => a.id === d)));
-      if (almost.length) tips.push(`\nNearly unlocked: ${almost.slice(0,3).map(t=>t.title).join(", ")}`);
-    }
-    if (tokens >= 80 && maxSlots < 12) tips.push(`\nYou can afford another Table slot (${80+(maxSlots-6)*40} ⟁).`);
-    if (openNodes.length && tokens > 40) tips.push(`\nNode tip: charge a ready node when idle to bank Keys for burst multipliers.`);
-    return tips.join("\n") || "Keep casting foundational rites to open the tree.";
+  if (/error|fail|stuck|bug|debug/.test(lower)) {
+    const errs = recent.filter(e => e.type === "error").slice(-5);
+    return errs.length ? ("Recent errors:\n" + errs.map(e => "• " + e.msg).join("\n")) : "No recent errors in the log buffer.";
   }
 
-  if (/utility|meditat|sweep|harvest|stabil/.test(lower)) {
-    const utils = TASKS.filter(t => t.chapter === "utility");
-    return `Utility chapter has ${utils.length} rites:\n${utils.map(t => `• ${t.title} (+${t.base} base)${isUnlocked(t)?"":" — locked"}`).join("\n")}\n\nThese are lower-risk, moderate-yield tools good for filling portfolio gaps and feeding research logs.`;
+  if (/help|how|command|what can/.test(lower)) {
+    return "I can help with:\n• status / plan / strategy\n• rites, portfolio, sequence\n• nodes, shop, powers\n• energy codes & contracts\n• vault & financing\n• stop/halt controls\nFeed me the log for tighter context. Use ▲/▼ on my replies so I can bias toward answers you find useful.";
   }
 
-  if (/error|fail|stuck|problem|debug/.test(lower)) {
-    const errs = logEntries.filter(e => e.type === "error").slice(-5);
-    if (!errs.length) return "No recent errors in the activity log. System looks clean.";
-    return `Recent issues:\n${errs.map(e => `• [${e.ts}] ${e.msg}`).join("\n")}\n\nCommon causes: rejected passphrase attempts, insufficient tokens for purchases, or sequence aborts.`;
-  }
-
-  if (/last rite|what did i|history|log/.test(lower)) {
-    const lasts = logEntries.filter(e => e.type === "task").slice(-6);
-    if (!lasts.length) return "No rite activity logged yet.";
-    return `Recent rite activity:\n${lasts.map(e => `• ${e.msg}`).join("\n")}${ctx ? "\n\n(I also hold your fed log buffer for deeper queries.)" : "\n\nFeed the log for fuller context."}`;
-  }
-
-  if (/power|multiplier|boost/.test(lower)) {
-    return `Current yield multiplier: ×${mult.toFixed(2)}\n  global ${globalMultiplier.toFixed(2)} × research ${researchBoost.toFixed(2)} × power ${(activePower?.mult||1)}\n\nWays to raise it:\n• Relic Shop yield upgrades\n• Research findings (quality matters)\n• Activate Keys → Powers (5×/7×/55× temporary)\n• Echo Chamber relic for chance double payouts`;
-  }
-
-  // Fallback reasoned tip
+  // Fallback: context-aware tip
   const tips = [
-    `You are at ${clearance} with ${tokens} ⟁. Focus on completing dependency chains in Foundations → Binding to open Ascent rites.`,
-    `Utility rites (Meditate, Sweep, Harvest…) are excellent fillers for the Rites Table while higher chapters cool down.`,
-    `Node loop: Unlock → Charge → wait → Activate → Key → Power. Time activations before a long portfolio sequence for maximum return.`,
-    `Sequence controls: Start runs the table in order; Pause freezes between rites; Stop aborts cleanly. Safe to rearrange only while Idle.`,
-    `Research submissions that mention counts, errors, or specific rite names score higher quality and permanently raise yield.`,
+    available.length ? ("Highest idle yield: " + [...available].sort((a,b)=>b.base-a.base)[0].title) : "All unlocked rites are busy — try Utility fillers or wait CDs.",
+    openNodes.length ? ("You have " + openNodes.length + " nodes online — multi-select in Node Shop to buff several at once.") : "Unlock Chrono Lattice (30 ⟁) to start the node loop.",
+    energyCodes.length > 10 ? "Enough codes for meaningful prediction contracts." : "Keep casting to build the energy-code archive.",
+    "Drag panel headers to rearrange the sanctuary. Resize from edges.",
+    "Stack different powers before a portfolio run for compounded multipliers.",
   ];
-  return tips[Math.floor(Math.random() * tips.length)];
+  let pick = tips[Math.floor(Math.random() * tips.length)];
+  if (fbBias < -2) pick += "\n(Adjusting style based on recent ▼ feedback — shorter answer.)";
+  if (fbBias > 2) pick += "\n\nWant a full status report? Ask for \"status\" or \"plan\".";
+  return pick;
 }
 
 /* ── Settings ──────────────────────────────────────────── */
@@ -1792,30 +1843,37 @@ function renderNodeShop(){
     const c=document.createElement("div"); c.className="upgrade-card";
     c.innerHTML=`<div class="upgrade-name">${item.name}</div><div class="upgrade-desc">${item.desc}</div>
       <div class="upgrade-cost">${item.cost} ⟁</div>
-      <select style="font-size:.5rem;margin:.15rem 0;width:100%">${NODES.map(n=>`<option value="${n.id}">${n.name}</option>`).join("")}</select>
-      <button class="btn-action">Buy & Apply</button>`;
+      <div style="font-size:.46rem;color:var(--muted);margin:.1rem 0">Select node(s):</div>
+      <div class="node-multi" style="max-height:72px;overflow-y:auto;border:1px solid var(--border);padding:.2rem;margin:.1rem 0;font-size:.48rem">
+        ${NODES.map(n=>`<label style="display:flex;align-items:center;gap:.2rem;margin:.08rem 0;opacity:${unlocked[n.id]?1:.4}"><input type="checkbox" value="${n.id}" ${unlocked[n.id]?"":"disabled"}> ${n.name}</label>`).join("")}
+      </div>
+      <button class="btn-action">Buy & Apply to selected</button>`;
     g.appendChild(c);
     c.querySelector("button").addEventListener("click",()=>{
-      if(tokens<item.cost){toast("Need tokens");return;}
-      const nid=c.querySelector("select").value;
-      if(!unlocked[nid]){toast("Unlock node first");return;}
-      setTokens(tokens-item.cost);
-      nodeExtras[nid]=nodeExtras[nid]||{evolved:false,autoCharge:false,extraKeyChance:0,autoActivate:false};
-      if(item.id==="evolve"){nodeExtras[nid].evolved=true;toast("Evolved");}
-      else if(item.id==="evolve2"){nodeExtras[nid].evolved=true;const n=NODES.find(x=>x.id===nid);if(n)n.cd=Math.floor(n.cd*0.7);toast("Ascended");}
-      else if(item.id==="keylearn"){nodeExtras[nid].extraKeyChance=Math.max(nodeExtras[nid].extraKeyChance,0.15);toast("Incantation");}
-      else if(item.id==="keylearn2"){nodeExtras[nid].extraKeyChance=Math.max(nodeExtras[nid].extraKeyChance,0.30);toast("Litany");}
-      else if(item.id==="autocharge"){nodeExtras[nid].autoCharge=true;toast("Auto-charge");}
-      else if(item.id==="autoact"){nodeExtras[nid].autoActivate=true;toast("Auto-activate");}
-      else if(item.id==="boostcharge"){const n=NODES.find(x=>x.id===nid);if(n)n.charge=Math.floor(n.charge*0.8);toast("Charge −20%");}
-      else if(item.id==="boostact"||item.id==="guard"){const n=NODES.find(x=>x.id===nid);if(n)n.activate=Math.floor(n.activate*0.85);toast("Activate cheaper");}
-      else if(item.id==="pulse"){if(nodeState[nid]){nodeState[nid]={status:"ready",endsAt:0};updateNodeControls(nid);}toast("Instant charge");}
-      else if(item.id==="shatter"){if(nodeState[nid]){nodeState[nid]={status:"idle",endsAt:0};updateNodeControls(nid);}toast("Cooldown cleared");}
-      else if(item.id==="link"){NODES.forEach(n=>{if(unlocked[n.id]){nodeExtras[n.id]=nodeExtras[n.id]||{};nodeExtras[n.id].autoCharge=true;}});toast("Linked auto-charge");}
-      else if(item.id==="color"){const n=NODES.find(x=>x.id===nid);if(n){n.color="#"+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,"0");startNodeAnim(nid);}toast("Hue shifted");}
-      else if(item.id==="surge"){nodeExtras[nid].extraKeyChance=1;setTimeout(()=>{nodeExtras[nid].extraKeyChance=0.15;},60000);toast("Next activate: 2 keys");}
-      log("Node shop: "+item.name+" → "+nid,"node");
-      renderNodes();
+      const selected=[...c.querySelectorAll("input[type=checkbox]:checked")].map(x=>x.value);
+      if(!selected.length){toast("Select at least one node");return;}
+      const totalCost=item.cost*selected.length;
+      if(tokens<totalCost){toast("Need "+totalCost+" ⟁");return;}
+      setTokens(tokens-totalCost);
+      selected.forEach(nid=>{
+        nodeExtras[nid]=nodeExtras[nid]||{evolved:false,autoCharge:false,extraKeyChance:0,autoActivate:false};
+        if(item.id==="evolve"){nodeExtras[nid].evolved=true;}
+        else if(item.id==="evolve2"){nodeExtras[nid].evolved=true;const n=NODES.find(x=>x.id===nid);if(n)n.cd=Math.floor(n.cd*0.7);}
+        else if(item.id==="keylearn"){nodeExtras[nid].extraKeyChance=Math.max(nodeExtras[nid].extraKeyChance||0,0.15);}
+        else if(item.id==="keylearn2"){nodeExtras[nid].extraKeyChance=Math.max(nodeExtras[nid].extraKeyChance||0,0.30);}
+        else if(item.id==="autocharge"){nodeExtras[nid].autoCharge=true;}
+        else if(item.id==="autoact"){nodeExtras[nid].autoActivate=true;}
+        else if(item.id==="boostcharge"){const n=NODES.find(x=>x.id===nid);if(n)n.charge=Math.floor(n.charge*0.8);}
+        else if(item.id==="boostact"||item.id==="guard"){const n=NODES.find(x=>x.id===nid);if(n)n.activate=Math.floor(n.activate*0.85);}
+        else if(item.id==="pulse"){nodeState[nid]={status:"ready",endsAt:0};}
+        else if(item.id==="shatter"){nodeState[nid]={status:"idle",endsAt:0};}
+        else if(item.id==="link"){NODES.forEach(n=>{if(unlocked[n.id]){nodeExtras[n.id]=nodeExtras[n.id]||{};nodeExtras[n.id].autoCharge=true;}});}
+        else if(item.id==="color"){const n=NODES.find(x=>x.id===nid);if(n){n.color="#"+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,"0");}}
+        else if(item.id==="surge"){nodeExtras[nid].extraKeyChance=1;setTimeout(()=>{if(nodeExtras[nid])nodeExtras[nid].extraKeyChance=0.15;},60000);}
+      });
+      log("Node shop: "+item.name+" → "+selected.join(", ")+" (−"+totalCost+")","node");
+      toast(item.name+" ×"+selected.length);
+      renderNodes(); renderNodeShop();
     });
   });
 }
@@ -1849,8 +1907,7 @@ function renderCodeArchive(){
   el.innerHTML=energyCodes.length?"":"<span style='color:var(--muted)'>No codes yet</span>";
   [...energyCodes].reverse().slice(0,100).forEach(c=>{
     const s=document.createElement("span");
-    s.style.cssText="border:1px solid var(--gold-dim);padding:.1rem .28rem;color:var(--gold);letter-spacing:.05em";
-    s.textContent=c; el.appendChild(s);
+    s.className="code-chip "+codeClass(c); s.innerHTML=formatCodeHTML(c); el.appendChild(s);
   });
 }
 // enhance emitEnergyCode to refresh archive
@@ -1963,10 +2020,59 @@ $("#setLogFont") && $("#setLogFont").addEventListener("input", e => {
 $("#setLogColor") && $("#setLogColor").addEventListener("input", e => {
   const el = $("#logEntries"); if (el) el.style.color = e.target.value;
 });
+
+$("#setLogBg") && $("#setLogBg").addEventListener("input", e => {
+  const el = $("#logEntries"); if (el) el.style.background = e.target.value;
+});
+$("#setLogTs") && $("#setLogTs").addEventListener("input", e => {
+  document.documentElement.style.setProperty("--log-ts", e.target.value);
+  $$(".log-entry .ts").forEach(t => t.style.color = e.target.value);
+});
+$("#setLogGap") && $("#setLogGap").addEventListener("input", e => {
+  const el = $("#logEntries"); if (el) el.style.gap = e.target.value + "px";
+});
+$("#setLogFamily") && $("#setLogFamily").addEventListener("change", e => {
+  const el = $("#logEntries"); if (el) el.style.fontFamily = e.target.value;
+});
+$("#setLogShowTs") && $("#setLogShowTs").addEventListener("change", e => {
+  $("#logEntries") && $("#logEntries").classList.toggle("log-hide-ts", !e.target.checked);
+});
+$("#setLogCompact") && $("#setLogCompact").addEventListener("change", e => {
+  $("#logEntries") && $("#logEntries").classList.toggle("log-compact", e.target.checked);
+});
+$("#setLogHLColor") && $("#setLogHLColor").addEventListener("input", e => {
+  document.documentElement.style.setProperty("--log-hl", e.target.value);
+});
+$("#setLogFilterType") && $("#setLogFilterType").addEventListener("change", e => {
+  const t = e.target.value;
+  $$(".log-entry").forEach(el => {
+    if (!t) { el.style.display = ""; return; }
+    el.style.display = el.classList.contains("type-" + t) ? "" : "none";
+  });
+});
+
 let logHL = true;
 $("#setLogHL") && $("#setLogHL").addEventListener("change", e => { logHL = e.target.checked; });
 
 /* Color-code energy codes */
+
+function charColor(ch) {
+  // stable unique color per character (0-9, A-Z)
+  const palette = {
+    "0":"#f87171","1":"#fb923c","2":"#fbbf24","3":"#a3e635","4":"#34d399",
+    "5":"#22d3ee","6":"#60a5fa","7":"#a78bfa","8":"#e879f9","9":"#f472b6",
+    "A":"#ef4444","B":"#f97316","C":"#eab308","D":"#84cc16","E":"#22c55e",
+    "F":"#14b8a6","G":"#06b6d4","H":"#0ea5e9","I":"#3b82f6","J":"#6366f1",
+    "K":"#8b5cf6","L":"#a855f7","M":"#d946ef","N":"#ec4899","O":"#f43f5e",
+    "P":"#dc2626","Q":"#ea580c","R":"#ca8a04","S":"#65a30d","T":"#16a34a",
+    "U":"#0d9488","V":"#0891b2","W":"#0284c7","X":"#2563eb","Y":"#4f46e5","Z":"#7c3aed"
+  };
+  return palette[ch.toUpperCase()] || "#c4c4cc";
+}
+function formatCodeHTML(code) {
+  return [...code].map(ch => '<span class="code-char" style="color:'+charColor(ch)+'">'+ch+'</span>').join("");
+}
+
 function codeClass(code) {
   const digits = [...code].filter(c => /\d/.test(c)).length;
   const vowels = [...code].filter(c => /[AEIOU]/i.test(c)).length;
@@ -1981,7 +2087,7 @@ function renderCodeArchive() {
   [...energyCodes].reverse().slice(0, 120).forEach(c => {
     const s = document.createElement("span");
     s.className = "code-chip " + codeClass(c);
-    s.textContent = c;
+    s.innerHTML = formatCodeHTML(c);
     s.title = "digits/vowels coded";
     el.appendChild(s);
   });
