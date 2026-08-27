@@ -127,9 +127,45 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
 .chat-bubble{padding:.3rem .4rem;max-width:94%;line-height:1.4}
 .chat-bubble.user{align-self:flex-end;background:rgba(212,175,55,.12);border:1px solid var(--gold-dim)}
 .chat-bubble.ai{align-self:flex-start;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25)}
+.chat-bubble.is-streaming{box-shadow:0 0 12px rgba(56,189,248,.16)}
+.bubble-text{white-space:pre-wrap;word-break:break-word}
 .chat-fb{display:flex;gap:.2rem;margin-top:.2rem}
 .chat-fb button{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:.55rem;padding:.1rem .28rem;cursor:pointer}
 .chat-fb button:hover{color:var(--gold);border-color:var(--gold-dim)}
+.ai-mode-badge{cursor:default}
+.ai-mode-panel{padding:.35rem .4rem;border-bottom:1px solid var(--border);display:grid;gap:.22rem;background:rgba(10,10,14,.55)}
+.ai-mode-line{display:flex;justify-content:space-between;gap:.25rem;align-items:center;flex-wrap:wrap}
+.ai-mode-line strong{font-size:.52rem;color:var(--gold);font-weight:normal;letter-spacing:.06em}
+.ai-mode-detail,.ai-progress-meta,.voice-preview{font-size:.46rem;color:var(--muted);line-height:1.45}
+.voice-preview{min-height:1.1em}
+.ai-status-pill{display:inline-flex;align-items:center;gap:.2rem;padding:.12rem .34rem;border:1px solid var(--border);font-size:.44rem;letter-spacing:.08em;text-transform:uppercase}
+.ai-status-pill.ready,.ai-status-pill.connected{color:var(--green);border-color:rgba(74,246,38,.28);background:rgba(74,246,38,.08)}
+.ai-status-pill.downloading,.ai-status-pill.listening{color:var(--amber);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
+.ai-status-pill.error,.ai-status-pill.disconnected{color:var(--red);border-color:rgba(230,57,70,.35);background:rgba(230,57,70,.08)}
+.ai-status-pill.idle{color:var(--muted)}
+.ai-progress{width:100%;height:8px;border:1px solid var(--border);background:rgba(255,255,255,.04);overflow:hidden}
+.ai-progress.hidden{display:none}
+.ai-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--gold),var(--green));transition:width .2s ease}
+.mic-btn{min-width:42px;position:relative}
+.mic-btn.recording{border-color:rgba(230,57,70,.5);color:#fff;background:rgba(230,57,70,.18);animation:powerPulse 1s ease-in-out infinite}
+.voice-wave{display:none;align-items:flex-end;gap:3px;height:16px}
+.voice-wave.active{display:flex}
+.voice-wave span{display:block;width:4px;height:6px;background:var(--blue);animation:voiceWave 1s ease-in-out infinite;border-radius:999px}
+.voice-wave span:nth-child(2){animation-delay:.12s}
+.voice-wave span:nth-child(3){animation-delay:.24s}
+.voice-wave span:nth-child(4){animation-delay:.36s}
+.voice-wave span:nth-child(5){animation-delay:.48s}
+.ai-inline-row{display:flex;gap:.3rem;flex-wrap:wrap;align-items:center}
+.ai-settings-tabs{display:flex;gap:.2rem;flex-wrap:wrap;margin:.45rem 0}
+.ai-settings-tabs button{background:transparent;border:1px solid var(--border);color:var(--muted);font:inherit;font-size:.48rem;padding:.24rem .45rem;cursor:pointer;text-transform:uppercase}
+.ai-settings-tabs button.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.08)}
+.ai-settings-panel{display:none;gap:.35rem}
+.ai-settings-panel.active{display:grid}
+.ai-guide{font-size:.48rem;color:var(--muted);line-height:1.45;border-left:2px solid var(--gold-dim);padding-left:.35rem}
+.ai-guide a{color:var(--blue)}
+.field-help{font-size:.45rem;color:var(--muted)}
+.tts-btn{min-width:34px}
+@keyframes voiceWave{0%,100%{height:5px;opacity:.55}50%{height:16px;opacity:1}}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:55;display:none;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.visible{display:flex}
 .modal-box{background:var(--bg-soft);border:1px solid var(--gold-dim);width:min(520px,96vw);max-height:85vh;overflow-y:auto;padding:1rem;position:relative}
@@ -239,6 +275,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.55)!import
       <button class="hdr-btn btn-halt" id="haltAllBtn">Halt All</button>
       <button class="hdr-btn" id="themeBtn">☾</button>
       <button class="hdr-btn" id="chatToggleBtn">AI</button>
+      <div class="hdr-btn ai-mode-badge" id="topAIModeBadge" title="Current AI mode">⚙️ Rules</div>
       <button class="hdr-btn" id="settingsBtn">Settings</button>
       <button class="hdr-btn" id="logoutBtn">Logout</button>
     </div>
@@ -422,10 +459,19 @@ input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.55)!import
 
       <div class="tab-panel" id="tab-chat">
         <div class="r-panel" style="height:320px">
-          <div class="r-header"><span>// Local AI Advisor</span>
+          <div class="r-header"><span>// AI Advisor · <span id="chatHeaderMode">⚙️ Rule Fallback</span></span>
             <div style="display:flex;gap:.15rem"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
           <div class="r-body" style="padding:0;display:flex;flex-direction:column">
+            <div class="ai-mode-panel">
+              <div class="ai-mode-line">
+                <strong id="chatModeSummary">⚙️ Rule-based standby</strong>
+                <span class="ai-status-pill idle" id="chatModeStatus">Idle</span>
+              </div>
+              <div class="ai-mode-detail" id="chatModeDetail">Load a local Transformers.js model or connect Ollama for richer responses. Rule-based AI remains available as a fallback.</div>
+              <div class="ai-progress hidden" id="chatProgressWrap"><div class="ai-progress-bar" id="chatProgressBar"></div></div>
+              <div class="ai-progress-meta" id="chatProgressMeta"></div>
+            </div>
             <div class="chat-messages" id="chatMessages"></div>
             <div style="display:flex;gap:.25rem;padding:.3rem">
               <button class="btn-action" id="feedLogBtn">Feed Log</button>
@@ -433,7 +479,12 @@ input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.55)!import
             </div>
             <div style="display:flex;gap:.25rem;padding:0 .3rem .3rem">
               <input type="text" id="chatInput" placeholder="Ask the advisor…" style="flex:1;margin:0">
+              <button class="btn-action mic-btn" id="chatMicBtn" title="Voice input">🎤</button>
               <button class="btn-action" id="chatSend">Send</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:.35rem;padding:0 .3rem .35rem">
+              <div class="voice-preview" id="voicePreview"></div>
+              <div class="voice-wave" id="voiceWave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
             </div>
           </div>
         </div>
@@ -524,6 +575,58 @@ input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.55)!import
     <div class="fin-section">
       <h4>AI Advisor</h4>
       <label style="font-size:.52rem"><input type="checkbox" id="setAI" checked> Enable AI chat</label>
+      <div class="ai-settings-tabs" id="aiSettingsTabs">
+        <button type="button" class="active" data-ai-tab="local">🧠 Local</button>
+        <button type="button" data-ai-tab="ollama">🔗 Ollama</button>
+        <button type="button" data-ai-tab="voice">🎤 Voice</button>
+      </div>
+      <div class="ai-settings-panel active" data-ai-panel="local">
+        <div class="ai-guide">Run a Transformers.js model fully inside your browser. Model files are cached locally by the browser after the first download, and your prompts stay on-device.</div>
+        <label style="font-size:.5rem">Model
+          <select id="setLocalModel">
+            <option value="phi2">Phi-2</option>
+            <option value="mistral">Mistral 7B</option>
+            <option value="zephyr">Zephyr</option>
+            <option value="neuralchat">Neural Chat</option>
+            <option value="llama2">Llama 2</option>
+          </select>
+        </label>
+        <div class="field-help" id="localModelMeta"></div>
+        <div class="ai-inline-row">
+          <button class="btn-action" id="loadLocalModelBtn" type="button">Load &amp; Cache</button>
+          <button class="btn-action" id="unloadLocalModelBtn" type="button">Unload</button>
+        </div>
+        <div class="ai-progress" id="localModelProgress"><div class="ai-progress-bar" id="localModelProgressBar"></div></div>
+        <div class="field-help" id="localModelStatus">Status: idle</div>
+      </div>
+      <div class="ai-settings-panel" data-ai-panel="ollama">
+        <div class="ai-guide">Prefer a model served by your local Ollama instance for faster, higher-quality replies. Install it from <a href="https://ollama.ai" target="_blank" rel="noreferrer">ollama.ai</a>, then keep the default localhost endpoint or point to another machine you control.</div>
+        <label style="font-size:.52rem"><input type="checkbox" id="setOllamaMode"> Ollama Mode</label>
+        <label style="font-size:.5rem">Endpoint URL
+          <input type="url" id="setOllamaUrl" value="http://localhost:11434" placeholder="http://localhost:11434">
+        </label>
+        <div class="ai-inline-row">
+          <button class="btn-action" id="refreshOllamaBtn" type="button">Refresh Models</button>
+          <span class="ai-status-pill idle" id="ollamaStatusPill">Idle</span>
+        </div>
+        <div class="field-help" id="ollamaStatus">Checking for a local Ollama server…</div>
+        <label style="font-size:.5rem">Available models
+          <select id="ollamaModelSelect">
+            <option value="">Detect Ollama first</option>
+          </select>
+        </label>
+      </div>
+      <div class="ai-settings-panel" data-ai-panel="voice">
+        <div class="ai-guide">Use the Web Speech API for microphone input and spoken AI replies. If your browser lacks speech support, the chat stays fully usable with typed input and silent text responses.</div>
+        <div class="ai-inline-row">
+          <span class="ai-status-pill idle" id="voiceStatusPill">Idle</span>
+          <span class="field-help" id="voiceStatus">Checking browser speech APIs…</span>
+        </div>
+        <label style="font-size:.5rem">Speech language
+          <select id="speechLangSelect"></select>
+        </label>
+        <label style="font-size:.52rem"><input type="checkbox" id="setSpeakResponses"> Auto-speak AI responses</label>
+      </div>
     </div>
     <div class="fin-section">
       <h4>Keyword Notifications</h4>
@@ -574,8 +677,39 @@ let currentChapter = "foundations";
 let seq = {running:false, paused:false, idx:0};
 let predContract = null;
 let aiContext = "", aiBias = 0;
-let settings = {theme:"dark", anim:1, aiEnabled:true, gold:"#d4af37"};
+let settings = {
+  theme:"dark",
+  anim:1,
+  aiEnabled:true,
+  gold:"#d4af37",
+  aiTab:"local",
+  aiModel:"phi2",
+  ollamaEnabled:false,
+  ollamaUrl:"http://localhost:11434",
+  ollamaModel:"",
+  speechLang:navigator.language||"en-US",
+  autoSpeak:false
+};
 let asciiRaf = null;
+const SETTINGS_KEY = "bp_settings_v2";
+const AI_CACHE_KEY = "bp_ai_cache_v1";
+const AI_LOCAL_MODELS = {
+  phi2:{label:"Phi-2", modelId:"Xenova/phi-2", sizeMB:1600, sizeLabel:"~1.6 GB", note:"Smallest option; best for first-time local setup."},
+  mistral:{label:"Mistral 7B", modelId:"Xenova/Mistral-7B-Instruct-v0.2", sizeMB:4100, sizeLabel:"~4.1 GB", note:"Large browser download; strongest general local quality."},
+  zephyr:{label:"Zephyr", modelId:"Xenova/zephyr-7b-beta", sizeMB:3900, sizeLabel:"~3.9 GB", note:"Chat-tuned and concise; good local assistant behavior."},
+  neuralchat:{label:"Neural Chat", modelId:"Xenova/neural-chat-7b-v3-1", sizeMB:4000, sizeLabel:"~4.0 GB", note:"Optimized for conversational replies."},
+  llama2:{label:"Llama 2", modelId:"Xenova/Llama-2-7b-chat-hf", sizeMB:3800, sizeLabel:"~3.8 GB", note:"Classic chat baseline with strong ecosystem familiarity."}
+};
+const AI_SPEECH_LANGS = [
+  ["en-US","English (US)"],["en-GB","English (UK)"],["es-ES","Español"],["fr-FR","Français"],
+  ["de-DE","Deutsch"],["it-IT","Italiano"],["pt-BR","Português (Brasil)"],["ja-JP","日本語"],["ko-KR","한국어"]
+];
+const aiState = {
+  busy:false,
+  local:{status:"idle",progress:0,message:"Local model idle.",eta:"",generator:null,loadedModel:"",loadPromise:null,modulePromise:null,lastError:"",cacheMeta:{}},
+  ollama:{status:"disconnected",connected:false,models:[],checking:false,lastError:""},
+  voice:{supported:false,synthSupported:"speechSynthesis" in window,listening:false,recognition:null,preview:"",silenceTimer:null}
+};
 
 const CHAPTERS = [
   {id:"foundations",name:"Foundations"},
@@ -766,6 +900,28 @@ const CHAR_COLORS = {};
 });
 
 /* ── Helpers ───────────────────────────────────────────── */
+function escapeHTML(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+function sanitizeEndpoint(url){return (String(url||"http://localhost:11434").trim().replace(/\/+$/,"")||"http://localhost:11434")}
+function loadSettings(){
+  try{settings={...settings,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}")}}catch(_){}
+  try{aiState.local.cacheMeta=JSON.parse(localStorage.getItem(AI_CACHE_KEY)||"{}")||{}}catch(_){aiState.local.cacheMeta={}}
+  settings.ollamaUrl=sanitizeEndpoint(settings.ollamaUrl);
+  if(!AI_LOCAL_MODELS[settings.aiModel])settings.aiModel="phi2";
+}
+function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}catch(_){}}
+function saveAICacheMeta(){try{localStorage.setItem(AI_CACHE_KEY,JSON.stringify(aiState.local.cacheMeta))}catch(_){}}
+function currentLocalModel(){return AI_LOCAL_MODELS[settings.aiModel]||AI_LOCAL_MODELS.phi2}
+function estimatedModelTime(meta){
+  const downlink=Math.max(1,Number(navigator.connection?.downlink)||10);
+  const secs=Math.max(20,Math.round((meta.sizeMB*8)/downlink));
+  return `${meta.sizeLabel} · ~${secs>=60?(secs/60).toFixed(1)+" min":secs+" sec"} at ~${downlink.toFixed(1)} Mbps`;
+}
+function formatEta(seconds){
+  if(!isFinite(seconds)||seconds<=0)return "";
+  const mins=Math.floor(seconds/60),secs=Math.round(seconds%60);
+  return mins?`${mins}m ${String(secs).padStart(2,"0")}s`:secs+"s";
+}
+function setAIProgress(el, value){if($(el))$(el).style.width=Math.max(0,Math.min(100,value||0))+"%"}
 function toast(m){const t=$("#toast");t.classList.remove("error-toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1500)}
 function toastError(m){const t=$("#toast");t.classList.remove("show","error-toast");void t.offsetWidth;t.textContent=m;t.classList.add("show","error-toast");setTimeout(()=>t.classList.remove("show"),1800)}
 function log(msg,type="info"){
@@ -811,6 +967,9 @@ function setTokens(n,anim=true){
   updateClearance();
   try{localStorage.setItem("bp_tokens_"+user,tokens)}catch(_){}
 }
+loadSettings();
+document.documentElement.setAttribute("data-theme",settings.theme);
+document.documentElement.style.setProperty("--gold",settings.gold);
 // fix typo in setTokens - I'll fix in the write
 function updateClearance(){
   let l="INITIATE";
@@ -879,6 +1038,7 @@ function bootUI(){
   renderChapters();renderSongPages();renderPortfolio();renderShop();
   renderKeys();renderResearch();renderNodes();renderNodeShop();renderShards();
   renderCodeArchive();renderLab();setAIEnabled(settings.aiEnabled);
+  syncSettingsUI();detectVoiceSupport();renderAIStatus();
   startVaultTick();
   makeJuicy();
 }
@@ -1760,8 +1920,329 @@ function renderKeys(){
 /* AI */
 function setAIEnabled(on){
   settings.aiEnabled=on;
+  saveSettings();
   $("#chatToggleBtn").classList.toggle("on",on);
   $("#chatTabBtn").style.display=on?"":"none";
+  renderAIStatus();
+}
+function populateSpeechLanguages(){
+  const select=$("#speechLangSelect");if(!select||select.dataset.ready)return;
+  select.innerHTML=AI_SPEECH_LANGS.map(([value,label])=>`<option value="${value}">${label}</option>`).join("");
+  select.dataset.ready="1";
+}
+function switchAISettingsTab(tab){
+  settings.aiTab=tab||"local";
+  $$("#aiSettingsTabs [data-ai-tab]").forEach(btn=>btn.classList.toggle("active",btn.dataset.aiTab===settings.aiTab));
+  $$("[data-ai-panel]").forEach(panel=>panel.classList.toggle("active",panel.dataset.aiPanel===settings.aiTab));
+  saveSettings();
+}
+function syncSettingsUI(){
+  populateSpeechLanguages();
+  $("#setTheme").value=settings.theme;
+  $("#setAnim").value=settings.anim;
+  $("#setGold").value=settings.gold;
+  $("#setAI").checked=!!settings.aiEnabled;
+  $("#setLocalModel").value=settings.aiModel;
+  $("#setOllamaMode").checked=!!settings.ollamaEnabled;
+  $("#setOllamaUrl").value=settings.ollamaUrl;
+  $("#speechLangSelect").value=AI_SPEECH_LANGS.some(([v])=>v===settings.speechLang)?settings.speechLang:"en-US";
+  $("#setSpeakResponses").checked=!!settings.autoSpeak;
+  $("#themeBtn").textContent=settings.theme==="dark"?"☾":"☀";
+  switchAISettingsTab(settings.aiTab||"local");
+}
+function detectVoiceSupport(){
+  aiState.voice.supported=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+  aiState.voice.synthSupported="speechSynthesis" in window;
+  renderAIStatus();
+}
+function ensureVoiceRecognition(){
+  if(aiState.voice.recognition||!aiState.voice.supported)return aiState.voice.recognition;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const recognition=new SR();
+  recognition.continuous=true;
+  recognition.interimResults=true;
+  recognition.lang=settings.speechLang;
+  recognition.onstart=()=>{
+    aiState.voice.listening=true;
+    aiState.voice.preview="Listening…";
+    renderAIStatus();
+  };
+  recognition.onresult=e=>{
+    let transcript="";
+    for(let i=0;i<e.results.length;i++)transcript+=e.results[i][0].transcript;
+    transcript=transcript.trim();
+    aiState.voice.preview=transcript?`Recognized: ${transcript}`:"Listening…";
+    if(transcript)$("#chatInput").value=transcript;
+    clearTimeout(aiState.voice.silenceTimer);
+    aiState.voice.silenceTimer=setTimeout(()=>{
+      if(aiState.voice.listening)recognition.stop();
+    },1800);
+    renderAIStatus();
+  };
+  recognition.onerror=e=>{
+    aiState.voice.preview=`Voice input error: ${e.error||"unknown"}`;
+    aiState.voice.listening=false;
+    clearTimeout(aiState.voice.silenceTimer);
+    renderAIStatus();
+    toastError("Voice input unavailable");
+  };
+  recognition.onend=()=>{
+    aiState.voice.listening=false;
+    clearTimeout(aiState.voice.silenceTimer);
+    if(aiState.voice.preview==="Listening…")aiState.voice.preview="Voice capture stopped.";
+    renderAIStatus();
+  };
+  aiState.voice.recognition=recognition;
+  return recognition;
+}
+function toggleVoiceInput(){
+  if(!aiState.voice.supported){aiState.voice.preview="Speech recognition is not available in this browser.";renderAIStatus();toastError("Speech recognition unavailable");return}
+  const recognition=ensureVoiceRecognition();
+  if(aiState.voice.listening){recognition.stop();return}
+  recognition.lang=settings.speechLang;
+  aiState.voice.preview="Listening…";
+  try{recognition.start()}catch(e){aiState.voice.preview=`Voice input error: ${e.message||e}`;renderAIStatus();toastError("Microphone start failed")}
+}
+function speakText(text){
+  const clean=String(text||"").trim();
+  if(!clean)return;
+  if(!aiState.voice.synthSupported){toastError("Speech synthesis unavailable");return}
+  try{
+    window.speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance(clean);
+    utterance.lang=settings.speechLang;
+    window.speechSynthesis.speak(utterance);
+  }catch(e){toastError("Text-to-speech failed");log("Voice output error: "+(e.message||e),"error")}
+}
+function rememberModelCached(key){
+  aiState.local.cacheMeta[key]={cachedAt:Date.now()};
+  saveAICacheMeta();
+}
+function getActiveAIProfile(){
+  const localMeta=currentLocalModel();
+  if(!settings.aiEnabled)return {provider:"off",icon:"⛔",label:"AI disabled",detail:"Enable AI chat in Settings to send prompts.",status:"idle"};
+  if(settings.ollamaEnabled){
+    if(aiState.ollama.connected&&settings.ollamaModel)return {provider:"ollama",icon:"🔗",label:`Ollama · ${settings.ollamaModel}`,detail:`Streaming through ${settings.ollamaUrl}.`,status:"connected"};
+    if(aiState.local.status==="ready"&&aiState.local.loadedModel===settings.aiModel)return {provider:"transformers",icon:"🧠",label:`${localMeta.label} fallback`,detail:"Ollama is unavailable, so replies stay local in this browser.",status:"ready"};
+    return {provider:"rules",icon:"⚙️",label:"Rule fallback",detail:aiState.ollama.lastError||"Ollama mode is enabled, but no reachable server/model was found.",status:aiState.ollama.checking?"downloading":"error"};
+  }
+  if(aiState.local.status==="ready"&&aiState.local.loadedModel===settings.aiModel)return {provider:"transformers",icon:"🧠",label:localMeta.label,detail:"Transformers.js is running locally; prompts stay on-device.",status:"ready"};
+  if(aiState.local.status==="downloading")return {provider:"transformers",icon:"🧠",label:`Downloading ${localMeta.label}`,detail:aiState.local.message||"Preparing local model…",status:"downloading"};
+  if(aiState.local.status==="error")return {provider:"rules",icon:"⚙️",label:"Rule fallback",detail:aiState.local.lastError||"Local model could not be initialized.",status:"error"};
+  return {provider:"rules",icon:"⚙️",label:"Rule fallback",detail:"Load a local model or enable Ollama Mode for richer responses.",status:"idle"};
+}
+function renderAIStatus(){
+  const localMeta=currentLocalModel();
+  const profile=getActiveAIProfile();
+  const localCached=!!aiState.local.cacheMeta[settings.aiModel];
+  $("#topAIModeBadge").textContent=`${profile.icon} ${profile.label}`;
+  $("#chatHeaderMode").textContent=`${profile.icon} ${profile.label}`;
+  $("#chatModeSummary").textContent=`${profile.icon} ${profile.label}`;
+  $("#chatModeDetail").textContent=profile.detail;
+  $("#chatModeStatus").textContent=profile.status;
+  $("#chatModeStatus").className=`ai-status-pill ${profile.status}`;
+  const showProgress=aiState.local.status==="downloading";
+  $("#chatProgressWrap").classList.toggle("hidden",!showProgress);
+  setAIProgress("#chatProgressBar",aiState.local.progress);
+  $("#chatProgressMeta").textContent=showProgress?`${Math.round(aiState.local.progress)}%${aiState.local.eta?` · ETA ${aiState.local.eta}`:""} · ${aiState.local.message}`:"";
+  $("#localModelMeta").textContent=`${localMeta.note} ${estimatedModelTime(localMeta)}${localCached?" · cached previously in this browser.":""}`;
+  setAIProgress("#localModelProgressBar",aiState.local.progress);
+  $("#localModelStatus").textContent=`Status: ${aiState.local.status}${aiState.local.message?` · ${aiState.local.message}`:""}${aiState.local.eta?` · ETA ${aiState.local.eta}`:""}`;
+  $("#loadLocalModelBtn").disabled=aiState.local.status==="downloading";
+  $("#unloadLocalModelBtn").disabled=!aiState.local.generator;
+  const voiceState=aiState.voice.listening?"listening":(aiState.voice.supported||aiState.voice.synthSupported?"ready":"error");
+  $("#voiceStatusPill").textContent=voiceState;
+  $("#voiceStatusPill").className=`ai-status-pill ${voiceState}`;
+  $("#voiceStatus").textContent=aiState.voice.supported&&aiState.voice.synthSupported?"Voice input/output available.":aiState.voice.supported?"Voice input available, but spoken output is unavailable.":"Speech APIs are unavailable in this browser; typed chat still works.";
+  $("#voicePreview").textContent=aiState.voice.preview||"";
+  $("#chatMicBtn").classList.toggle("recording",!!aiState.voice.listening);
+  $("#chatMicBtn").disabled=!aiState.voice.supported||aiState.busy;
+  $("#voiceWave").classList.toggle("active",!!aiState.voice.listening);
+  $("#ollamaStatusPill").textContent=aiState.ollama.checking?"checking":(aiState.ollama.connected?"connected":(aiState.ollama.lastError?"error":"disconnected"));
+  $("#ollamaStatusPill").className=`ai-status-pill ${aiState.ollama.checking?"downloading":(aiState.ollama.connected?"connected":(aiState.ollama.lastError?"error":"disconnected"))}`;
+  $("#ollamaStatus").textContent=aiState.ollama.checking?`Checking ${settings.ollamaUrl}/api/tags …`:aiState.ollama.connected?`Connected to ${settings.ollamaUrl}. Streaming replies word-by-word.`:(aiState.ollama.lastError||"No Ollama connection detected.");
+  const opts=aiState.ollama.models.length?aiState.ollama.models.map(name=>`<option value="${escapeHTML(name)}"${name===settings.ollamaModel?" selected":""}>${escapeHTML(name)}</option>`).join(""):"<option value=''>No models detected</option>";
+  $("#ollamaModelSelect").innerHTML=opts;
+}
+async function ensureTransformersModule(){
+  if(aiState.local.modulePromise)return aiState.local.modulePromise;
+  aiState.local.modulePromise=import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2").then(mod=>{
+    if(mod.env){
+      mod.env.allowRemoteModels=true;
+      mod.env.allowLocalModels=false;
+      mod.env.useBrowserCache=true;
+    }
+    return mod;
+  });
+  return aiState.local.modulePromise;
+}
+async function unloadLocalModel(showToast=true){
+  try{if(aiState.local.generator?.dispose)await aiState.local.generator.dispose()}catch(_){}
+  aiState.local.generator=null;
+  aiState.local.loadedModel="";
+  aiState.local.progress=0;
+  aiState.local.status="idle";
+  aiState.local.message="Local model unloaded from memory. Cached files remain in the browser.";
+  aiState.local.eta="";
+  renderAIStatus();
+  if(showToast)toast("Local model unloaded");
+}
+async function loadLocalModel({silent=false}={}){
+  const meta=currentLocalModel();
+  if(aiState.local.generator&&aiState.local.loadedModel===settings.aiModel){
+    aiState.local.status="ready";
+    aiState.local.message=`${meta.label} ready.`;
+    renderAIStatus();
+    return aiState.local.generator;
+  }
+  if(aiState.local.loadPromise)return aiState.local.loadPromise;
+  aiState.local.status="downloading";
+  aiState.local.progress=0;
+  aiState.local.eta="";
+  aiState.local.message=`Preparing ${meta.label} …`;
+  aiState.local.lastError="";
+  renderAIStatus();
+  const started=performance.now();
+  aiState.local.loadPromise=(async()=>{
+    try{
+      if(aiState.local.generator&&aiState.local.loadedModel!==settings.aiModel)await unloadLocalModel(false);
+      const {pipeline}=await ensureTransformersModule();
+      const generator=await pipeline("text-generation",meta.modelId,{
+        progress_callback:update=>{
+          const total=Number(update?.total)||0,loaded=Number(update?.loaded)||0;
+          let progress=Number(update?.progress);
+          if(total&&loaded)progress=(loaded/total)*100;
+          if(progress<=1)progress*=100;
+          const elapsed=Math.max(1,(performance.now()-started)/1000);
+          aiState.local.progress=isFinite(progress)?Math.max(aiState.local.progress,progress):aiState.local.progress;
+          aiState.local.eta=total&&loaded?formatEta((total-loaded)/Math.max(1,loaded/elapsed)):"";
+          aiState.local.message=update?.file?`Downloading ${String(update.file).split("/").pop()}`:(update?.status||`Loading ${meta.label}`);
+          renderAIStatus();
+        }
+      });
+      aiState.local.generator=generator;
+      aiState.local.loadedModel=settings.aiModel;
+      aiState.local.status="ready";
+      aiState.local.progress=100;
+      aiState.local.message=`${meta.label} ready. Future sessions should reuse the browser cache.`;
+      aiState.local.eta="";
+      rememberModelCached(settings.aiModel);
+      renderAIStatus();
+      if(!silent){toast(`${meta.label} ready`);log(`Local AI ready: ${meta.label}`,"ai")}
+      return generator;
+    }catch(e){
+      aiState.local.status="error";
+      aiState.local.lastError=`Local model error: ${e.message||e}`;
+      aiState.local.message="Falling back to rule-based responses.";
+      aiState.local.eta="";
+      renderAIStatus();
+      if(!silent){toastError("Local model failed");log(aiState.local.lastError,"error")}
+      throw e;
+    }finally{
+      aiState.local.loadPromise=null;
+    }
+  })();
+  return aiState.local.loadPromise;
+}
+function buildAIPrompt(q){
+  const recentLogs=(aiContext||logEntries.slice(-14).map(e=>`[${e.type}] ${e.msg}`).join("\n")).slice(-2200);
+  return `You are the Bits & Pieces Sanctuary advisor. Answer clearly and briefly, using the game state below and keeping the mystical tone readable.\nUser: ${user||"initiate"}\nTokens: ${tokens}\nClearance: ${$("#clearanceBadge").textContent.replace("CLEARANCE: ","")}\nYield Multiplier: ${(globalMultiplier*researchBoost*powerMult()*synMultTotal()).toFixed(2)}\nPortfolio: ${portfolio.length}/${maxSlots}\nUnlocked Nodes: ${NODES.filter(n=>unlocked[n.id]).length}/${NODES.length}\nResearch Progress: ${Object.keys(researchDepth).length} tracks\nRecent Log:\n${recentLogs||"(none)"}\nQuestion: ${q}\nAnswer:`;
+}
+function readGeneratedText(output,prompt){
+  let text=Array.isArray(output)?(output[0]?.generated_text||""):String(output?.generated_text||output||"");
+  if(text.startsWith(prompt))text=text.slice(prompt.length);
+  text=text.replace(/^Answer:\s*/i,"").trim();
+  return text;
+}
+async function generateTransformersReply(q){
+  const generator=await loadLocalModel({silent:true});
+  const prompt=buildAIPrompt(q);
+  const output=await generator(prompt,{max_new_tokens:120,temperature:0.5,top_p:0.9,repetition_penalty:1.08,do_sample:true,return_full_text:false});
+  const reply=readGeneratedText(output,prompt);
+  return reply||localInfer(q);
+}
+async function refreshOllamaModels({silent=false,autoDetect=false}={}){
+  settings.ollamaUrl=sanitizeEndpoint($("#setOllamaUrl").value||settings.ollamaUrl);
+  saveSettings();
+  aiState.ollama.checking=true;
+  aiState.ollama.lastError="";
+  renderAIStatus();
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),5000);
+    const res=await fetch(settings.ollamaUrl+"/api/tags",{signal:controller.signal});
+    clearTimeout(timeout);
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    aiState.ollama.models=(data.models||[]).map(m=>m.name).filter(Boolean);
+    aiState.ollama.connected=true;
+    if(!settings.ollamaModel||!aiState.ollama.models.includes(settings.ollamaModel))settings.ollamaModel=aiState.ollama.models[0]||"";
+    if(!settings.ollamaModel)aiState.ollama.lastError="Ollama is running, but no models are installed yet. Try `ollama pull mistral` or another local model.";
+    saveSettings();
+    if(!silent)toast(aiState.ollama.models.length?`Ollama ready (${aiState.ollama.models.length} models)`:"Ollama connected");
+  }catch(e){
+    aiState.ollama.connected=false;
+    aiState.ollama.models=[];
+    aiState.ollama.lastError=autoDetect?"No Ollama server detected on localhost yet.":"Ollama connection failed: "+(e.message||e);
+    if(!silent)toastError("Ollama unavailable");
+  }finally{
+    aiState.ollama.checking=false;
+    renderAIStatus();
+  }
+}
+async function streamOllamaReply(q,bubble){
+  if(!settings.ollamaModel)throw new Error("Select an Ollama model first");
+  const res=await fetch(settings.ollamaUrl+"/api/generate",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:settings.ollamaModel,prompt:buildAIPrompt(q),stream:true})
+  });
+  if(!res.ok)throw new Error(`Ollama HTTP ${res.status}`);
+  if(!res.body){
+    const data=await res.json();
+    return String(data.response||"").trim()||localInfer(q);
+  }
+  const reader=res.body.getReader();
+  const decoder=new TextDecoder();
+  const queue=[];
+  let rendered="",buffer="",done=false;
+  const pump=setInterval(()=>{
+    if(queue.length){
+      rendered+=queue.shift();
+      bubble.setText(rendered||"…");
+    }else if(done){
+      clearInterval(pump);
+    }
+  },35);
+  while(true){
+    const {value,done:streamDone}=await reader.read();
+    if(streamDone)break;
+    buffer+=decoder.decode(value,{stream:true});
+    const lines=buffer.split("\n");
+    buffer=lines.pop();
+    lines.forEach(line=>{
+      if(!line.trim())return;
+      const part=JSON.parse(line);
+      if(part.error)throw new Error(part.error);
+      if(part.response)(part.response.match(/\S+\s*/g)||[part.response]).forEach(word=>queue.push(word));
+    });
+  }
+  if(buffer.trim()){
+    const part=JSON.parse(buffer);
+    if(part.response)(part.response.match(/\S+\s*/g)||[part.response]).forEach(word=>queue.push(word));
+  }
+  done=true;
+  while(queue.length)await new Promise(r=>setTimeout(r,30));
+  if(!rendered.trim())rendered=localInfer(q);
+  return rendered.trim();
+}
+function setChatBusy(on){
+  aiState.busy=!!on;
+  $("#chatSend").disabled=!!on;
+  $("#chatInput").disabled=!!on;
+  $("#feedLogBtn").disabled=!!on;
+  $("#chatMicBtn").disabled=!!on||!aiState.voice.supported;
+  renderAIStatus();
 }
 $("#chatToggleBtn").onclick=()=>{
   setAIEnabled(!settings.aiEnabled);
@@ -1769,32 +2250,70 @@ $("#chatToggleBtn").onclick=()=>{
     $$("#mainTabs .tab-btn").forEach(x=>x.classList.remove("active"));
     $$(".left-col > .tab-panel").forEach(x=>x.classList.remove("active"));
     $("#chatTabBtn").classList.add("active");$("#tab-chat").classList.add("active");
-    addChat("ai","Advisor online. I can plan sequences, explain synergies, node labs, research tracks, vault, and codes. Feed me the log for better context.");
+    addChat("ai","Advisor online. Feed me the log for better context, or load a local model / connect Ollama from Settings for richer replies.");
   }
 };
 $("#setAI").onchange=e=>setAIEnabled(e.target.checked);
-function addChat(role,text){
+function addChat(role,text,opts={}){
   const box=$("#chatMessages");
-  const div=document.createElement("div");div.className="chat-bubble "+role;
-  div.innerHTML=text.replace(/\n/g,"<br>");
+  const div=document.createElement("div");div.className=`chat-bubble ${role}${opts.streaming?" is-streaming":""}`;
+  const body=document.createElement("div");body.className="bubble-text";
+  const update=next=>{body.innerHTML=escapeHTML(next).replace(/\n/g,"<br>");box.scrollTop=box.scrollHeight};
+  update(text);
+  div.appendChild(body);
   if(role==="ai"){
     const fb=document.createElement("div");fb.className="chat-fb";
-    fb.innerHTML=`<button type="button" data-fb="up">▲</button><button type="button" data-fb="down">▼</button>`;
+    fb.innerHTML=`<button type="button" class="tts-btn" data-tts="speak">🔊</button><button type="button" data-fb="up">▲</button><button type="button" data-fb="down">▼</button>`;
     div.appendChild(fb);
+    fb.querySelector("[data-tts=speak]").onclick=()=>speakText(body.textContent);
     fb.querySelector("[data-fb=up]").onclick=()=>{aiBias=Math.min(3,aiBias+1);toast("Thanks");log("AI feedback +","ai")};
     fb.querySelector("[data-fb=down]").onclick=()=>{aiBias=Math.max(-3,aiBias-1);toast("Noted");log("AI feedback −","ai")};
   }
   box.appendChild(div);box.scrollTop=box.scrollHeight;
+  return {root:div,setText:update,finish(){div.classList.remove("is-streaming")},text(){return body.textContent||""}};
 }
 $("#feedLogBtn").onclick=()=>{aiContext=logEntries.slice(-50).map(e=>`[${e.type}] ${e.msg}`).join("\n");addChat("ai","Ingested recent log ("+Math.min(50,logEntries.length)+" lines). Ask about status, plans, or anomalies.");};
-$("#clearChatBtn").onclick=()=>{$("#chatMessages").innerHTML="";aiContext=""};
+$("#clearChatBtn").onclick=()=>{$("#chatMessages").innerHTML="";aiContext="";aiState.voice.preview="";renderAIStatus()};
 $("#chatSend").onclick=sendChat;
 $("#chatInput").onkeydown=e=>{if(e.key==="Enter")sendChat()};
-function sendChat(){
-  if(!settings.aiEnabled)return;
+$("#chatMicBtn").onclick=toggleVoiceInput;
+async function inferAI(q,bubble){
+  if(settings.ollamaEnabled){
+    if(!aiState.ollama.connected||!settings.ollamaModel)await refreshOllamaModels({silent:true,autoDetect:true});
+    if(aiState.ollama.connected&&settings.ollamaModel){
+      log("AI mode: Ollama stream","ai");
+      return await streamOllamaReply(q,bubble);
+    }
+  }
+  if(aiState.local.status==="ready"&&aiState.local.loadedModel===settings.aiModel){
+    log("AI mode: Transformers.js local","ai");
+    return await generateTransformersReply(q);
+  }
+  if(aiState.local.status==="downloading")return localInfer(q)+"\n\n(Local model is still downloading in the background.)";
+  return localInfer(q);
+}
+async function sendChat(){
+  if(!settings.aiEnabled){toastError("AI chat disabled");return}
+  if(aiState.busy)return;
   const q=$("#chatInput").value.trim();if(!q)return;
   addChat("user",q);$("#chatInput").value="";
-  setTimeout(()=>addChat("ai",localInfer(q)),300+Math.random()*400);
+  aiState.voice.preview="";
+  renderAIStatus();
+  const bubble=addChat("ai","Thinking…",{streaming:true});
+  setChatBusy(true);
+  try{
+    const reply=await inferAI(q,bubble);
+    bubble.setText(reply||"No response.");
+    if(settings.autoSpeak)speakText(bubble.text());
+  }catch(e){
+    const fallback=localInfer(q);
+    bubble.setText(fallback);
+    log("AI fallback after error: "+(e.message||e),"error");
+    toastError("AI issue — using fallback");
+  }finally{
+    bubble.finish();
+    setChatBusy(false);
+  }
 }
 function localInfer(q){
   const l=q.toLowerCase();
@@ -1833,20 +2352,33 @@ function localInfer(q){
 
 /* Settings / theme / log */
 $("#settingsBtn").onclick=()=>$("#settingsOverlay").classList.add("visible");
-// fix below
 $("#settingsClose").onclick=()=>$("#settingsOverlay").classList.remove("visible");
-$("#setTheme").onchange=e=>{document.documentElement.setAttribute("data-theme",e.target.value);settings.theme=e.target.value};
-$("#themeBtn").onclick=()=>{const t=settings.theme==="dark"?"light":"dark";settings.theme=t;document.documentElement.setAttribute("data-theme",t);$("#themeBtn").textContent=t==="dark"?"☾":"☀";$("#setTheme").value=t};
-$("#setAnim").oninput=e=>settings.anim=+e.target.value;
-$("#setGold").oninput=e=>{settings.gold=e.target.value;document.documentElement.style.setProperty("--gold",e.target.value)};
+$("#setTheme").onchange=e=>{document.documentElement.setAttribute("data-theme",e.target.value);settings.theme=e.target.value;saveSettings()};
+$("#themeBtn").onclick=()=>{const t=settings.theme==="dark"?"light":"dark";settings.theme=t;document.documentElement.setAttribute("data-theme",t);$("#themeBtn").textContent=t==="dark"?"☾":"☀";$("#setTheme").value=t;saveSettings()};
+$("#setAnim").oninput=e=>{settings.anim=+e.target.value;saveSettings()};
+$("#setGold").oninput=e=>{settings.gold=e.target.value;document.documentElement.style.setProperty("--gold",e.target.value);saveSettings()};
 $("#logFs").oninput=e=>document.documentElement.style.setProperty("--log-fs",(e.target.value/16)+"rem");
 $("#logFg").oninput=e=>document.documentElement.style.setProperty("--log-fg",e.target.value);
 $("#logBg").oninput=e=>document.documentElement.style.setProperty("--log-bg-c",e.target.value+"33");
 $("#logTs").oninput=e=>document.documentElement.style.setProperty("--log-ts",e.target.value);
 $("#logHlC").oninput=e=>document.documentElement.style.setProperty("--log-hl",e.target.value);
 $("#logCompact").onchange=e=>document.documentElement.style.setProperty("--log-lh",e.target.checked?"1.15":"1.3");
+$("#setLocalModel").onchange=e=>{settings.aiModel=e.target.value;saveSettings();aiState.local.progress=0;aiState.local.status=aiState.local.loadedModel===settings.aiModel?"ready":"idle";aiState.local.message=aiState.local.loadedModel===settings.aiModel?`${currentLocalModel().label} ready.`:"Local model idle.";renderAIStatus()};
+$("#loadLocalModelBtn").onclick=()=>loadLocalModel();
+$("#unloadLocalModelBtn").onclick=()=>unloadLocalModel();
+$("#setOllamaMode").onchange=e=>{settings.ollamaEnabled=e.target.checked;saveSettings();renderAIStatus();if(settings.ollamaEnabled)refreshOllamaModels({silent:true,autoDetect:true})};
+$("#setOllamaUrl").onchange=e=>{settings.ollamaUrl=sanitizeEndpoint(e.target.value);e.target.value=settings.ollamaUrl;saveSettings();refreshOllamaModels({silent:true,autoDetect:true})};
+$("#refreshOllamaBtn").onclick=()=>refreshOllamaModels();
+$("#ollamaModelSelect").onchange=e=>{settings.ollamaModel=e.target.value;saveSettings();renderAIStatus()};
+$("#speechLangSelect").onchange=e=>{settings.speechLang=e.target.value;if(aiState.voice.recognition)aiState.voice.recognition.lang=settings.speechLang;saveSettings();renderAIStatus()};
+$("#setSpeakResponses").onchange=e=>{settings.autoSpeak=e.target.checked;saveSettings()};
+$("#aiSettingsTabs").addEventListener("click",e=>{const btn=e.target.closest("[data-ai-tab]");if(btn)switchAISettingsTab(btn.dataset.aiTab)});
 $("#addKeyword").onclick=()=>{const v=$("#keywordInput").value.trim();if(!v||keywords.includes(v))return;keywords.push(v);$("#keywordInput").value="";renderKw()};
 function renderKw(){$("#keywordList").innerHTML=keywords.map((k,i)=>`<span style="border:1px solid var(--gold-dim);padding:.1rem .3rem;font-size:.48rem">${k} <button data-k="${i}" style="border:none;background:none;color:var(--red);cursor:pointer">×</button></span>`).join("");$$("[data-k]").forEach(b=>b.onclick=()=>{keywords.splice(+b.dataset.k,1);renderKw()})};
+syncSettingsUI();
+detectVoiceSupport();
+renderAIStatus();
+if(/localhost|127\.0\.0\.1/.test(settings.ollamaUrl))refreshOllamaModels({silent:true,autoDetect:true});
 $("#logSearch").oninput=()=>{
   const q=$("#logSearch").value.trim().toLowerCase();
   $$(".log-entry").forEach(el=>{const e=logEntries.find(x=>x.id==+el.dataset.id);el.style.display=(!q||(e&&e.raw.includes(q)))?"":"none"});
