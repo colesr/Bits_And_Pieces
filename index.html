@@ -80,20 +80,20 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
 .portfolio-slot.active-slot{border-color:var(--green)!important;box-shadow:0 0 14px rgba(74,246,38,.35);animation:slotPulse 1.2s ease-in-out infinite}
 .portfolio-slot.drag-over{border-color:var(--green);background:rgba(74,246,38,.1)}
 @keyframes slotPulse{0%,100%{box-shadow:0 0 8px rgba(74,246,38,.25)}50%{box-shadow:0 0 18px rgba(74,246,38,.5)}}
-.spellbook{display:grid;grid-template-columns:120px 1fr;gap:.4rem;min-height:200px}
-.spell-chapters{display:flex;flex-direction:column;gap:.15rem;border-right:1px solid var(--border);padding-right:.35rem}
+.songbook{display:grid;grid-template-columns:120px 1fr;gap:.4rem;min-height:200px}
+.song-chapters{display:flex;flex-direction:column;gap:.15rem;border-right:1px solid var(--border);padding-right:.35rem}
 .chapter-btn{text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);font:inherit;font-size:.5rem;padding:.28rem .35rem;cursor:pointer}
 .chapter-btn.active,.chapter-btn:hover{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.08)}
-.spell-pages{display:flex;flex-direction:column;gap:.55rem;max-height:280px;overflow-y:auto;padding:.15rem}
-.spell-card{border:1px solid var(--border);background:rgba(15,15,20,.45);padding:.5rem .55rem;display:grid;grid-template-columns:1fr;gap:.35rem;font-size:.55rem;position:relative;overflow:hidden;min-height:72px}
-.spell-card.working{border-color:var(--gold);box-shadow:0 0 10px var(--gold-dim)}
-.spell-card.cooldown{border-color:var(--amber);animation:cdPulse 1.4s ease-in-out infinite}
-.spell-card.locked{opacity:.4;pointer-events:none}
+.song-pages{display:flex;flex-direction:column;gap:.55rem;max-height:280px;overflow-y:auto;padding:.15rem}
+.song-card{border:1px solid var(--border);background:rgba(15,15,20,.45);padding:.5rem .55rem;display:grid;grid-template-columns:1fr;gap:.35rem;font-size:.55rem;position:relative;overflow:hidden;min-height:72px}
+.song-card.working{border-color:var(--gold);box-shadow:0 0 10px var(--gold-dim)}
+.song-card.cooldown{border-color:var(--amber);animation:cdPulse 1.4s ease-in-out infinite}
+.song-card.locked{opacity:.4;pointer-events:none}
 @keyframes cdPulse{0%,100%{box-shadow:0 0 4px rgba(245,158,11,.2)}50%{box-shadow:0 0 12px rgba(245,158,11,.45)}}
-.spell-card .task-progress{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green));width:0%}
-.spell-card.cooldown .task-progress{background:linear-gradient(90deg,var(--amber),var(--gold))}
-.spell-actions{display:flex;flex-direction:row;flex-wrap:wrap;gap:.3rem}
-.spell-actions .btn-action{min-width:52px;padding:.28rem .4rem}
+.song-card .task-progress{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green));width:0%}
+.song-card.cooldown .task-progress{background:linear-gradient(90deg,var(--amber),var(--gold))}
+.song-actions{display:flex;flex-direction:row;flex-wrap:wrap;gap:.3rem}
+.song-actions .btn-action{min-width:52px;padding:.28rem .4rem}
 .process-window{margin-top:.45rem;border:1px solid var(--gold-dim);background:rgba(4,4,8,.9);display:none;flex-direction:column}
 .process-window.visible{display:flex}
 .process-header{padding:.28rem .45rem;border-bottom:1px solid var(--gold-dim);font-size:.5rem;color:var(--gold);display:flex;justify-content:space-between}
@@ -154,6 +154,23 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
 .lab-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;min-height:120px;border:1px dashed var(--border);padding:.4rem;margin-bottom:.4rem}
 .lab-slot{border:1px solid var(--border);min-height:48px;padding:.25rem;font-size:.48rem;text-align:center;background:rgba(0,0,0,.2)}
 .lab-slot.filled{border-color:var(--gold-dim);background:rgba(212,175,55,.08)}
+
+.lab-toolbar{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin-bottom:.4rem;font-size:.5rem}
+.lab-shape-btn{border:1px solid var(--border);background:transparent;color:var(--muted);padding:.25rem .4rem;cursor:pointer;font:inherit;font-size:.48rem;text-transform:uppercase}
+.lab-shape-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,.08)}
+.lab-grid.line{grid-template-columns:repeat(5,1fr)}
+.lab-grid.triangle{grid-template-columns:repeat(3,1fr);max-width:280px}
+.lab-grid.square{grid-template-columns:repeat(2,1fr);max-width:200px}
+.lab-grid.circle{grid-template-columns:repeat(4,1fr);max-width:320px}
+.lab-grid.cross{grid-template-columns:repeat(3,1fr);max-width:240px}
+.lab-grid.hex{grid-template-columns:repeat(3,1fr);max-width:260px}
+.syn-list{display:flex;flex-direction:column;gap:.35rem;max-height:200px;overflow-y:auto;margin-top:.4rem}
+.syn-card{border:1px solid var(--border);padding:.4rem;font-size:.5rem;background:rgba(0,0,0,.25)}
+.syn-card.active-syn{border-color:var(--green);box-shadow:0 0 10px rgba(74,246,38,.2)}
+.syn-card.published{border-color:var(--purple)}
+.melody-display{font-family:monospace;font-size:.55rem;color:var(--gold);letter-spacing:.08em;margin:.25rem 0;padding:.3rem;border:1px dashed var(--gold-dim)}
+.group-build{border:1px solid var(--border);padding:.4rem;margin-top:.4rem;font-size:.5rem}
+
 </style>
 </head>
 <body>
@@ -225,7 +242,7 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
   <div class="main-layout">
     <div class="left-col">
       <div class="tabs" id="mainTabs">
-        <button class="tab-btn active" data-tab="spellbook">Spellbook</button>
+        <button class="tab-btn active" data-tab="songbook">Songbook</button>
         <button class="tab-btn" data-tab="shop">Relics</button>
         <button class="tab-btn" data-tab="keys">Keys</button>
         <button class="tab-btn" data-tab="research">Research</button>
@@ -237,15 +254,15 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
         <button class="tab-btn" data-tab="chat" id="chatTabBtn" style="display:none">AI</button>
       </div>
 
-      <div class="tab-panel active" id="tab-spellbook">
+      <div class="tab-panel active" id="tab-songbook">
         <div class="r-panel" style="height:440px">
-          <div class="r-header"><span>// Spellbook</span>
+          <div class="r-header"><span>// Songbook</span>
             <div style="display:flex;gap:.15rem"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
           <div class="r-body">
-            <div class="spellbook">
-              <div class="spell-chapters" id="spellChapters"></div>
-              <div class="spell-pages" id="spellPages"></div>
+            <div class="songbook">
+              <div class="song-chapters" id="songChapters"></div>
+              <div class="song-pages" id="songPages"></div>
             </div>
             <div class="process-window" id="processWindow">
               <div class="process-header"><span id="processTitle">RITE</span><button class="btn-action" id="closeProcess">Close</button></div>
@@ -277,7 +294,7 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
               <div><div style="font-size:.5rem;color:var(--purple);margin-bottom:.25rem">KEYS</div><div id="keysInventory"></div></div>
               <div><div style="font-size:.5rem;color:var(--purple);margin-bottom:.25rem">POWERS (multi-activate)</div><div id="powersInventory"></div></div>
             </div>
-            <div style="margin-top:.4rem;font-size:.5rem;color:var(--muted)">Active synergies: <span id="synergyList">none</span></div>
+            <div style="margin-top:.4rem;font-size:.5rem;color:var(--muted)">Active Songs of synergy: <span id="synergyList">none</span></div>
           </div>
         </div>
       </div>
@@ -308,20 +325,41 @@ input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);backgro
       </div>
 
       <div class="tab-panel" id="tab-lab">
-        <div class="r-panel" style="height:360px">
-          <div class="r-header"><span>// Node Lab — test synergies</span>
+        <div class="r-panel" style="height:480px">
+          <div class="r-header"><span>// Node Lab — synergies, publish &amp; seal</span>
             <div style="display:flex;gap:.15rem"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
           </div>
           <div class="r-body">
-            <p style="font-size:.5rem;color:var(--muted);margin-bottom:.35rem">Place unlocked nodes into lab slots. Matching synergy recipes unlock special powers. Save working arrangements.</p>
-            <div class="lab-grid" id="labGrid"></div>
-            <div style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.35rem">
-              <button class="btn-action" id="labTestBtn">Test Arrangement</button>
-              <button class="btn-action" id="labSaveBtn">Save Arrangement</button>
+            <p style="font-size:.5rem;color:var(--muted);margin-bottom:.3rem">Every node combination yields a unique synergy. Discover → Save → Activate (or Publish → Group → Seal with a 12-note melody).</p>
+            <div class="lab-toolbar">
+              <span style="color:var(--muted)">Shape:</span>
+              <button type="button" class="lab-shape-btn active" data-shape="line">Line</button>
+              <button type="button" class="lab-shape-btn" data-shape="triangle">Triangle</button>
+              <button type="button" class="lab-shape-btn" data-shape="square">Square</button>
+              <button type="button" class="lab-shape-btn" data-shape="circle">Circle</button>
+              <button type="button" class="lab-shape-btn" data-shape="cross">Cross</button>
+              <button type="button" class="lab-shape-btn" data-shape="hex">Hex</button>
+            </div>
+            <div class="lab-grid line" id="labGrid"></div>
+            <div style="display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:.3rem">
+              <button class="btn-action" id="labTestBtn">Discover Synergy</button>
+              <button class="btn-action" id="labSaveBtn">Save Synergy</button>
               <button class="btn-action" id="labClearBtn">Clear Lab</button>
             </div>
-            <div id="labResult" style="font-size:.52rem;color:var(--gold);min-height:1.2rem"></div>
-            <div id="savedArrangements" style="margin-top:.4rem;font-size:.5rem"></div>
+            <div id="labResult" style="font-size:.52rem;color:var(--gold);min-height:1.2rem;margin-bottom:.35rem"></div>
+            <div style="font-size:.52rem;color:var(--purple);letter-spacing:.08em;margin-bottom:.25rem">SAVED SYNERGIES</div>
+            <div class="syn-list" id="savedSynList"></div>
+            <div style="font-size:.52rem;color:var(--purple);letter-spacing:.08em;margin:.5rem 0 .25rem">PUBLISHED · BUILD &amp; SEAL GROUPS</div>
+            <div id="publishedList" class="syn-list"></div>
+            <div class="group-build" id="groupBuild" style="display:none">
+              <div id="groupBuildTitle" style="color:var(--gold);margin-bottom:.25rem"></div>
+              <div id="groupSlots" style="display:flex;flex-wrap:wrap;gap:.25rem;margin-bottom:.3rem"></div>
+              <p style="color:var(--muted);font-size:.48rem;margin-bottom:.25rem">Duplicate growth: if the recipe needs multiple of one node type, grow clones with tokens.</p>
+              <button class="btn-action" id="sealGroupBtn">Seal Group (12-note melody)</button>
+              <div class="melody-display" id="melodyPreview" style="display:none"></div>
+            </div>
+            <div style="font-size:.52rem;color:var(--green);letter-spacing:.08em;margin:.5rem 0 .25rem">SEALED GROUPS</div>
+            <div class="syn-list" id="sealedList"></div>
           </div>
         </div>
       </div>
@@ -498,7 +536,14 @@ const completedOnce = new Set();
 const taskState = {};
 const shards = {crimson:0, azure:0, violet:0, amber:0, void:0};
 const labSlots = [null,null,null,null,null];
-const savedLabs = [];
+let labShape = "line";
+let lastDiscovered = null; // {members, shape, name, mult, power, level}
+const savedSynergies = []; // discovered+saved, need activate
+const activeSynIds = new Set();
+const publishedSynergies = []; // from saved, public recipes
+const sealedGroups = []; // {id, pubId, nodes[], melody, active}
+const nodeClones = {}; // nodeId -> extra copies owned
+
 const claimedGifts = new Set();
 let researchDepth = {}; // track -> depth
 let activeResearch = null;
@@ -794,7 +839,7 @@ $("#logoutBtn").onclick=$("#lockBtn").onclick=()=>{
 };
 
 function bootUI(){
-  renderChapters();renderSpellPages();renderPortfolio();renderShop();
+  renderChapters();renderSongPages();renderPortfolio();renderShop();
   renderKeys();renderResearch();renderNodes();renderNodeShop();renderShards();
   renderCodeArchive();renderLab();setAIEnabled(settings.aiEnabled);
   startVaultTick();
@@ -863,18 +908,18 @@ document.addEventListener("click",e=>{
   document.addEventListener("mouseup",()=>drag=null);
 })();
 
-/* Spellbook */
+/* Songbook */
 function isUnlocked(t){return !t.deps.length||t.deps.every(d=>completedOnce.has(d))}
 function renderChapters(){
-  const el=$("#spellChapters");el.innerHTML="";
+  const el=$("#songChapters");el.innerHTML="";
   CHAPTERS.forEach(ch=>{
     const b=document.createElement("button");b.className="chapter-btn"+(ch.id===currentChapter?" active":"");
-    b.textContent=ch.name;b.onclick=()=>{currentChapter=ch.id;renderChapters();renderSpellPages()};
+    b.textContent=ch.name;b.onclick=()=>{currentChapter=ch.id;renderChapters();renderSongPages()};
     el.appendChild(b);
   });
 }
-function renderSpellPages(){
-  const pages=$("#spellPages");pages.innerHTML="";
+function renderSongPages(){
+  const pages=$("#songPages");pages.innerHTML="";
   TASKS.filter(t=>t.chapter===currentChapter).forEach(t=>{
     if(!taskState[t.id])taskState[t.id]={status:"idle",endsAt:0,timer:null};
     const st=taskState[t.id],open=isUnlocked(t);
@@ -883,13 +928,13 @@ function renderSpellPages(){
     const reward=Math.floor(t.base*mult);
     const dur=Math.floor(t.dur*durationFactor),cd=Math.floor(t.cd*cooldownFactor);
     const card=document.createElement("div");
-    card.className="spell-card"+(st.status==="working"?" working":"")+(st.status==="cooldown"?" cooldown":"")+(open?"":" locked");
+    card.className="song-card"+(st.status==="working"?" working":"")+(st.status==="cooldown"?" cooldown":"")+(open?"":" locked");
     card.draggable=open;
     card.dataset.task=t.id;
-    card.innerHTML=`<div class="spell-info"><span style="color:var(--text)">${t.title}</span>
+    card.innerHTML=`<div class="song-info"><span style="color:var(--text)">${t.title}</span>
       <span style="color:var(--gold);font-size:.48rem">+${reward} ⟁ · ${(dur/1000).toFixed(1)}s · cd ${(cd/1000).toFixed(1)}s</span>
       ${t.deps.length?`<span style="color:var(--muted);font-size:.46rem">Requires: ${t.deps.join(", ")}</span>`:""}</div>
-      <div class="spell-actions">
+      <div class="song-actions">
         <button class="btn-action" data-act="cast" ${!open||st.status!=="idle"?"disabled":""}>${st.status==="idle"?(open?"Cast":"Locked"):st.status==="working"?"…":"CD"}</button>
         <button class="btn-action" data-act="add" ${!open?"disabled":""}>+ Table</button>
         <button class="btn-action" data-act="stop">Stop</button>
@@ -901,7 +946,7 @@ function renderSpellPages(){
     card.querySelector("[data-act=stop]").onclick=()=>stopTask(t.id);
   });
 }
-function powerMult(){return activePowers.reduce((m,p)=>m*(p.mult||1),1)}
+function powerMult(){return activePowers.reduce((m,p)=>m*(p.mult||1),1)*synMultTotal()}
 function startTask(id,e){
   const t=TASKS.find(x=>x.id===id);const st=taskState[id];
   if(st.status!=="idle"||!isUnlocked(t))return;
@@ -910,7 +955,7 @@ function startTask(id,e){
   if(working>=lim){toast("Need more Parallel");return}
   const dur=Math.floor(t.dur*durationFactor);
   st.status="working";st.endsAt=performance.now()+dur;
-  renderSpellPages();
+  renderSongPages();
   log("Rite cast: "+t.title,"task");
   openProcessWindow(t);
   (RITE_FLAVOR[t.id]||["Init…","Done."]).forEach((line,i)=>setTimeout(()=>log("› "+line,"process"),400+i*500));
@@ -930,7 +975,7 @@ function stopTask(id){
   if(st.status==="idle"){toast("Not running");return}
   st.status="idle";st.endsAt=0;
   closeProcessWindowSoon();
-  renderSpellPages();
+  renderSongPages();
   log("Rite stopped: "+id,"system");toast("Stopped "+id);
 }
 function finishTask(id){
@@ -946,7 +991,7 @@ function finishTask(id){
   const cd=Math.floor(t.cd*cooldownFactor);
   st.status="cooldown";st.endsAt=performance.now()+cd;
   closeProcessWindowSoon();
-  renderSpellPages();
+  renderSongPages();
   // cooldown bar
   const prog=$("#prog-"+id);
   const start=performance.now();
@@ -954,7 +999,7 @@ function finishTask(id){
     if(st.status!=="cooldown")return;
     const p=Math.min(1,(performance.now()-start)/cd);
     if(prog)prog.style.width=((1-p)*100)+"%";
-    if(p>=1){st.status="idle";renderSpellPages();if(window.__autoAlign&&id==="align")startTask(id);return}
+    if(p>=1){st.status="idle";renderSongPages();if(window.__autoAlign&&id==="align")startTask(id);return}
     requestAnimationFrame(cdTick);
   };
   requestAnimationFrame(cdTick);
@@ -1091,7 +1136,7 @@ $("#haltAllBtn").onclick=()=>{
   Object.keys(nodeState).forEach(id=>{if(nodeState[id].status==="charging"){nodeState[id].status="idle"}});
   activePowers.length=0;$("#powerBadge").style.display="none";
   closeProcessWindowSoon();
-  renderSpellPages();renderPortfolio();renderNodes();renderKeys();
+  renderSongPages();renderPortfolio();renderNodes();renderKeys();
   log("HALT ALL — activity stopped","system");toast("All activity halted");
 };
 
@@ -1111,7 +1156,7 @@ function renderShop(){
       if(tokens<cost){toast("Need tokens");return}
       setTokens(tokens-cost);ownedRelicLv[r.id]=lv+1;r.fn(ownedRelicLv[r.id]);
       log(`Relic ${r.name} → Lv ${ownedRelicLv[r.id]}`,"unlock");toast(r.name+" Lv "+ownedRelicLv[r.id]);
-      renderShop();renderSpellPages();renderPortfolio();
+      renderShop();renderSongPages();renderPortfolio();
     };
   });
 }
@@ -1161,7 +1206,7 @@ $("#submitAnalysis").onclick=()=>{
     log("New research available: "+track.names[researchDepth[track.id]],"research");
   }
   $("#analysisArea").style.display="none";$("#analysisInput").value="";activeResearch=null;
-  renderResearch();renderSpellPages();
+  renderResearch();renderSongPages();
 };
 
 /* Nodes */
@@ -1259,53 +1304,218 @@ function startNodeAnim(id){
     ctx.globalAlpha=1;t+=0.025*(settings.anim||1);requestAnimationFrame(loop);
   })();
 }
-function updateSynergies(){
-  const have=NODES.filter(n=>unlocked[n.id]).map(n=>n.id);
-  const active=SYNERGIES.filter(s=>s.need.every(x=>have.includes(x)));
-  $("#synergyList").textContent=active.length?active.map(s=>s.name+" (×"+s.mult+")").join(", "):"none";
-  active.forEach(s=>{if(!window.__synApplied)window.__synApplied={};if(!window.__synApplied[s.id]){globalMultiplier*=s.mult;window.__synApplied[s.id]=true;log("Synergy online: "+s.name,"power")}});
+
+
+/* Node Lab — universal synergies */
+const SHAPE_SLOTS = {line:5, triangle:6, square:4, circle:8, cross:5, hex:6};
+const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+
+function hashStr(s){
+  let h=2166136261>>>0;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
+  return h>>>0;
+}
+function synergyFromCombo(members, shape){
+  const sorted=[...members].filter(Boolean).sort();
+  if(sorted.length<2) return null;
+  const key=sorted.join("|")+"@"+shape;
+  const h=hashStr(key);
+  const mult=1.05 + (sorted.length-2)*0.04 + (h%40)/200 + (shape==="hex"?0.06:shape==="circle"?0.05:0.02);
+  const powers=["x5","x5","x7","x7","x55"];
+  const power=powers[h%powers.length];
+  const prefixes=["Aether","Chrono","Veil","Echo","Prism","Null","Solar","Root","Halo","Tide"];
+  const suffixes=["Chorus","Lattice","Bond","Spiral","Gate","Well","Crown","Circuit"];
+  const name=prefixes[h%prefixes.length]+" "+suffixes[(h>>4)%suffixes.length];
+  return {key, members:sorted, shape, name, mult:+mult.toFixed(3), power, level:1};
+}
+function melodyFromGroup(pubId, nodeList){
+  const h=hashStr(pubId+"::"+nodeList.join(","));
+  const notes=[];
+  let x=h;
+  for(let i=0;i<12;i++){x=Math.imul(x,1103515245)+12345>>>0;notes.push(NOTE_NAMES[x%12]+(3+(x%3)))}
+  return notes.join("-");
+}
+function totalNodeCopies(id){
+  return (unlocked[id]?1:0)+(nodeClones[id]||0);
 }
 
-/* Node Lab */
 function renderLab(){
-  const g=$("#labGrid");g.innerHTML="";
-  for(let i=0;i<5;i++){
+  const nSlots=SHAPE_SLOTS[labShape]||5;
+  while(labSlots.length<nSlots) labSlots.push(null);
+  while(labSlots.length>nSlots) labSlots.pop();
+  const g=$("#labGrid");
+  g.className="lab-grid "+labShape;
+  g.innerHTML="";
+  for(let i=0;i<nSlots;i++){
     const slot=document.createElement("div");
     slot.className="lab-slot"+(labSlots[i]?" filled":"");
     slot.dataset.i=i;
-    slot.textContent=labSlots[i]?NODES.find(n=>n.id===labSlots[i])?.name:"Empty";
+    slot.textContent=labSlots[i]?(NODES.find(n=>n.id===labSlots[i])?.name||labSlots[i]):"Empty";
     slot.onclick=()=>{
       const open=NODES.filter(n=>unlocked[n.id]);
       if(!open.length){toast("Unlock nodes first");return}
-      const pick=prompt("Node id to place:\n"+open.map(n=>n.id).join(", "));
+      const pick=prompt("Node id:\\n"+open.map(n=>n.id+" ("+n.name+")").join("\\n"));
       if(!pick)return;
       if(!unlocked[pick]){toast("Not unlocked");return}
       labSlots[i]=pick;renderLab();
     };
     g.appendChild(slot);
   }
-  const saved=$("#savedArrangements");saved.innerHTML="<div style='color:var(--muted)'>Saved:</div>";
-  savedLabs.forEach((arr,idx)=>{
-    const d=document.createElement("div");
-    d.innerHTML=`${arr.name}: ${arr.slots.filter(Boolean).join("+ ")} <button class="btn-action" data-load="${idx}">Load</button>`;
-    saved.appendChild(d);
+  $$(".lab-shape-btn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.shape===labShape);
   });
-  $$("[data-load]").forEach(b=>b.onclick=()=>{const a=savedLabs[+b.dataset.load];labSlots.splice(0,5,...a.slots);renderLab();toast("Loaded")});
+  renderSavedSyn();
+  renderPublished();
+  renderSealed();
 }
-$("#labTestBtn").onclick=()=>{
-  const placed=labSlots.filter(Boolean);
-  const hits=SYNERGIES.filter(s=>s.need.every(x=>placed.includes(x)));
-  if(!hits.length){$("#labResult").textContent="No synergies detected in this arrangement.";return}
-  $("#labResult").textContent="Synergies: "+hits.map(h=>h.name+" ×"+h.mult+" → power "+h.power).join(" · ");
-  log("Lab test: "+hits.map(h=>h.name).join(", "),"info");
-};
-$("#labSaveBtn").onclick=()=>{
-  const name=prompt("Name this arrangement","Lab "+(savedLabs.length+1));
-  if(!name)return;
-  savedLabs.push({name,slots:[...labSlots]});
-  renderLab();toast("Saved");
-};
-$("#labClearBtn").onclick=()=>{labSlots.fill(null);renderLab()};
+
+function renderSavedSyn(){
+  const el=$("#savedSynList");
+  if(!el)return;
+  if(!savedSynergies.length){el.innerHTML="<span style='color:var(--muted);font-size:.48rem'>None saved yet — Discover then Save.</span>";return}
+  el.innerHTML=savedSynergies.map(s=>{
+    const on=activeSynIds.has(s.id);
+    return `<div class="syn-card ${on?"active-syn":""}">
+      <strong style="color:var(--gold)">${s.name}</strong> · ${s.shape} · ×${(s.mult*Math.pow(1.08,s.level-1)).toFixed(3)} · ${s.power} · Lv${s.level}
+      <div style="color:var(--muted);margin:.15rem 0">${s.members.join(" + ")}</div>
+      <button class="btn-action" data-synact="${s.id}">${on?"Deactivate":"Activate"}</button>
+      <button class="btn-action" data-synup="${s.id}">Upgrade (2 violet + 1 void)</button>
+      <button class="btn-action" data-synpub="${s.id}">Publish</button>
+    </div>`;
+  }).join("");
+  $$("[data-synact]").forEach(b=>b.onclick=()=>toggleSyn(b.dataset.synact));
+  $$("[data-synup]").forEach(b=>b.onclick=()=>upgradeSyn(b.dataset.synup));
+  $$("[data-synpub]").forEach(b=>b.onclick=()=>publishSyn(b.dataset.synpub));
+}
+function toggleSyn(id){
+  const s=savedSynergies.find(x=>x.id===id);if(!s)return;
+  if(activeSynIds.has(id)){
+    activeSynIds.delete(id);
+    log("Synergy deactivated: "+s.name,"system");
+  } else {
+    activeSynIds.add(id);
+    log("Synergy activated: "+s.name+" ×"+(s.mult*Math.pow(1.08,s.level-1)).toFixed(3),"power");
+  }
+  renderSavedSyn();renderSongPages();renderPortfolio();updateSynergyBadge();
+}
+function upgradeSyn(id){
+  const s=savedSynergies.find(x=>x.id===id);if(!s)return;
+  if((shards.violet||0)<2||(shards.void||0)<1){toast("Need 2 violet + 1 void shard");return}
+  shards.violet-=2;shards.void-=1;s.level++;
+  log("Synergy upgraded: "+s.name+" → Lv"+s.level,"unlock");
+  toast(s.name+" Lv"+s.level);renderSavedSyn();renderShards();renderSongPages();
+}
+function publishSyn(id){
+  const s=savedSynergies.find(x=>x.id===id);if(!s)return;
+  if(publishedSynergies.some(p=>p.sourceId===s.id)){toast("Already published");return}
+  publishedSynergies.push({id:"pub_"+Date.now(), sourceId:s.id, name:s.name, members:[...s.members], shape:s.shape, mult:s.mult, power:s.power, level:s.level});
+  log("Published synergy: "+s.name,"unlock");toast("Published");renderPublished();
+}
+function renderPublished(){
+  const el=$("#publishedList");if(!el)return;
+  if(!publishedSynergies.length){el.innerHTML="<span style='color:var(--muted);font-size:.48rem'>Publish a saved synergy to build groups.</span>";return}
+  el.innerHTML=publishedSynergies.map(p=>`<div class="syn-card published">
+    <strong>${p.name}</strong> · needs ${p.members.join(", ")} · ${p.shape}
+    <div><button class="btn-action" data-build="${p.id}">Build Group</button></div>
+  </div>`).join("");
+  $$("[data-build]").forEach(b=>b.onclick=()=>startGroupBuild(b.dataset.build));
+}
+let buildingPub=null;
+let buildingAssign=[];
+function startGroupBuild(pubId){
+  const p=publishedSynergies.find(x=>x.id===pubId);if(!p)return;
+  buildingPub=p;
+  buildingAssign=p.members.map(m=>({need:m, assigned:null}));
+  $("#groupBuild").style.display="block";
+  $("#groupBuildTitle").textContent="Building: "+p.name+" ("+p.shape+")";
+  renderGroupSlots();
+}
+function renderGroupSlots(){
+  const box=$("#groupSlots");if(!box||!buildingPub)return;
+  box.innerHTML=buildingAssign.map((a,i)=>{
+    const copies=totalNodeCopies(a.need);
+    const used=buildingAssign.filter(x=>x.assigned===a.need||(x.need===a.need&&x.assigned)).length;
+    return `<div style="border:1px solid var(--border);padding:.3rem;min-width:100px">
+      Slot ${i+1}: <b>${a.need}</b><br>
+      <select data-gslot="${i}" style="font-size:.48rem;margin-top:.15rem">
+        <option value="">— assign —</option>
+        ${unlocked[a.need]?`<option value="${a.need}" ${a.assigned===a.need?"selected":""}>${a.need} (owned)</option>`:""}
+        ${(nodeClones[a.need]||0)>0?`<option value="clone:${a.need}">clone pool (${nodeClones[a.need]})</option>`:""}
+      </select>
+      <button class="btn-action" data-grow="${a.need}" style="margin-top:.15rem">Grow clone (35 ⟁)</button>
+    </div>`;
+  }).join("");
+  $$("[data-gslot]").forEach(sel=>sel.onchange=()=>{
+    const i=+sel.dataset.gslot;
+    buildingAssign[i].assigned=sel.value||null;
+  });
+  $$("[data-grow]").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.grow;const cost=35;
+    if(!unlocked[id]){toast("Unlock original first");return}
+    if(tokens<cost){toast("Need tokens");return}
+    setTokens(tokens-cost);nodeClones[id]=(nodeClones[id]||0)+1;
+    log("Node clone grown: "+id,"unlock");toast("Clone +1 "+id);renderGroupSlots();
+  });
+}
+$("#sealGroupBtn") && null;
+function sealGroupHandler(){
+  if(!buildingPub){toast("Select a published synergy");return}
+  const filled=buildingAssign.every(a=>a.assigned);
+  if(!filled){toast("Assign every slot");return}
+  // consume one clone per clone: assignment
+  let ok=true;
+  buildingAssign.forEach(a=>{
+    if(a.assigned && a.assigned.startsWith("clone:")){
+      const id=a.assigned.slice(6);
+      if((nodeClones[id]||0)<1){toast("Missing clone "+id);ok=false}
+      else nodeClones[id]--;
+    }
+  });
+  if(!ok)return;
+  const nodeList=buildingAssign.map(a=>a.assigned.replace(/^clone:/,""));
+  const melody=melodyFromGroup(buildingPub.id, nodeList);
+  const g={id:"seal_"+Date.now(), pubId:buildingPub.id, name:buildingPub.name, nodes:nodeList, shape:buildingPub.shape, mult:buildingPub.mult, power:buildingPub.power, level:buildingPub.level, melody, active:false};
+  sealedGroups.push(g);
+  $("#melodyPreview").style.display="block";
+  $("#melodyPreview").textContent="12-note seal: "+melody;
+  log("Group sealed: "+g.name+" · "+melody,"power");
+  toast("Sealed");
+  buildingPub=null;$("#groupBuild").style.display="none";
+  renderSealed();renderPublished();
+}
+function renderSealed(){
+  const el=$("#sealedList");if(!el)return;
+  if(!sealedGroups.length){el.innerHTML="<span style='color:var(--muted);font-size:.48rem'>No sealed groups yet.</span>";return}
+  el.innerHTML=sealedGroups.map(g=>`<div class="syn-card ${g.active?"active-syn":""}">
+    <strong>${g.name}</strong> · ${g.shape} · ×${(g.mult*Math.pow(1.08,g.level-1)).toFixed(3)}
+    <div class="melody-display">${g.melody}</div>
+    <div style="color:var(--muted)">${g.nodes.join(" · ")}</div>
+    <button class="btn-action" data-sealact="${g.id}">${g.active?"Deactivate Group":"Activate Group"}</button>
+  </div>`).join("");
+  $$("[data-sealact]").forEach(b=>b.onclick=()=>{
+    const g=sealedGroups.find(x=>x.id===b.dataset.sealact);if(!g)return;
+    g.active=!g.active;
+    log((g.active?"Activated":"Deactivated")+" sealed group "+g.name,"power");
+    renderSealed();renderSongPages();updateSynergyBadge();
+  });
+}
+function synMultTotal(){
+  let m=1;
+  savedSynergies.forEach(s=>{if(activeSynIds.has(s.id))m*=s.mult*Math.pow(1.08,s.level-1)});
+  sealedGroups.forEach(g=>{if(g.active)m*=g.mult*Math.pow(1.08,g.level-1)});
+  return m;
+}
+function updateSynergyBadge(){
+  const parts=[];
+  savedSynergies.forEach(s=>{if(activeSynIds.has(s.id))parts.push(s.name)});
+  sealedGroups.forEach(g=>{if(g.active)parts.push("⊕"+g.name)});
+  const el=$("#synergyList");
+  if(el) el.textContent=parts.length?parts.join(", "):"none";
+}
+function updateSynergies(){
+  // legacy auto-synergies removed — lab activation is the path
+  updateSynergyBadge();
+}
 
 /* Node shop multi-select */
 const NODE_SHOP = [
@@ -1375,7 +1585,7 @@ function renderShards(){
     c.querySelector("button").onclick=()=>{
       for(const [k,v] of Object.entries(cr.need))if((shards[k]||0)<v){toast("Need shards");return}
       for(const [k,v] of Object.entries(cr.need))shards[k]-=v;
-      cr.fn();toast(cr.name);renderShards();renderKeys();renderSpellPages();
+      cr.fn();toast(cr.name);renderShards();renderKeys();renderSongPages();
     };
   });
 }
@@ -1422,14 +1632,14 @@ function renderKeys(){
     $("#powerBadge").style.display="block";
     $("#powerBadge").textContent=activePowers.map(a=>a.name).join(" + ");
     log("Power on: "+p.name,"power");
-    renderKeys();renderSpellPages();renderPortfolio();
+    renderKeys();renderSongPages();renderPortfolio();
     setTimeout(()=>{
       const i=activePowers.indexOf(p);if(i>=0)activePowers.splice(i,1);
       p.uses--;p.readyAt=performance.now()+45000;
       if(p.uses<=0){const pi=powers.indexOf(p);if(pi>=0)powers.splice(pi,1)}
       $("#powerBadge").style.display=activePowers.length?"block":"none";
       $("#powerBadge").textContent=activePowers.map(a=>a.name).join(" + ");
-      renderKeys();renderSpellPages();renderPortfolio();
+      renderKeys();renderSongPages();renderPortfolio();
     },18000);
   });
 }
@@ -1479,11 +1689,10 @@ function localInfer(q){
   if(/status|overview|how am i/.test(l)){
     return `Status report:\n• Tokens: ${tokens}\n• Clearance: ${$("#clearanceBadge").textContent.replace("CLEARANCE: ","")}\n• Yield mult: ×${(globalMultiplier*researchBoost*powerMult()).toFixed(2)}\n• Portfolio: ${portfolio.length}/${maxSlots}\n• Nodes unlocked: ${NODES.filter(n=>unlocked[n.id]).length}/${NODES.length}\n• Codes archived: ${energyCodes.length}\n• Research tracks progressed: ${Object.keys(researchDepth).length}`+(detail?"\nTip: Sleep rites pay well if you can leave the tab open.":"");
   }
-  if(/synergy|lab/.test(l)){
-    const have=NODES.filter(n=>unlocked[n.id]).map(n=>n.id);
-    const possible=SYNERGIES.filter(s=>s.need.every(x=>have.includes(x)));
-    const almost=SYNERGIES.filter(s=>s.need.filter(x=>have.includes(x)).length>=s.need.length-1&&!possible.includes(s));
-    return `Active synergies: ${possible.map(s=>s.name).join(", ")||"none"}.\nAlmost unlocked: ${almost.map(s=>s.name+" (need "+s.need.filter(x=>!have.includes(x)).join(",")+")").join("; ")||"—"}.\nUse Node Lab to test arrangements without spending activate fees.`;
+    if(/synergy|lab|song of syn/.test(l)){
+    const act=[...activeSynIds].map(id=>savedSynergies.find(s=>s.id===id)?.name).filter(Boolean);
+    const sealed=sealedGroups.filter(g=>g.active).map(g=>g.name);
+    return `Active saved synergies: ${act.join(", ")||"none"}.\nActive sealed groups: ${sealed.join(", ")||"none"}.\nSaved total: ${savedSynergies.length}, published: ${publishedSynergies.length}, sealed: ${sealedGroups.length}.\nFlow: Discover in Lab (shape + members) → Save → Activate, or Publish → Build Group → Seal (12-note melody) → Activate Group. Upgrade saved synergies with violet/void shards.`;
   }
   if(/sleep|overnight|dream/.test(l)){
     return `Sleep chapter rites are long-duration, high-yield. Dreamwalk is the gateway; Somnolent Convergence needs Lucid Binding + Night Harvest. Oneiric Yield relic amplifies them. Start a sequence before you step away.`;
@@ -1553,6 +1762,29 @@ $("#clearanceBadge").onclick=()=>{
   if(CLEARANCE_GIFTS[l]&&!claimedGifts.has(l))openGiftModal(l);
   else toast("No unclaimed gift for "+l);
 };
+
+
+document.addEventListener("click",e=>{
+  const sb=e.target.closest(".lab-shape-btn");
+  if(sb){labShape=sb.dataset.shape;renderLab()}
+});
+$("#labTestBtn")&&($("#labTestBtn").onclick=()=>{
+  const placed=labSlots.filter(Boolean);
+  const syn=synergyFromCombo(placed, labShape);
+  if(!syn){$("#labResult").textContent="Need at least 2 nodes in the lab.";lastDiscovered=null;return}
+  lastDiscovered=syn;
+  $("#labResult").textContent=`Discovered: ${syn.name} · ${syn.shape} · ×${syn.mult} · grants ${syn.power} · [${syn.members.join(", ")}]`;
+  log("Lab discovered synergy: "+syn.name,"info");
+});
+$("#labSaveBtn")&&($("#labSaveBtn").onclick=()=>{
+  if(!lastDiscovered){toast("Discover a synergy first");return}
+  const s={...lastDiscovered, id:"syn_"+Date.now(), level:1};
+  savedSynergies.push(s);
+  log("Synergy saved: "+s.name,"unlock");toast("Saved — Activate in list below");
+  lastDiscovered=null;renderSavedSyn();
+});
+$("#labClearBtn")&&($("#labClearBtn").onclick=()=>{labSlots.fill(null);lastDiscovered=null;$("#labResult").textContent="";renderLab()});
+$("#sealGroupBtn")&&($("#sealGroupBtn").onclick=sealGroupHandler);
 
 log("Gatekeeper online","system");
 })();
