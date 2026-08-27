@@ -3,206 +3,243 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BITS & PIECES — Expanded Sanctuary</title>
+<title>BITS & PIECES — Spellbook Sanctuary</title>
 <style>
 :root, [data-theme="dark"] {
-  --bg: #08080a; --bg-soft: #0c0c10; --panel: rgba(0,0,0,.42);
-  --text: #c4c4cc; --muted: #7a7a84; --gold: #d4af37; --gold-dim: rgba(212,175,55,.16);
-  --green: #4af626; --red: #e63946; --purple: #c084fc; --blue: #7eb8ff;
-  --grid: rgba(255,255,255,.03); --log-bg: rgba(6,6,9,.95);
-  --input-bg: rgba(0,0,0,.4); --border: rgba(255,255,255,.07);
-  --shadow: rgba(0,0,0,.7);
+  --bg:#08080a; --bg-soft:#0c0c10; --panel:rgba(0,0,0,.48);
+  --text:#c4c4cc; --muted:#7a7a84; --gold:#d4af37; --gold-dim:rgba(212,175,55,.16);
+  --green:#4af626; --red:#e63946; --purple:#c084fc; --blue:#7eb8ff;
+  --grid:rgba(255,255,255,.03); --log-bg:rgba(6,6,9,.96);
+  --input-bg:rgba(0,0,0,.4); --border:rgba(255,255,255,.08); --shadow:rgba(0,0,0,.7);
 }
 [data-theme="light"] {
-  --bg: #eef1f5; --bg-soft: #e4e8ef; --panel: rgba(255,255,255,.82);
-  --text: #1a1a22; --muted: #5a5a68; --gold: #a07820; --gold-dim: rgba(160,120,32,.2);
-  --green: #1a9a30; --red: #c03030; --purple: #7c3aed; --blue: #2563eb;
-  --grid: rgba(0,0,0,.04); --log-bg: rgba(245,247,250,.97);
-  --input-bg: rgba(255,255,255,.7); --border: rgba(0,0,0,.1);
-  --shadow: rgba(20,30,50,.12);
+  --bg:#eef1f5; --bg-soft:#e4e8ef; --panel:rgba(255,255,255,.88);
+  --text:#1a1a22; --muted:#5a5a68; --gold:#a07820; --gold-dim:rgba(160,120,32,.22);
+  --green:#1a9a30; --red:#c03030; --purple:#7c3aed; --blue:#2563eb;
+  --grid:rgba(0,0,0,.04); --log-bg:rgba(245,247,250,.98);
+  --input-bg:rgba(255,255,255,.75); --border:rgba(0,0,0,.1); --shadow:rgba(20,30,50,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   background:var(--bg);color:var(--text);font-family:"Courier New",Courier,monospace;
   min-height:100vh;display:flex;align-items:center;justify-content:center;
-  overflow-x:hidden;overflow-y:auto;position:relative;padding:1rem 0;
-  transition:background .4s,color .3s;
+  overflow-x:hidden;overflow-y:auto;padding:0.8rem 0;transition:background .4s,color .3s;
 }
 .bg-grid{position:fixed;inset:0;background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
-.vignette{position:fixed;inset:0;background:radial-gradient(circle,transparent 30%,rgba(0,0,0,.75) 100%);pointer-events:none;z-index:1;transition:opacity .4s}
-[data-theme="light"] .vignette{opacity:.45}
+.vignette{position:fixed;inset:0;background:radial-gradient(circle,transparent 28%,rgba(0,0,0,.78) 100%);pointer-events:none;z-index:1}
+[data-theme="light"] .vignette{opacity:.4}
 
-.view{position:relative;z-index:2;width:97%;max-width:1320px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--gold-dim);box-shadow:0 0 60px var(--shadow);transition:opacity .5s,transform .5s,background .4s}
+.view{position:relative;z-index:2;width:98%;max-width:1400px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--gold-dim);box-shadow:0 0 60px var(--shadow);transition:opacity .45s,transform .45s}
 .hidden{display:none!important;opacity:0;transform:scale(.97) translateY(8px)}
 
 /* Gate */
-#gateView{max-width:480px;text-align:center;padding:2.3rem 2rem}
-.sigil-container{width:130px;height:130px;margin:0 auto 1.3rem;cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
-.sigil-container:hover{transform:scale(1.08) rotate(4deg)}
-.sigil-container:active{transform:scale(.94)}
+#gateView{max-width:460px;text-align:center;padding:2.2rem 1.8rem}
+.sigil-container{width:120px;height:120px;margin:0 auto 1.2rem;cursor:pointer;transition:transform .35s}
+.sigil-container:hover{transform:scale(1.08) rotate(5deg)}
 canvas{width:100%;height:100%;display:block}
-h1{font-family:Georgia,serif;font-size:1.45rem;letter-spacing:.32em;color:var(--text);text-transform:uppercase;margin-bottom:.35rem;font-weight:400}
-.subtitle{font-size:.64rem;letter-spacing:.26em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem;opacity:.9}
-.manifesto{font-size:.72rem;line-height:1.8;color:var(--muted);margin-bottom:1.8rem}
+h1{font-family:Georgia,serif;font-size:1.4rem;letter-spacing:.3em;color:var(--text);text-transform:uppercase;margin-bottom:.3rem;font-weight:400}
+.subtitle{font-size:.62rem;letter-spacing:.24em;color:var(--gold);text-transform:uppercase;margin-bottom:1.3rem}
+.manifesto{font-size:.7rem;line-height:1.75;color:var(--muted);margin-bottom:1.6rem}
 input[type=password],input[type=text],input[type=number],select,textarea{
   width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--gold);
-  font-family:inherit;font-size:.78rem;padding:.5rem .6rem;outline:none;letter-spacing:.04em;
-  transition:border-color .3s,box-shadow .3s;
+  font-family:inherit;font-size:.76rem;padding:.45rem .55rem;outline:none;transition:border-color .25s;
 }
-input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);background:transparent;text-align:center;letter-spacing:.28em;padding:.55rem 0}
-input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 12px var(--gold-dim)}
-.status-msg{margin-top:.8rem;font-size:.6rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;height:1.1rem}
+input[type=password]{border:none;border-bottom:1px solid var(--gold-dim);background:transparent;text-align:center;letter-spacing:.26em;padding:.5rem 0}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+.status-msg{margin-top:.7rem;font-size:.58rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;height:1rem}
 
-/* Dashboard shell */
-#dashboardView{padding:1.1rem 1.2rem 1.3rem}
-.dashboard-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-dim);padding-bottom:.7rem;margin-bottom:.9rem;flex-wrap:wrap;gap:.6rem}
-.dashboard-header h2{font-family:Georgia,serif;font-size:1.05rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
-.header-meta{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+/* Dashboard */
+#dashboardView{padding:0.9rem 1rem 1.1rem;display:flex;flex-direction:column;gap:0.7rem;min-height:85vh}
+.dashboard-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gold-dim);padding-bottom:.55rem;flex-wrap:wrap;gap:.5rem}
+.dashboard-header h2{font-family:Georgia,serif;font-size:1rem;letter-spacing:.16em;color:var(--gold);text-transform:uppercase}
+.header-meta{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
 .token-counter,.clearance-badge,.power-active,.theme-btn,.settings-btn{
-  font-size:.62rem;letter-spacing:.1em;padding:.3rem .55rem;border:1px solid var(--gold-dim);
+  font-size:.58rem;letter-spacing:.08em;padding:.26rem .5rem;border:1px solid var(--gold-dim);
   background:rgba(212,175,55,.05);color:var(--gold);cursor:pointer;transition:all .25s;
 }
 .token-counter span{color:var(--text);font-weight:bold}
-.token-counter.pulse{transform:scale(1.1);box-shadow:0 0 18px var(--gold-dim)}
+.token-counter.pulse{transform:scale(1.08);box-shadow:0 0 16px var(--gold-dim)}
 .clearance-badge{color:var(--green);border-color:rgba(74,246,38,.3);cursor:default}
-.power-active{color:var(--purple);border-color:rgba(192,132,252,.4);animation:powerPulse 1.6s ease-in-out infinite;display:none}
-@keyframes powerPulse{0%,100%{opacity:.8}50%{opacity:1;box-shadow:0 0 14px rgba(192,132,252,.35)}}
+.power-active{color:var(--purple);border-color:rgba(192,132,252,.4);display:none}
 .theme-btn,.settings-btn{background:transparent;color:var(--muted);border-color:var(--border)}
 .theme-btn:hover,.settings-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
 
-.dashboard-body{display:grid;grid-template-columns:1fr 280px;gap:1rem;min-height:540px}
-@media(max-width:980px){.dashboard-body{grid-template-columns:1fr}}
+/* Resizable Panel system */
+.r-panel{
+  border:1px solid var(--border);background:var(--panel);position:relative;
+  display:flex;flex-direction:column;min-height:60px;min-width:180px;
+  resize:both;overflow:auto;transition:box-shadow .25s,border-color .25s;
+}
+.r-panel:hover{border-color:var(--gold-dim);box-shadow:0 0 16px rgba(212,175,55,.06)}
+.r-panel.minimized{height:36px!important;min-height:36px;resize:none;overflow:hidden}
+.r-panel.minimized .r-body{display:none}
+.r-panel.maximized{
+  position:fixed!important;inset:12px!important;z-index:40;width:auto!important;height:auto!important;
+  max-width:none!important;resize:none;box-shadow:0 0 80px var(--shadow);
+}
+.r-header{
+  display:flex;align-items:center;justify-content:space-between;gap:.4rem;
+  padding:.35rem .55rem;border-bottom:1px solid var(--gold-dim);cursor:default;
+  font-size:.58rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;
+  background:rgba(0,0,0,.2);user-select:none;flex-shrink:0;
+}
+[data-theme="light"] .r-header{background:rgba(0,0,0,.04)}
+.r-header-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r-controls{display:flex;gap:.2rem}
+.r-btn{
+  width:18px;height:18px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-size:.65rem;line-height:1;cursor:pointer;display:grid;place-items:center;
+  transition:all .2s;
+}
+.r-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
+.r-body{flex:1;padding:.55rem .65rem;overflow:auto;min-height:0}
 
-.main-col{display:flex;flex-direction:column;gap:.85rem}
-.tabs{display:flex;gap:.3rem;flex-wrap:wrap}
-.tab-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.58rem;letter-spacing:.1em;padding:.32rem .6rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
+/* Top Rites Table (Portfolio) */
+#ritesTablePanel{width:100%;height:150px;min-height:90px}
+.portfolio-slots{display:flex;gap:.45rem;flex-wrap:wrap;align-items:stretch;min-height:70px}
+.portfolio-slot{
+  flex:1;min-width:110px;max-width:160px;border:1px dashed var(--border);
+  background:rgba(0,0,0,.25);padding:.4rem;display:flex;flex-direction:column;gap:.25rem;
+  transition:border-color .25s,background .25s;position:relative;
+}
+.portfolio-slot.filled{border-style:solid;border-color:var(--gold-dim);background:rgba(212,175,55,.06)}
+.portfolio-slot .slot-name{font-size:.6rem;color:var(--text);letter-spacing:.03em}
+.portfolio-slot .slot-meta{font-size:.52rem;color:var(--gold)}
+.portfolio-slot .slot-remove{position:absolute;top:2px;right:4px;background:none;border:none;color:var(--red);cursor:pointer;font-size:.7rem;opacity:.6}
+.portfolio-slot .slot-remove:hover{opacity:1}
+.portfolio-actions{display:flex;gap:.35rem;margin-top:.45rem;flex-wrap:wrap}
+.btn-action{
+  background:transparent;border:1px solid var(--gold-dim);color:var(--gold);
+  padding:.28rem .55rem;font-family:inherit;font-size:.56rem;letter-spacing:.1em;
+  cursor:pointer;text-transform:uppercase;transition:all .25s;white-space:nowrap;
+}
+.btn-action:hover:not(:disabled){background:var(--gold);color:#000;transform:translateY(-1px)}
+.btn-action:disabled{opacity:.4;cursor:not-allowed}
+
+/* Main layout */
+.main-layout{display:grid;grid-template-columns:1fr 270px;gap:.7rem;flex:1;min-height:0}
+@media(max-width:960px){.main-layout{grid-template-columns:1fr}}
+.left-col{display:flex;flex-direction:column;gap:.65rem;min-height:0}
+.tabs{display:flex;gap:.25rem;flex-wrap:wrap}
+.tab-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.55rem;letter-spacing:.08em;padding:.28rem .5rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
 .tab-btn:hover,.tab-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.07)}
-.tab-panel{display:none;animation:fadeUp .35s ease}
-.tab-panel.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-.panel{border:1px solid var(--border);background:var(--panel);padding:.9rem;position:relative;transition:border-color .3s,box-shadow .3s,transform .3s}
-.panel:hover{border-color:var(--gold-dim);box-shadow:0 0 18px rgba(212,175,55,.06)}
-.panel-title{font-size:.6rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:.65rem;border-bottom:1px dashed var(--gold-dim);padding-bottom:.28rem;display:flex;justify-content:space-between;align-items:center}
+/* Spellbook */
+.spellbook{display:grid;grid-template-columns:140px 1fr;gap:.6rem;min-height:280px}
+@media(max-width:600px){.spellbook{grid-template-columns:1fr}}
+.spell-chapters{display:flex;flex-direction:column;gap:.25rem;border-right:1px solid var(--border);padding-right:.5rem}
+.chapter-btn{
+  text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);
+  font-family:inherit;font-size:.58rem;letter-spacing:.06em;padding:.35rem .45rem;cursor:pointer;
+  transition:all .22s;border-radius:2px;
+}
+.chapter-btn:hover,.chapter-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(212,175,55,.08)}
+.spell-pages{display:flex;flex-direction:column;gap:.4rem;max-height:340px;overflow-y:auto}
+.spell-card{
+  border:1px solid var(--border);background:rgba(15,15,20,.4);padding:.5rem .6rem;
+  display:grid;grid-template-columns:1fr auto;gap:.35rem;align-items:center;font-size:.62rem;
+  transition:all .25s;position:relative;overflow:hidden;
+}
+[data-theme="light"] .spell-card{background:rgba(255,255,255,.5)}
+.spell-card:hover{border-color:var(--gold-dim);transform:translateX(3px)}
+.spell-card.working{border-color:var(--gold);box-shadow:0 0 12px var(--gold-dim)}
+.spell-card.locked{opacity:.45;pointer-events:none}
+.spell-card .task-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--green));width:0%}
+.spell-info{display:flex;flex-direction:column;gap:.08rem}
+.spell-title{color:var(--text)}
+.spell-meta{color:var(--gold);font-size:.52rem}
+.spell-deps{font-size:.5rem;color:var(--muted)}
+.spell-actions{display:flex;flex-direction:column;gap:.2rem}
+.spell-actions .btn-action{padding:.2rem .4rem;font-size:.52rem}
 
-/* Tasks */
-.task-list{display:flex;flex-direction:column;gap:.5rem;max-height:380px;overflow-y:auto;padding-right:.25rem}
-.task-card{border:1px solid var(--border);background:rgba(15,15,20,.45);padding:.55rem .65rem;display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:center;font-size:.64rem;position:relative;overflow:hidden;transition:all .28s}
-[data-theme="light"] .task-card{background:rgba(255,255,255,.5)}
-.task-card:hover{border-color:var(--gold-dim);transform:translateX(3px)}
-.task-card.working{border-color:var(--gold);box-shadow:0 0 14px var(--gold-dim)}
-.task-card.cooldown{opacity:.75}
-.task-card.locked{opacity:.45;pointer-events:none}
-.task-info{display:flex;flex-direction:column;gap:.1rem}
-.task-title{color:var(--text)}
-.task-meta{color:var(--gold);font-size:.56rem}
-.task-deps{font-size:.52rem;color:var(--muted)}
-.task-progress{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green));width:0%;box-shadow:0 0 8px var(--gold);transition:width .12s linear}
-.btn-action{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);padding:.28rem .55rem;font-family:inherit;font-size:.56rem;letter-spacing:.1em;cursor:pointer;text-transform:uppercase;transition:all .25s;white-space:nowrap}
-.btn-action:hover:not(:disabled){background:var(--gold);color:#000;transform:translateY(-1px);box-shadow:0 3px 12px var(--gold-dim)}
-.btn-action:active:not(:disabled){transform:scale(.96)}
-.btn-action:disabled{opacity:.45;cursor:not-allowed;transform:none}
-
-/* ASCII Process Window */
-.process-window{border:1px solid var(--gold-dim);background:rgba(4,4,8,.85);margin-top:.7rem;display:none;flex-direction:column;max-height:320px;overflow:hidden;animation:fadeUp .4s ease}
-.process-window.visible{display:flex}
-.process-header{padding:.45rem .7rem;border-bottom:1px solid var(--gold-dim);font-size:.58rem;letter-spacing:.12em;color:var(--gold);display:flex;justify-content:space-between}
-.process-body{display:grid;grid-template-columns:1fr 1.1fr;gap:0;min-height:220px}
+/* Process window */
+.process-window{border:1px solid var(--gold-dim);background:rgba(4,4,8,.88);margin-top:.5rem;display:none;flex-direction:column;max-height:280px;overflow:hidden}
+.process-window.visible{display:flex;animation:fadeUp .35s ease}
+.process-header{padding:.35rem .55rem;border-bottom:1px solid var(--gold-dim);font-size:.55rem;letter-spacing:.1em;color:var(--gold);display:flex;justify-content:space-between}
+.process-body{display:grid;grid-template-columns:1fr 1.05fr;min-height:180px}
 @media(max-width:700px){.process-body{grid-template-columns:1fr}}
-.process-text{padding:.6rem .7rem;font-size:.6rem;line-height:1.55;color:var(--muted);overflow-y:auto;border-right:1px solid var(--border);max-height:260px}
-.process-text .line{opacity:0;animation:lineIn .4s forwards}
+.process-text{padding:.5rem;font-size:.56rem;line-height:1.5;color:var(--muted);overflow-y:auto;border-right:1px solid var(--border);max-height:220px}
+.process-text .line{opacity:0;animation:lineIn .35s forwards}
 @keyframes lineIn{to{opacity:1}}
-.process-ascii{font-family:monospace;font-size:10px;line-height:1.05;color:var(--gold);padding:.5rem;white-space:pre;overflow:hidden;background:rgba(0,0,0,.35);min-height:200px}
-[data-theme="light"] .process-ascii{background:rgba(0,0,0,.06);color:#7a5a10}
+.process-ascii{font-family:monospace;font-size:9px;line-height:1.05;color:var(--gold);padding:.4rem;white-space:pre;overflow:hidden;background:rgba(0,0,0,.3);min-height:160px}
 
-/* Shop / Keys / Research */
-.shop-grid,.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.55rem;max-height:400px;overflow-y:auto}
-.upgrade-card,.research-card{border:1px solid var(--border);background:rgba(10,10,14,.5);padding:.6rem;display:flex;flex-direction:column;gap:.3rem;transition:all .25s}
-[data-theme="light"] .upgrade-card,[data-theme="light"] .research-card{background:rgba(255,255,255,.55)}
+/* Shop / Research / Keys compact */
+.shop-grid,.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.45rem;max-height:320px;overflow-y:auto}
+.upgrade-card,.research-card{border:1px solid var(--border);background:rgba(10,10,14,.45);padding:.5rem;display:flex;flex-direction:column;gap:.25rem;transition:all .22s}
 .upgrade-card:hover,.research-card:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
-.upgrade-card.owned{opacity:.7;border-color:rgba(74,246,38,.3)}
-.upgrade-name,.research-name{font-size:.64rem;color:var(--text)}
-.upgrade-desc,.research-desc{font-size:.54rem;color:var(--muted);line-height:1.35}
-.upgrade-cost{font-size:.56rem;color:var(--gold);margin-top:auto}
-
-.keys-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-.key-slot,.power-slot{border:1px solid var(--border);padding:.6rem;min-height:80px}
-.key-slot h4,.power-slot h4{font-size:.58rem;letter-spacing:.12em;color:var(--purple);text-transform:uppercase;margin-bottom:.35rem}
-.key-item,.power-item{font-size:.58rem;padding:.3rem .4rem;margin-bottom:.25rem;border-left:2px solid var(--purple);background:rgba(192,132,252,.06);display:flex;justify-content:space-between;gap:.3rem;align-items:center}
+.upgrade-card.owned{opacity:.65;border-color:rgba(74,246,38,.25)}
+.upgrade-name,.research-name{font-size:.6rem;color:var(--text)}
+.upgrade-desc,.research-desc{font-size:.52rem;color:var(--muted);line-height:1.3}
+.upgrade-cost{font-size:.54rem;color:var(--gold);margin-top:auto}
+.keys-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.key-slot,.power-slot{border:1px solid var(--border);padding:.5rem;min-height:70px}
+.key-slot h4,.power-slot h4{font-size:.55rem;letter-spacing:.1em;color:var(--purple);text-transform:uppercase;margin-bottom:.3rem}
+.key-item,.power-item{font-size:.55rem;padding:.25rem .35rem;margin-bottom:.2rem;border-left:2px solid var(--purple);background:rgba(192,132,252,.06);display:flex;justify-content:space-between;gap:.25rem;align-items:center}
 
 /* Viz */
-.viz-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem}
-@media(max-width:720px){.viz-row{grid-template-columns:1fr}}
-.viz-box{height:140px;position:relative;background:rgba(5,5,8,.6);overflow:hidden}
+.viz-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+@media(max-width:700px){.viz-row{grid-template-columns:1fr}}
+.viz-box{height:120px;position:relative;background:rgba(5,5,8,.55);overflow:hidden}
 .viz-box canvas{position:absolute;inset:0;width:100%;height:100%}
-.lock-overlay{position:absolute;inset:0;background:rgba(8,8,10,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;padding:.6rem;text-align:center;transition:opacity .5s,transform .5s}
-.lock-overlay.unlocked{opacity:0;transform:scale(1.06);pointer-events:none}
-.lock-overlay p{font-size:.6rem;color:var(--muted);margin-bottom:.3rem}
-.unlock-cost{color:var(--gold);font-size:.54rem;margin-bottom:.4rem}
-
-.challenge-modal{position:absolute;inset:0;background:rgba(6,6,10,.94);z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.8rem;text-align:center;animation:fadeUp .3s ease}
-.challenge-modal h3{font-size:.68rem;letter-spacing:.14em;color:var(--gold);margin-bottom:.4rem}
-.challenge-modal p{font-size:.58rem;color:var(--muted);margin-bottom:.5rem;line-height:1.45}
-.challenge-modal input{width:85%;margin-bottom:.4rem;text-align:center}
+.lock-overlay{position:absolute;inset:0;background:rgba(8,8,10,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;padding:.5rem;text-align:center;transition:opacity .45s,transform .45s}
+.lock-overlay.unlocked{opacity:0;transform:scale(1.05);pointer-events:none}
+.lock-overlay p{font-size:.55rem;color:var(--muted);margin-bottom:.25rem}
+.unlock-cost{color:var(--gold);font-size:.52rem;margin-bottom:.35rem}
+.challenge-modal{position:absolute;inset:0;background:rgba(6,6,10,.94);z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.6rem;text-align:center}
 
 /* Log */
-.log-panel{border:1px solid var(--border);background:var(--log-bg);display:flex;flex-direction:column;height:100%;min-height:480px;max-height:720px;overflow:hidden}
-.log-header{padding:.55rem .7rem .45rem;border-bottom:1px solid var(--gold-dim);display:flex;flex-direction:column;gap:.4rem}
+.log-panel{height:100%;min-height:400px;display:flex;flex-direction:column}
+.log-header-inner{padding:.4rem .55rem;border-bottom:1px solid var(--gold-dim);display:flex;flex-direction:column;gap:.3rem}
 .log-title-row{display:flex;justify-content:space-between;align-items:center}
-.log-title{font-size:.6rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
-.log-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.52rem;letter-spacing:.08em;padding:.22rem .4rem;cursor:pointer;text-transform:uppercase;transition:all .25s}
+.log-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:.5rem;letter-spacing:.06em;padding:.18rem .35rem;cursor:pointer;text-transform:uppercase}
 .log-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
-.log-search{width:100%;font-size:.62rem;padding:.3rem .45rem}
-.log-meta{font-size:.52rem;color:var(--muted)}
-.log-entries{flex:1;overflow-y:auto;padding:.45rem .55rem;display:flex;flex-direction:column;gap:.25rem}
-.log-entry{font-size:.56rem;line-height:1.35;padding:.25rem .35rem;border-left:2px solid transparent;background:rgba(255,255,255,.015);animation:logSlide .28s forwards;opacity:0;transform:translateX(6px)}
-.log-entry .ts{color:var(--muted);margin-right:.3rem;font-size:.52rem}
+.log-search{width:100%;font-size:.58rem;padding:.25rem .4rem}
+.log-meta{font-size:.5rem;color:var(--muted)}
+.log-entries{flex:1;overflow-y:auto;padding:.35rem .45rem;display:flex;flex-direction:column;gap:.2rem}
+.log-entry{font-size:.54rem;line-height:1.3;padding:.22rem .3rem;border-left:2px solid transparent;background:rgba(255,255,255,.012);animation:logSlide .25s forwards;opacity:0;transform:translateX(5px)}
+.log-entry .ts{color:var(--muted);margin-right:.25rem;font-size:.5rem}
 .log-entry.type-system{border-left-color:#6a6a72}.log-entry.type-click{border-left-color:var(--gold)}
-.log-entry.type-key{border-left-color:var(--blue)}.log-entry.type-task{border-left-color:var(--green)}
-.log-entry.type-unlock{border-left-color:var(--purple)}.log-entry.type-error{border-left-color:var(--red)}
-.log-entry.type-info{border-left-color:#8ab4d4}.log-entry.type-power{border-left-color:#f0abfc}
+.log-entry.type-task{border-left-color:var(--green)}.log-entry.type-unlock{border-left-color:var(--purple)}
+.log-entry.type-error{border-left-color:var(--red)}.log-entry.type-power{border-left-color:#f0abfc}
 .log-entry.type-research{border-left-color:#f59e0b}.log-entry.type-notify{border-left-color:#22d3ee}
 .log-entry.hidden-by-search{display:none}
 @keyframes logSlide{to{opacity:1;transform:none}}
 
-.dashboard-footer{margin-top:.8rem;display:flex;justify-content:flex-end;gap:.45rem}
-.btn-lock{background:transparent;border:1px solid var(--gold-dim);color:var(--muted);padding:.35rem .8rem;font-family:inherit;font-size:.58rem;letter-spacing:.14em;cursor:pointer;text-transform:uppercase;transition:all .3s}
+.dashboard-footer{display:flex;justify-content:flex-end}
+.btn-lock{background:transparent;border:1px solid var(--gold-dim);color:var(--muted);padding:.3rem .7rem;font-family:inherit;font-size:.55rem;letter-spacing:.12em;cursor:pointer;text-transform:uppercase}
 .btn-lock:hover{color:var(--gold);border-color:var(--gold)}
 
-/* Settings Modal */
-.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:none;align-items:center;justify-content:center;padding:1rem;animation:fadeUp .3s ease}
+/* Settings */
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;display:none;align-items:center;justify-content:center;padding:1rem}
 .settings-overlay.visible{display:flex}
-.settings-panel{background:var(--bg-soft);border:1px solid var(--gold-dim);width:min(520px,95vw);max-height:85vh;overflow-y:auto;padding:1.2rem;position:relative;box-shadow:0 20px 50px var(--shadow)}
-.settings-panel h3{font-size:.85rem;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
-.settings-section{margin-bottom:1.1rem}
-.settings-section h4{font-size:.62rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:.5rem;border-bottom:1px dashed var(--border);padding-bottom:.25rem}
-.settings-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem;margin-bottom:.45rem;font-size:.65rem}
-.settings-row label{color:var(--text);flex:1}
-.settings-row input[type=range]{width:120px}
-.settings-row input[type=color]{width:36px;height:28px;border:none;background:transparent;cursor:pointer}
-.settings-close{position:absolute;top:.7rem;right:.8rem;background:transparent;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer}
-.keyword-list{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem}
-.keyword-chip{font-size:.55rem;padding:.2rem .4rem;border:1px solid var(--gold-dim);color:var(--gold);display:flex;align-items:center;gap:.25rem}
-.keyword-chip button{background:none;border:none;color:var(--red);cursor:pointer;font-size:.7rem}
+.settings-panel{background:var(--bg-soft);border:1px solid var(--gold-dim);width:min(480px,94vw);max-height:82vh;overflow-y:auto;padding:1.1rem;position:relative}
+.settings-panel h3{font-size:.8rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:.9rem}
+.settings-section{margin-bottom:1rem}
+.settings-section h4{font-size:.58rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem;border-bottom:1px dashed var(--border);padding-bottom:.2rem}
+.settings-row{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:.35rem;font-size:.62rem}
+.settings-close{position:absolute;top:.6rem;right:.7rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer}
+.keyword-list{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
+.keyword-chip{font-size:.52rem;padding:.18rem .35rem;border:1px solid var(--gold-dim);color:var(--gold);display:flex;align-items:center;gap:.2rem}
+.keyword-chip button{background:none;border:none;color:var(--red);cursor:pointer;font-size:.65rem}
 
-/* Notifications */
-.notify-toast{position:fixed;top:18px;right:18px;background:var(--bg-soft);border:1px solid var(--blue);color:var(--text);padding:.55rem .9rem;font-size:.62rem;letter-spacing:.08em;z-index:60;opacity:0;transform:translateX(20px);transition:all .35s;max-width:280px;box-shadow:0 8px 24px var(--shadow)}
+.notify-toast{position:fixed;top:14px;right:14px;background:var(--bg-soft);border:1px solid var(--blue);color:var(--text);padding:.45rem .8rem;font-size:.58rem;z-index:60;opacity:0;transform:translateX(16px);transition:all .3s;max-width:260px}
 .notify-toast.show{opacity:1;transform:none}
-
-.corner{position:absolute;width:6px;height:6px;border:1px solid var(--gold);opacity:.5;pointer-events:none}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg-soft);border:1px solid var(--gold-dim);color:var(--text);padding:.45rem .85rem;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;opacity:0;pointer-events:none;z-index:100;transition:all .3s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.32);transform:scale(0);animation:rippleOut .45s ease-out forwards;pointer-events:none;z-index:20}
+@keyframes rippleOut{to{transform:scale(4.5);opacity:0}}
+.flash-green{animation:flashG .5s ease}
+@keyframes flashG{0%,100%{box-shadow:none}40%{box-shadow:0 0 18px rgba(74,246,38,.4)}}
+.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}
+.corner{position:absolute;width:6px;height:6px;border:1px solid var(--gold);opacity:.45;pointer-events:none}
 .tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
 .tr{top:-1px;right:-1px;border-left:none;border-bottom:none}
 .bl{bottom:-1px;left:-1px;border-right:none;border-top:none}
 .br{bottom:-1px;right:-1px;border-left:none;border-top:none}
-
-.ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.35);transform:scale(0);animation:rippleOut .5s ease-out forwards;pointer-events:none;z-index:20}
-@keyframes rippleOut{to{transform:scale(5);opacity:0}}
-.flash-green{animation:flashG .55s ease}
-@keyframes flashG{0%,100%{box-shadow:none}40%{box-shadow:0 0 20px rgba(74,246,38,.45)}}
-.shake{animation:shake .35s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}70%{transform:translateX(5px)}}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg-soft);border:1px solid var(--gold-dim);color:var(--text);padding:.5rem .95rem;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;opacity:0;pointer-events:none;z-index:100;transition:all .3s;box-shadow:0 8px 24px var(--shadow)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -212,7 +249,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 
 <!-- GATE -->
 <div class="view" id="gateView">
   <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-  <div class="sigil-container" id="sigilButton"><canvas id="sigilCanvas" width="260" height="260"></canvas></div>
+  <div class="sigil-container" id="sigilButton"><canvas id="sigilCanvas" width="240" height="240"></canvas></div>
   <h1>Bits &amp; Pieces</h1>
   <div class="subtitle">Order of the Fragmented Mind</div>
   <p class="manifesto">Truth is never revealed whole.<br>It is gathered, byte by byte, echo by echo.<br>Assemble the cipher to enter.</p>
@@ -225,37 +262,68 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 
 <!-- DASHBOARD -->
 <div class="view hidden" id="dashboardView">
   <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
   <div class="dashboard-header">
     <h2>Inner Sanctuary</h2>
     <div class="header-meta">
       <div class="token-counter" id="tokenCounter">TOKENS: <span id="tokenBalance">0</span> ⟁</div>
       <div class="clearance-badge" id="clearanceBadge">CLEARANCE: INITIATE</div>
       <div class="power-active" id="powerBadge">POWER</div>
-      <button class="theme-btn" id="themeBtn" title="Toggle theme">☾</button>
+      <button class="theme-btn" id="themeBtn">☾</button>
       <button class="settings-btn" id="settingsBtn">Settings</button>
     </div>
   </div>
 
-  <div class="dashboard-body">
-    <div class="main-col">
+  <!-- RITES TABLE (Portfolio) -->
+  <div class="r-panel" id="ritesTablePanel" data-panel="table">
+    <div class="r-header">
+      <span class="r-header-title">// Rites Table — Portfolio</span>
+      <div class="r-controls">
+        <button class="r-btn" data-act="min" title="Minimize">−</button>
+        <button class="r-btn" data-act="max" title="Maximize">□</button>
+      </div>
+    </div>
+    <div class="r-body">
+      <div class="portfolio-slots" id="portfolioSlots"></div>
+      <div class="portfolio-actions">
+        <button class="btn-action" id="runPortfolio">Run Sequence</button>
+        <button class="btn-action" id="clearPortfolio">Clear Table</button>
+        <span style="font-size:.52rem;color:var(--muted);margin-left:.4rem" id="portfolioSummary">Empty portfolio</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <div class="left-col">
       <div class="tabs">
-        <button class="tab-btn active" data-tab="work">Rites</button>
+        <button class="tab-btn active" data-tab="spellbook">Spellbook</button>
         <button class="tab-btn" data-tab="shop">Relics</button>
         <button class="tab-btn" data-tab="keys">Keys</button>
         <button class="tab-btn" data-tab="research">Research</button>
         <button class="tab-btn" data-tab="viz">Nodes</button>
       </div>
 
-      <!-- RITES -->
-      <div class="tab-panel active" id="tab-work">
-        <div class="panel">
-          <div class="panel-title"><span>// Transmutation Rites</span><span style="color:var(--gold)" id="activeMultiplier">×1.00</span></div>
-          <div class="task-list" id="taskList"></div>
-          <div class="process-window" id="processWindow">
-            <div class="process-header"><span id="processTitle">RITE IN PROGRESS</span><button class="log-btn" id="closeProcess">Close</button></div>
-            <div class="process-body">
-              <div class="process-text" id="processText"></div>
-              <pre class="process-ascii" id="processAscii"></pre>
+      <!-- SPELLBOOK -->
+      <div class="tab-panel active" id="tab-spellbook">
+        <div class="r-panel" id="spellbookPanel" data-panel="spellbook" style="height:380px">
+          <div class="r-header">
+            <span class="r-header-title">// Spellbook of Transmutation Rites</span>
+            <div class="r-controls">
+              <button class="r-btn" data-act="min">−</button>
+              <button class="r-btn" data-act="max">□</button>
+            </div>
+          </div>
+          <div class="r-body">
+            <div class="spellbook">
+              <div class="spell-chapters" id="spellChapters"></div>
+              <div class="spell-pages" id="spellPages"></div>
+            </div>
+            <div class="process-window" id="processWindow">
+              <div class="process-header"><span id="processTitle">RITE</span><button class="log-btn" id="closeProcess">Close</button></div>
+              <div class="process-body">
+                <div class="process-text" id="processText"></div>
+                <pre class="process-ascii" id="processAscii"></pre>
+              </div>
             </div>
           </div>
         </div>
@@ -263,61 +331,74 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 
 
       <!-- SHOP -->
       <div class="tab-panel" id="tab-shop">
-        <div class="panel">
-          <div class="panel-title"><span>// Relic Shop</span></div>
-          <div class="shop-grid" id="shopGrid"></div>
+        <div class="r-panel" style="height:340px" data-panel="shop">
+          <div class="r-header"><span class="r-header-title">// Relic Shop</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body"><div class="shop-grid" id="shopGrid"></div></div>
         </div>
       </div>
 
       <!-- KEYS -->
       <div class="tab-panel" id="tab-keys">
-        <div class="panel">
-          <div class="panel-title"><span>// Keys &amp; Powers</span></div>
-          <div class="keys-grid">
-            <div class="key-slot"><h4>Held Keys</h4><div id="keysInventory"></div></div>
-            <div class="power-slot"><h4>Powers</h4><div id="powersInventory"></div></div>
+        <div class="r-panel" style="height:280px" data-panel="keys">
+          <div class="r-header"><span class="r-header-title">// Keys &amp; Powers</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body">
+            <div class="keys-grid">
+              <div class="key-slot"><h4>Held Keys</h4><div id="keysInventory"></div></div>
+              <div class="power-slot"><h4>Powers</h4><div id="powersInventory"></div></div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- RESEARCH -->
       <div class="tab-panel" id="tab-research">
-        <div class="panel">
-          <div class="panel-title"><span>// Log Analysis Research</span><span style="color:var(--gold)">FINDINGS → REWARD BOOST</span></div>
-          <div class="research-grid" id="researchGrid"></div>
-          <div id="analysisArea" style="margin-top:.8rem;display:none">
-            <div class="panel-title">Active Analysis Challenge</div>
-            <p id="analysisPrompt" style="font-size:.62rem;color:var(--muted);margin-bottom:.5rem;line-height:1.5"></p>
-            <textarea id="analysisInput" rows="3" placeholder="Submit your findings from the activity log…"></textarea>
-            <button class="btn-action" id="submitAnalysis" style="margin-top:.4rem">Submit Findings</button>
+        <div class="r-panel" style="height:320px" data-panel="research">
+          <div class="r-header"><span class="r-header-title">// Log Analysis Research</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body">
+            <div class="research-grid" id="researchGrid"></div>
+            <div id="analysisArea" style="margin-top:.6rem;display:none">
+              <p id="analysisPrompt" style="font-size:.58rem;color:var(--muted);margin-bottom:.4rem;line-height:1.45"></p>
+              <textarea id="analysisInput" rows="2" placeholder="Submit findings…"></textarea>
+              <button class="btn-action" id="submitAnalysis" style="margin-top:.3rem">Submit</button>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- VIZ -->
       <div class="tab-panel" id="tab-viz">
-        <div class="panel">
-          <div class="panel-title"><span>// Mystical Nodes</span></div>
-          <div class="viz-row">
-            <div>
-              <div style="font-size:.55rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.1em">CHRONO LATTICE</div>
-              <div class="viz-box" id="vizLatticeBox">
-                <canvas id="vizLatticeCanvas"></canvas>
-                <div class="lock-overlay" id="lockLattice"><p>RESTRICTED</p><div class="unlock-cost">30 ⟁</div><button class="btn-action" data-feature="lattice" data-cost="30">Unlock</button></div>
+        <div class="r-panel" style="height:280px" data-panel="viz">
+          <div class="r-header"><span class="r-header-title">// Mystical Nodes</span>
+            <div class="r-controls"><button class="r-btn" data-act="min">−</button><button class="r-btn" data-act="max">□</button></div>
+          </div>
+          <div class="r-body">
+            <div class="viz-row">
+              <div>
+                <div style="font-size:.5rem;color:var(--muted);margin-bottom:.2rem;letter-spacing:.08em">CHRONO LATTICE</div>
+                <div class="viz-box" id="vizLatticeBox">
+                  <canvas id="vizLatticeCanvas"></canvas>
+                  <div class="lock-overlay" id="lockLattice"><p>RESTRICTED</p><div class="unlock-cost">30 ⟁</div><button class="btn-action" data-feature="lattice" data-cost="30">Unlock</button></div>
+                </div>
               </div>
-            </div>
-            <div>
-              <div style="font-size:.55rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.1em">ASTRAL WAVE</div>
-              <div class="viz-box" id="vizWaveBox">
-                <canvas id="vizWaveCanvas"></canvas>
-                <div class="lock-overlay" id="lockWave"><p>SEALED</p><div class="unlock-cost">50 ⟁</div><button class="btn-action" data-feature="wave" data-cost="50">Unlock</button></div>
+              <div>
+                <div style="font-size:.5rem;color:var(--muted);margin-bottom:.2rem;letter-spacing:.08em">ASTRAL WAVE</div>
+                <div class="viz-box" id="vizWaveBox">
+                  <canvas id="vizWaveCanvas"></canvas>
+                  <div class="lock-overlay" id="lockWave"><p>SEALED</p><div class="unlock-cost">50 ⟁</div><button class="btn-action" data-feature="wave" data-cost="50">Unlock</button></div>
+                </div>
               </div>
-            </div>
-            <div>
-              <div style="font-size:.55rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.1em">ORACLE FIELD</div>
-              <div class="viz-box" id="vizOracleBox">
-                <canvas id="vizOracleCanvas"></canvas>
-                <div class="lock-overlay" id="lockOracle"><p>LOCKED</p><div class="unlock-cost">90 ⟁</div><button class="btn-action" data-feature="oracle" data-cost="90">Unlock</button></div>
+              <div>
+                <div style="font-size:.5rem;color:var(--muted);margin-bottom:.2rem;letter-spacing:.08em">ORACLE FIELD</div>
+                <div class="viz-box" id="vizOracleBox">
+                  <canvas id="vizOracleCanvas"></canvas>
+                  <div class="lock-overlay" id="lockOracle"><p>LOCKED</p><div class="unlock-cost">90 ⟁</div><button class="btn-action" data-feature="oracle" data-cost="90">Unlock</button></div>
+                </div>
               </div>
             </div>
           </div>
@@ -326,19 +407,27 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 
     </div>
 
     <!-- LOG -->
-    <div class="log-panel">
-      <div class="log-header">
-        <div class="log-title-row">
-          <span class="log-title">// Activity Log</span>
-          <div style="display:flex;gap:.25rem">
-            <button class="log-btn" id="downloadLogBtn">↓</button>
-            <button class="log-btn" id="clearLogBtn">Clear</button>
-          </div>
+    <div class="r-panel log-panel" id="logPanel" data-panel="log" style="height:520px">
+      <div class="r-header">
+        <span class="r-header-title">// Activity Log</span>
+        <div class="r-controls">
+          <button class="r-btn" data-act="min">−</button>
+          <button class="r-btn" data-act="max">□</button>
         </div>
-        <input type="text" class="log-search" id="logSearch" placeholder="Search log…">
-        <div class="log-meta"><span id="logCount">0</span> entries</div>
       </div>
-      <div class="log-entries" id="logEntries"></div>
+      <div class="r-body" style="padding:0;display:flex;flex-direction:column">
+        <div class="log-header-inner">
+          <div class="log-title-row">
+            <span style="font-size:.52rem;color:var(--muted)"><span id="logCount">0</span> entries</span>
+            <div style="display:flex;gap:.2rem">
+              <button class="log-btn" id="downloadLogBtn">↓</button>
+              <button class="log-btn" id="clearLogBtn">Clear</button>
+            </div>
+          </div>
+          <input type="text" class="log-search" id="logSearch" placeholder="Search…">
+        </div>
+        <div class="log-entries" id="logEntries"></div>
+      </div>
     </div>
   </div>
 
@@ -352,46 +441,24 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 
   <div class="settings-panel">
     <button class="settings-close" id="settingsClose">×</button>
     <h3>Sanctuary Settings</h3>
-
     <div class="settings-section">
       <h4>Appearance</h4>
-      <div class="settings-row"><label>Theme</label>
-        <select id="setTheme"><option value="dark">Dark</option><option value="light">Light</option></select>
-      </div>
-      <div class="settings-row"><label>Accent Gold</label><input type="color" id="setGold" value="#d4af37"></div>
-      <div class="settings-row"><label>Animation Intensity</label><input type="range" id="setAnim" min="0" max="2" step="0.1" value="1"></div>
-      <div class="settings-row"><label>UI Scale</label><input type="range" id="setScale" min="0.85" max="1.15" step="0.05" value="1"></div>
+      <div class="settings-row"><label>Theme</label><select id="setTheme"><option value="dark">Dark</option><option value="light">Light</option></select></div>
+      <div class="settings-row"><label>Accent</label><input type="color" id="setGold" value="#d4af37"></div>
+      <div class="settings-row"><label>Anim Intensity</label><input type="range" id="setAnim" min="0" max="2" step="0.1" value="1"></div>
     </div>
-
     <div class="settings-section">
-      <h4>Transmutation Visuals</h4>
-      <div class="settings-row"><label>ASCII Density</label><input type="range" id="setAsciiDens" min="0.5" max="1.5" step="0.1" value="1"></div>
-      <div class="settings-row"><label>ASCII Speed</label><input type="range" id="setAsciiSpeed" min="0.4" max="2" step="0.1" value="1"></div>
-      <div class="settings-row"><label>Process Text Speed</label><input type="range" id="setTextSpeed" min="0.5" max="2" step="0.1" value="1"></div>
-      <div class="settings-row"><label>ASCII Style</label>
-        <select id="setAsciiStyle">
-          <option value="wave">Wave / Flow</option>
-          <option value="lattice">Lattice / Grid</option>
-          <option value="noise">Noise Field</option>
-          <option value="spiral">Spiral</option>
-        </select>
+      <h4>ASCII Process</h4>
+      <div class="settings-row"><label>Density</label><input type="range" id="setAsciiDens" min="0.5" max="1.5" step="0.1" value="1"></div>
+      <div class="settings-row"><label>Speed</label><input type="range" id="setAsciiSpeed" min="0.4" max="2" step="0.1" value="1"></div>
+      <div class="settings-row"><label>Style</label>
+        <select id="setAsciiStyle"><option value="wave">Wave</option><option value="lattice">Lattice</option><option value="noise">Noise</option><option value="spiral">Spiral</option></select>
       </div>
     </div>
-
     <div class="settings-section">
       <h4>Keyword Notifications</h4>
-      <div class="settings-row">
-        <input type="text" id="keywordInput" placeholder="Add keyword or phrase…" style="flex:1">
-        <button class="btn-action" id="addKeyword">Add</button>
-      </div>
+      <div class="settings-row"><input type="text" id="keywordInput" placeholder="Add keyword…" style="flex:1"><button class="btn-action" id="addKeyword">Add</button></div>
       <div class="keyword-list" id="keywordList"></div>
-      <p style="font-size:.55rem;color:var(--muted);margin-top:.4rem">When these appear in the log, a notification fires.</p>
-    </div>
-
-    <div class="settings-section">
-      <h4>Log & Feedback</h4>
-      <div class="settings-row"><label>Show toasts</label><input type="checkbox" id="setToasts" checked></div>
-      <div class="settings-row"><label>Log click events</label><input type="checkbox" id="setLogClicks" checked></div>
     </div>
   </div>
 </div>
@@ -405,577 +472,697 @@ input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
-/* ── State ──────────────────────────────────────────────── */
+/* ── State ─────────────────────────────────────────────── */
 let tokens = 0;
-const unlocked = { lattice:false, wave:false, oracle:false };
+const unlocked = {lattice:false,wave:false,oracle:false};
 const ownedUpgrades = new Set();
-const keys = [];
-const powers = [];
+const keys = []; const powers = [];
 let activePower = null;
-let globalMultiplier = 1;
-let cooldownFactor = 1;
-let durationFactor = 1;
-let researchBoost = 1;          // from analysis findings
-let autoFlags = { align:false, decipher:false, void:false, all:false };
-const logEntries = [];
-let logId = 0;
-const keywords = [];            // notification triggers
-let settings = {
-  theme: "dark", anim: 1, scale: 1, asciiDens: 1, asciiSpeed: 1, textSpeed: 1,
-  asciiStyle: "wave", toasts: true, logClicks: true, gold: "#d4af37"
-};
+let globalMultiplier = 1, cooldownFactor = 1, durationFactor = 1, researchBoost = 1;
+let autoFlags = {align:false,decipher:false,void:false,all:false};
+const logEntries = []; let logId = 0;
+const keywords = [];
+const portfolio = []; // array of task ids
+let settings = {theme:"dark",anim:1,asciiDens:1,asciiSpeed:1,asciiStyle:"wave",gold:"#d4af37"};
 
-/* ── Expanded Rites with interplay ──────────────────────── */
+/* ── Rites + Chapters (Spellbook) ──────────────────────── */
+const CHAPTERS = [
+  {id:"foundations", name:"Foundations"},
+  {id:"binding", name:"Binding Arts"},
+  {id:"ascent", name:"Ascent Paths"},
+  {id:"apex", name:"Apex & Beyond"},
+  {id:"utility", name:"Utility Rites"},
+];
 const TASKS = [
-  { id:"align",    title:"Align Aetheric Signal",   base:15,  dur:2800,  cd:3800,  deps:[],        unlocks:["weave"] },
-  { id:"decipher", title:"Decipher Arcane Packet",  base:28,  dur:5200,  cd:7200,  deps:[],        unlocks:["bind"] },
-  { id:"void",     title:"Offer Focus to the Void", base:55,  dur:9000,  cd:12000, deps:[],        unlocks:["ascend"] },
-  { id:"weave",    title:"Weave Chrono Thread",     base:42,  dur:6500,  cd:9500,  deps:["align"], unlocks:["lattice_sync"] },
-  { id:"bind",     title:"Bind Shadow Glyph",       base:80,  dur:11000, cd:16000, deps:["decipher"], unlocks:["echo_bind"] },
-  { id:"ascend",   title:"Ascend the Lattice",      base:130, dur:16000, cd:24000, deps:["void"],  unlocks:["apex"] },
-  { id:"lattice_sync", title:"Lattice Synchronization", base:70, dur:8000, cd:11000, deps:["weave","align"], unlocks:[] },
-  { id:"echo_bind", title:"Echo Binding Ritual",    base:110, dur:13000, cd:18000, deps:["bind","decipher"], unlocks:[] },
-  { id:"apex",     title:"Apex Convergence",        base:200, dur:22000, cd:32000, deps:["ascend","lattice_sync"], unlocks:[] },
-  { id:"fracture", title:"Fracture the Veil",       base:95,  dur:10000, cd:14000, deps:["void","bind"], unlocks:["reweave"] },
-  { id:"reweave",  title:"Reweave Broken Signal",   base:160, dur:15000, cd:21000, deps:["fracture","weave"], unlocks:[] },
-  { id:"oracle_call", title:"Call the Oracle",      base:180, dur:18000, cd:26000, deps:["apex"], unlocks:[] },
-  { id:"silent",   title:"Silent Observation",      base:25,  dur:4000,  cd:5000,  deps:[],        unlocks:[] },
-  { id:"pulse",    title:"Pulse the Grid",          base:48,  dur:6000,  cd:8500,  deps:["align","silent"], unlocks:[] },
+  {id:"align",title:"Align Aetheric Signal",base:15,dur:2800,cd:3800,deps:[],chapter:"foundations"},
+  {id:"silent",title:"Silent Observation",base:22,dur:3800,cd:4800,deps:[],chapter:"foundations"},
+  {id:"decipher",title:"Decipher Arcane Packet",base:28,dur:5200,cd:7200,deps:[],chapter:"foundations"},
+  {id:"void",title:"Offer Focus to the Void",base:55,dur:9000,cd:12000,deps:[],chapter:"foundations"},
+  {id:"weave",title:"Weave Chrono Thread",base:42,dur:6500,cd:9500,deps:["align"],chapter:"binding"},
+  {id:"bind",title:"Bind Shadow Glyph",base:80,dur:11000,cd:16000,deps:["decipher"],chapter:"binding"},
+  {id:"pulse",title:"Pulse the Grid",base:48,dur:6000,cd:8500,deps:["align","silent"],chapter:"binding"},
+  {id:"lattice_sync",title:"Lattice Synchronization",base:70,dur:8000,cd:11000,deps:["weave","align"],chapter:"ascent"},
+  {id:"echo_bind",title:"Echo Binding Ritual",base:110,dur:13000,cd:18000,deps:["bind","decipher"],chapter:"ascent"},
+  {id:"fracture",title:"Fracture the Veil",base:95,dur:10000,cd:14000,deps:["void","bind"],chapter:"ascent"},
+  {id:"ascend",title:"Ascend the Lattice",base:130,dur:16000,cd:24000,deps:["void"],chapter:"apex"},
+  {id:"reweave",title:"Reweave Broken Signal",base:160,dur:15000,cd:21000,deps:["fracture","weave"],chapter:"apex"},
+  {id:"apex",title:"Apex Convergence",base:200,dur:22000,cd:32000,deps:["ascend","lattice_sync"],chapter:"apex"},
+  {id:"oracle_call",title:"Call the Oracle",base:180,dur:18000,cd:26000,deps:["apex"],chapter:"apex"},
 ];
 const taskState = {};
-const completedOnce = new Set(); // for unlock interplay
+const completedOnce = new Set();
+let currentChapter = "foundations";
 
 const RITE_FLAVOR = {
-  align: ["Calibrating aetheric baseline…","Locking phase offset…","Signal coherence rising…","Alignment locked."],
-  decipher: ["Packet headers exposed…","Glyph frequency matched…","Cipher layer peeling…","Arcane content revealed."],
-  void: ["Opening void aperture…","Focus stream established…","Offering accepted by the dark…","Void echo returned."],
-  weave: ["Threading chrono filaments…","Crossing temporal nodes…","Weave density increasing…","Chrono thread stable."],
-  bind: ["Shadow ink prepared…","Glyph geometry set…","Binding pressure applied…","Shadow glyph sealed."],
-  ascend: ["Lattice rungs illuminated…","Vertical resonance climb…","Higher node reached…","Ascent complete."],
-  lattice_sync: ["Nodes reporting in…","Sync pulses exchanged…","Phase drift corrected…","Lattice fully synchronized."],
-  echo_bind: ["Echo chamber primed…","Binding wave reflected…","Double resonance achieved…","Echo binding held."],
-  apex: ["All streams converging…","Apex geometry forming…","Singularity threshold…","Convergence achieved."],
-  fracture: ["Veil tension rising…","Micro-fractures opening…","Signal bleeding through…","Veil fractured."],
-  reweave: ["Broken strands gathered…","Reweaving under tension…","Integrity restoring…","Signal rewoven."],
-  oracle_call: ["Oracle attention requested…","Constellation aligning…","Question transmitted…","Oracle has answered."],
-  silent: ["Observation window open…","No interference…","Data accumulating…","Silent record complete."],
-  pulse: ["Grid capacitance charged…","Pulse front forming…","Energy released…","Grid pulse complete."],
+  align:["Calibrating aetheric baseline…","Locking phase offset…","Signal coherence rising…","Alignment locked."],
+  silent:["Observation window open…","No interference…","Data accumulating…","Silent record complete."],
+  decipher:["Packet headers exposed…","Glyph frequency matched…","Cipher layer peeling…","Arcane content revealed."],
+  void:["Opening void aperture…","Focus stream established…","Offering accepted…","Void echo returned."],
+  weave:["Threading chrono filaments…","Crossing temporal nodes…","Weave density increasing…","Chrono thread stable."],
+  bind:["Shadow ink prepared…","Glyph geometry set…","Binding pressure applied…","Shadow glyph sealed."],
+  pulse:["Grid capacitance charged…","Pulse front forming…","Energy released…","Grid pulse complete."],
+  lattice_sync:["Nodes reporting in…","Sync pulses exchanged…","Phase drift corrected…","Lattice synchronized."],
+  echo_bind:["Echo chamber primed…","Binding wave reflected…","Double resonance…","Echo binding held."],
+  fracture:["Veil tension rising…","Micro-fractures opening…","Signal bleeding through…","Veil fractured."],
+  ascend:["Lattice rungs illuminated…","Vertical resonance climb…","Higher node reached…","Ascent complete."],
+  reweave:["Broken strands gathered…","Reweaving under tension…","Integrity restoring…","Signal rewoven."],
+  apex:["All streams converging…","Apex geometry forming…","Singularity threshold…","Convergence achieved."],
+  oracle_call:["Oracle attention requested…","Constellation aligning…","Question transmitted…","Oracle has answered."],
 };
 
-/* ── Upgrades (expanded) ────────────────────────────────── */
 const UPGRADES = [
   {id:"eff1",name:"Efficiency I",desc:"Cooldowns −12%",cost:40,fn:()=>cooldownFactor*=0.88},
   {id:"eff2",name:"Efficiency II",desc:"Cooldowns −15%",cost:95,fn:()=>cooldownFactor*=0.85},
-  {id:"eff3",name:"Efficiency III",desc:"Cooldowns −18%",cost:190,fn:()=>cooldownFactor*=0.82},
   {id:"yield1",name:"Yield I",desc:"Rewards +15%",cost:55,fn:()=>globalMultiplier*=1.15},
   {id:"yield2",name:"Yield II",desc:"Rewards +20%",cost:120,fn:()=>globalMultiplier*=1.20},
-  {id:"yield3",name:"Yield III",desc:"Rewards +25%",cost:240,fn:()=>globalMultiplier*=1.25},
   {id:"focus1",name:"Focus I",desc:"Duration −15%",cost:65,fn:()=>durationFactor*=0.85},
-  {id:"focus2",name:"Focus II",desc:"Duration −20%",cost:150,fn:()=>durationFactor*=0.80},
   {id:"autoA",name:"Auto-Align",desc:"Auto-run Align",cost:110,fn:()=>autoFlags.align=true},
-  {id:"autoD",name:"Auto-Decipher",desc:"Auto-run Decipher",cost:190,fn:()=>autoFlags.decipher=true},
-  {id:"autoV",name:"Auto-Void",desc:"Auto-run Void",cost:320,fn:()=>autoFlags.void=true},
   {id:"parallel",name:"Parallel Rites",desc:"Run 2 at once",cost:260,fn:()=>window.__parallel=true},
   {id:"echo",name:"Echo Chamber",desc:"8% double reward",cost:175,fn:()=>window.__echo=0.08},
-  {id:"research+",name:"Deep Analysis",desc:"Research boost +25%",cost:200,fn:()=>researchBoost*=1.25},
+  {id:"research+",name:"Deep Analysis",desc:"Research +25%",cost:200,fn:()=>researchBoost*=1.25},
 ];
-
-/* ── Research definitions ───────────────────────────────── */
 const RESEARCH = [
-  {id:"r1",name:"Pattern Scan I",desc:"Analyze recent log for task frequency",cost:40,boost:0.08},
-  {id:"r2",name:"Anomaly Hunt",desc:"Find error or rejection patterns",cost:70,boost:0.12},
-  {id:"r3",name:"Power Trace",desc:"Track key/power activations",cost:110,boost:0.18},
-  {id:"r4",name:"Deep Correlation",desc:"Cross-reference rites & yields",cost:180,boost:0.28},
+  {id:"r1",name:"Pattern Scan",desc:"Analyze task frequency in log",cost:40,boost:0.08},
+  {id:"r2",name:"Anomaly Hunt",desc:"Find error patterns",cost:70,boost:0.12},
+  {id:"r3",name:"Power Trace",desc:"Track key activations",cost:110,boost:0.18},
 ];
 let activeResearch = null;
 
-/* ── Logging + keyword notify ───────────────────────────── */
-function log(msg, type="info"){
-  const now=new Date();
-  const ts=now.toLocaleTimeString("en-GB",{hour12:false})+"."+String(now.getMilliseconds()).padStart(3,"0").slice(0,2);
-  const entry={id:++logId,ts,type,msg,raw:msg.toLowerCase()};
+/* ── Panel min/max ─────────────────────────────────────── */
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".r-btn");
+  if (!btn) return;
+  const panel = btn.closest(".r-panel");
+  if (!panel) return;
+  const act = btn.dataset.act;
+  if (act === "min") {
+    panel.classList.toggle("minimized");
+    panel.classList.remove("maximized");
+  } else if (act === "max") {
+    panel.classList.toggle("maximized");
+    panel.classList.remove("minimized");
+  }
+});
+
+/* ── Logging ───────────────────────────────────────────── */
+function log(msg, type="info") {
+  const now = new Date();
+  const ts = now.toLocaleTimeString("en-GB",{hour12:false}) + "." + String(now.getMilliseconds()).padStart(3,"0").slice(0,2);
+  const entry = {id:++logId, ts, type, msg, raw:msg.toLowerCase()};
   logEntries.push(entry);
-  const div=document.createElement("div");
-  div.className=`log-entry type-${type}`;
-  div.dataset.id=entry.id;
-  div.innerHTML=`<span class="ts">${ts}</span>${escapeHtml(msg)}`;
+  const div = document.createElement("div");
+  div.className = `log-entry type-${type}`;
+  div.dataset.id = entry.id;
+  div.innerHTML = `<span class="ts">${ts}</span>${escapeHtml(msg)}`;
   $("#logEntries").appendChild(div);
-  $("#logEntries").scrollTop=$("#logEntries").scrollHeight;
-  $("#logCount").textContent=logEntries.length;
+  $("#logEntries").scrollTop = $("#logEntries").scrollHeight;
+  $("#logCount").textContent = logEntries.length;
   applyLogFilter();
-  // keyword notifications
-  keywords.forEach(kw=>{
-    if(entry.raw.includes(kw.toLowerCase())){
-      showNotify(`Keyword “${kw}” detected in log`);
-      log(`Notification fired for “${kw}”`,"notify");
+  keywords.forEach(kw => {
+    if (entry.raw.includes(kw.toLowerCase())) {
+      showNotify(`Keyword “${kw}” detected`);
+      log(`Notify: “${kw}”`,"notify");
     }
   });
 }
 function escapeHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 function applyLogFilter(){
-  const q=$("#logSearch").value.trim().toLowerCase();
-  $$(".log-entry").forEach(el=>{
-    const e=logEntries.find(x=>x.id==+el.dataset.id);
-    el.classList.toggle("hidden-by-search",!(!q||(e&&e.raw.includes(q))));
+  const q = $("#logSearch").value.trim().toLowerCase();
+  $$(".log-entry").forEach(el => {
+    const e = logEntries.find(x => x.id == +el.dataset.id);
+    el.classList.toggle("hidden-by-search", !(!q || (e && e.raw.includes(q))));
   });
 }
-$("#logSearch").addEventListener("input",applyLogFilter);
-$("#downloadLogBtn").addEventListener("click",()=>{
-  const lines=logEntries.map(e=>`[${e.ts}] [${e.type.toUpperCase()}] ${e.msg}`);
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/plain"}));
-  a.download=`bits-log-${Date.now()}.txt`;a.click();log("Log exported","system");toast("Downloaded");
+$("#logSearch").addEventListener("input", applyLogFilter);
+$("#downloadLogBtn").addEventListener("click", () => {
+  const lines = logEntries.map(e => `[${e.ts}] [${e.type.toUpperCase()}] ${e.msg}`);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/plain"}));
+  a.download = `bits-log-${Date.now()}.txt`; a.click();
+  log("Log exported","system"); toast("Downloaded");
 });
-$("#clearLogBtn").addEventListener("click",()=>{logEntries.length=0;$("#logEntries").innerHTML="";$("#logCount").textContent="0";log("Log cleared","system");});
-
-function showNotify(msg){
-  const n=$("#notifyToast");n.textContent=msg;n.classList.add("show");
-  setTimeout(()=>n.classList.remove("show"),3200);
+$("#clearLogBtn").addEventListener("click", () => {
+  logEntries.length = 0; $("#logEntries").innerHTML = ""; $("#logCount").textContent = "0";
+  log("Log cleared","system");
+});
+function showNotify(msg) {
+  const n = $("#notifyToast"); n.textContent = msg; n.classList.add("show");
+  setTimeout(() => n.classList.remove("show"), 3000);
 }
-
-/* ── Toast / Ripple / Theme ─────────────────────────────── */
 let toastTimer;
-function toast(m){if(!settings.toasts)return;const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),1600);}
-function spawnRipple(e,parent){
-  if(settings.anim<0.3)return;
-  const rect=parent.getBoundingClientRect();
-  const r=document.createElement("div");r.className="ripple";
-  r.style.cssText=`left:${(e.clientX||rect.left+rect.width/2)-rect.left-10}px;top:${(e.clientY||rect.top+rect.height/2)-rect.top-10}px;width:20px;height:20px`;
-  parent.style.position=parent.style.position||"relative";parent.appendChild(r);setTimeout(()=>r.remove(),550);
+function toast(m) {
+  const t = $("#toast"); t.textContent = m; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1500);
+}
+function spawnRipple(e, parent) {
+  if (settings.anim < 0.3) return;
+  const rect = parent.getBoundingClientRect();
+  const r = document.createElement("div"); r.className = "ripple";
+  r.style.cssText = `left:${(e.clientX||rect.left+rect.width/2)-rect.left-10}px;top:${(e.clientY||rect.top+rect.height/2)-rect.top-10}px;width:20px;height:20px`;
+  parent.style.position = parent.style.position || "relative";
+  parent.appendChild(r); setTimeout(() => r.remove(), 500);
 }
 
-function applyTheme(theme){
-  document.documentElement.setAttribute("data-theme",theme);
-  settings.theme=theme;
-  $("#themeBtn").textContent=theme==="dark"?"☾":"☀";
-  $("#setTheme").value=theme;
-  try{localStorage.setItem("bp-theme",theme);}catch(_){}
+/* ── Theme ─────────────────────────────────────────────── */
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  settings.theme = theme;
+  $("#themeBtn").textContent = theme === "dark" ? "☾" : "☀";
+  try { localStorage.setItem("bp-theme", theme); } catch(_){}
 }
-$("#themeBtn").addEventListener("click",()=>applyTheme(settings.theme==="dark"?"light":"dark"));
+$("#themeBtn").addEventListener("click", () => applyTheme(settings.theme === "dark" ? "light" : "dark"));
 
-/* ── Tokens ─────────────────────────────────────────────── */
-function setTokens(n,anim=true){
-  const prev=tokens;tokens=Math.max(0,Math.floor(n));
-  $("#tokenBalance").textContent=tokens;
-  if(anim&&tokens!==prev){$("#tokenCounter").classList.add("pulse");setTimeout(()=>$("#tokenCounter").classList.remove("pulse"),360);}
-  updateClearance();updateMult();
-  try{localStorage.setItem("bp2-tokens",tokens);}catch(_){}
+/* ── Tokens ────────────────────────────────────────────── */
+function setTokens(n, anim=true) {
+  const prev = tokens; tokens = Math.max(0, Math.floor(n));
+  $("#tokenBalance").textContent = tokens;
+  if (anim && tokens !== prev) {
+    $("#tokenCounter").classList.add("pulse");
+    setTimeout(() => $("#tokenCounter").classList.remove("pulse"), 340);
+  }
+  updateClearance(); updateMult();
+  try { localStorage.setItem("bp2-tokens", tokens); } catch(_){}
 }
-function updateClearance(){
-  let l="INITIATE";
-  if(tokens>=120||ownedUpgrades.size>=2)l="ADEPT";
-  if(tokens>=350||ownedUpgrades.size>=6)l="ORACLE";
-  if(tokens>=800||completedOnce.size>=8)l="ARCHON";
-  $("#clearanceBadge").textContent="CLEARANCE: "+l;
+function updateClearance() {
+  let l = "INITIATE";
+  if (tokens >= 120 || ownedUpgrades.size >= 2) l = "ADEPT";
+  if (tokens >= 350 || ownedUpgrades.size >= 5) l = "ORACLE";
+  if (tokens >= 800 || completedOnce.size >= 8) l = "ARCHON";
+  $("#clearanceBadge").textContent = "CLEARANCE: " + l;
 }
-function updateMult(){
-  let m=globalMultiplier*researchBoost;
-  if(activePower&&activePower.mult>1)m*=activePower.mult;
-  $("#activeMultiplier").textContent="×"+m.toFixed(2);
+function updateMult() {
+  let m = globalMultiplier * researchBoost;
+  if (activePower && activePower.mult > 1) m *= activePower.mult;
+  // no dedicated display in this layout; kept for calculations
 }
 
-/* ── Tabs ───────────────────────────────────────────────── */
-$$(".tab-btn").forEach(b=>{
-  b.addEventListener("click",()=>{
-    $$(".tab-btn").forEach(x=>x.classList.remove("active"));
-    $$(".tab-panel").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");$("#tab-"+b.dataset.tab).classList.add("active");
-    if(settings.logClicks)log(`Tab → ${b.dataset.tab}`,"click");
+/* ── Tabs ──────────────────────────────────────────────── */
+$$(".tab-btn").forEach(b => {
+  b.addEventListener("click", () => {
+    $$(".tab-btn").forEach(x => x.classList.remove("active"));
+    $$(".tab-panel").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    $("#tab-" + b.dataset.tab).classList.add("active");
   });
 });
 
-/* ── Rites rendering & interplay ────────────────────────── */
-function isUnlocked(t){
-  if(!t.deps.length)return true;
-  return t.deps.every(d=>completedOnce.has(d));
+/* ── Spellbook ─────────────────────────────────────────── */
+function isUnlocked(t) {
+  if (!t.deps.length) return true;
+  return t.deps.every(d => completedOnce.has(d));
 }
-function renderTasks(){
-  const list=$("#taskList");list.innerHTML="";
-  TASKS.forEach(t=>{
-    if(!taskState[t.id])taskState[t.id]={status:"idle",endsAt:0};
-    const st=taskState[t.id];
-    const open=isUnlocked(t);
-    const card=document.createElement("div");
-    card.className="task-card"+(st.status==="working"?" working":"")+(st.status==="cooldown"?" cooldown":"")+(open?"":" locked");
-    card.dataset.task=t.id;
-    const mult=globalMultiplier*researchBoost*(activePower?.mult||1);
-    const reward=Math.floor(t.base*mult);
-    const dur=Math.floor(t.dur*durationFactor);
-    const cd=Math.floor(t.cd*cooldownFactor);
-    card.innerHTML=`
-      <div class="task-info">
-        <span class="task-title">${t.title}</span>
-        <span class="task-meta">+${reward} ⟁ · ${(dur/1000).toFixed(1)}s · cd ${(cd/1000).toFixed(1)}s</span>
-        ${t.deps.length?`<span class="task-deps">Requires: ${t.deps.join(", ")}</span>`:""}
+function renderChapters() {
+  const el = $("#spellChapters");
+  el.innerHTML = "";
+  CHAPTERS.forEach(ch => {
+    const btn = document.createElement("button");
+    btn.className = "chapter-btn" + (ch.id === currentChapter ? " active" : "");
+    btn.textContent = ch.name;
+    btn.addEventListener("click", () => {
+      currentChapter = ch.id;
+      renderChapters();
+      renderSpellPages();
+    });
+    el.appendChild(btn);
+  });
+}
+function renderSpellPages() {
+  const pages = $("#spellPages");
+  pages.innerHTML = "";
+  const list = TASKS.filter(t => t.chapter === currentChapter);
+  list.forEach(t => {
+    if (!taskState[t.id]) taskState[t.id] = {status:"idle", endsAt:0};
+    const st = taskState[t.id];
+    const open = isUnlocked(t);
+    const card = document.createElement("div");
+    card.className = "spell-card" + (st.status === "working" ? " working" : "") + (open ? "" : " locked");
+    card.dataset.task = t.id;
+    const mult = globalMultiplier * researchBoost * (activePower?.mult || 1);
+    const reward = Math.floor(t.base * mult);
+    const dur = Math.floor(t.dur * durationFactor);
+    const cd = Math.floor(t.cd * cooldownFactor);
+    card.innerHTML = `
+      <div class="spell-info">
+        <span class="spell-title">${t.title}</span>
+        <span class="spell-meta">+${reward} ⟁ · ${(dur/1000).toFixed(1)}s · cd ${(cd/1000).toFixed(1)}s</span>
+        ${t.deps.length ? `<span class="spell-deps">Requires: ${t.deps.join(", ")}</span>` : ""}
       </div>
-      <button class="btn-action" data-task="${t.id}" ${!open||st.status!=="idle"?"disabled":""}>${st.status==="idle"?(open?"Transmute":"Locked"):st.status==="working"?"…":"CD"}</button>
+      <div class="spell-actions">
+        <button class="btn-action" data-act="cast" ${!open || st.status !== "idle" ? "disabled" : ""}>${st.status === "idle" ? (open ? "Cast" : "Locked") : st.status === "working" ? "…" : "CD"}</button>
+        <button class="btn-action" data-act="add" ${!open ? "disabled" : ""}>+ Table</button>
+      </div>
       <div class="task-progress" id="prog-${t.id}"></div>`;
-    list.appendChild(card);
-    if(open&&st.status==="idle"){
-      card.querySelector("button").addEventListener("click",e=>startTask(t.id,e));
+    pages.appendChild(card);
+    const castBtn = card.querySelector("[data-act=cast]");
+    const addBtn = card.querySelector("[data-act=add]");
+    if (open && st.status === "idle") {
+      castBtn.addEventListener("click", e => startTask(t.id, e));
+    }
+    if (open) {
+      addBtn.addEventListener("click", () => addToPortfolio(t.id));
     }
   });
 }
 
-function startTask(id,e){
-  const t=TASKS.find(x=>x.id===id);
-  const st=taskState[id];
-  if(st.status!=="idle"||!isUnlocked(t))return;
-  const working=Object.values(taskState).filter(s=>s.status==="working").length;
-  if(working>=1&&!window.__parallel){toast("Need Parallel Rites");return;}
+function startTask(id, e) {
+  const t = TASKS.find(x => x.id === id);
+  const st = taskState[id];
+  if (st.status !== "idle" || !isUnlocked(t)) return;
+  const working = Object.values(taskState).filter(s => s.status === "working").length;
+  if (working >= 1 && !window.__parallel) { toast("Need Parallel Rites"); return; }
 
-  const dur=Math.floor(t.dur*durationFactor);
-  st.status="working";st.endsAt=performance.now()+dur;
-  renderTasks();
-  if(e)spawnRipple(e,e.target);
-  log(`Rite started: ${t.title}`,"task");
+  const dur = Math.floor(t.dur * durationFactor);
+  st.status = "working"; st.endsAt = performance.now() + dur;
+  renderSpellPages();
+  if (e) spawnRipple(e, e.target);
+  log(`Rite cast: ${t.title}`, "task");
   openProcessWindow(t);
 
-  const prog=$(`#prog-${id}`);
-  const tick=()=>{
-    if(st.status!=="working")return;
-    const left=st.endsAt-performance.now();
-    const p=Math.max(0,Math.min(1,1-left/dur));
-    if(prog)prog.style.width=(p*100)+"%";
-    if(left<=0){finishTask(id);return;}
+  const prog = $(`#prog-${id}`);
+  const tick = () => {
+    if (st.status !== "working") return;
+    const left = st.endsAt - performance.now();
+    const p = Math.max(0, Math.min(1, 1 - left / dur));
+    if (prog) prog.style.width = (p * 100) + "%";
+    if (left <= 0) { finishTask(id); return; }
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
 }
 
-function finishTask(id){
-  const t=TASKS.find(x=>x.id===id);
-  const st=taskState[id];
-  let reward=Math.floor(t.base*globalMultiplier*researchBoost*(activePower?.mult||1));
-  if(window.__echo&&Math.random()<window.__echo){reward*=2;log("Echo Chamber double yield","power");}
-  setTokens(tokens+reward);
+function finishTask(id) {
+  const t = TASKS.find(x => x.id === id);
+  const st = taskState[id];
+  let reward = Math.floor(t.base * globalMultiplier * researchBoost * (activePower?.mult || 1));
+  if (window.__echo && Math.random() < window.__echo) { reward *= 2; log("Echo double yield", "power"); }
+  setTokens(tokens + reward);
   completedOnce.add(id);
-  log(`Rite complete: ${t.title} · +${reward}`,"task");
+  log(`Rite complete: ${t.title} · +${reward}`, "task");
   toast(`+${reward} ⟁`);
-  const card=$(`.task-card[data-task="${id}"]`);
-  if(card)card.classList.add("flash-green");
+  const card = $(`.spell-card[data-task="${id}"]`);
+  if (card) card.classList.add("flash-green");
 
-  // unlock messages for newly available rites
-  TASKS.filter(x=>x.deps.includes(id)&&isUnlocked(x)).forEach(x=>{
-    log(`New rite available: ${x.title}`,"info");
+  TASKS.filter(x => x.deps.includes(id) && isUnlocked(x)).forEach(x => {
+    log(`New rite available: ${x.title}`, "info");
   });
 
-  const cd=Math.floor(t.cd*cooldownFactor);
-  st.status="cooldown";st.endsAt=performance.now()+cd;
+  const cd = Math.floor(t.cd * cooldownFactor);
+  st.status = "cooldown"; st.endsAt = performance.now() + cd;
   closeProcessWindowSoon();
-  renderTasks();
-  setTimeout(()=>{st.status="idle";renderTasks();maybeAuto(id);},cd);
+  renderSpellPages();
+  setTimeout(() => { st.status = "idle"; renderSpellPages(); maybeAuto(id); }, cd);
+}
+function maybeAuto(id) {
+  if (autoFlags.all || autoFlags[id]) setTimeout(() => { if (taskState[id].status === "idle") startTask(id); }, 300);
 }
 
-function maybeAuto(id){
-  if(autoFlags.all||autoFlags[id])setTimeout(()=>{if(taskState[id].status==="idle")startTask(id);},350);
+/* ── Portfolio (Rites Table) ───────────────────────────── */
+function addToPortfolio(id) {
+  if (portfolio.length >= 6) { toast("Table full (max 6)"); return; }
+  if (portfolio.includes(id)) { toast("Already on table"); return; }
+  portfolio.push(id);
+  renderPortfolio();
+  log(`Added to Rites Table: ${TASKS.find(t=>t.id===id).title}`, "info");
+  toast("Added to Table");
 }
-
-/* ── ASCII Process Window ───────────────────────────────── */
-let asciiRaf=null, processLines=[];
-function openProcessWindow(task){
-  const win=$("#processWindow");
-  win.classList.add("visible");
-  $("#processTitle").textContent=task.title.toUpperCase();
-  const textEl=$("#processText");
-  textEl.innerHTML="";
-  processLines=RITE_FLAVOR[task.id]||["Initiating unknown process…","Resonance building…","Complete."];
-  let i=0;
-  const speed=900/settings.textSpeed;
-  const addLine=()=>{
-    if(i>=processLines.length)return;
-    const d=document.createElement("div");d.className="line";d.textContent="› "+processLines[i++];
-    textEl.appendChild(d);textEl.scrollTop=textEl.scrollHeight;
-    if(i<processLines.length)setTimeout(addLine,speed);
-  };
-  addLine();
-  startAscii(task.id);
+function renderPortfolio() {
+  const el = $("#portfolioSlots");
+  el.innerHTML = "";
+  for (let i = 0; i < 6; i++) {
+    const slot = document.createElement("div");
+    slot.className = "portfolio-slot" + (portfolio[i] ? " filled" : "");
+    if (portfolio[i]) {
+      const t = TASKS.find(x => x.id === portfolio[i]);
+      const mult = globalMultiplier * researchBoost * (activePower?.mult || 1);
+      slot.innerHTML = `
+        <button class="slot-remove" data-i="${i}">×</button>
+        <div class="slot-name">${t.title}</div>
+        <div class="slot-meta">+${Math.floor(t.base*mult)} ⟁</div>`;
+      slot.querySelector(".slot-remove").addEventListener("click", () => {
+        portfolio.splice(i, 1);
+        renderPortfolio();
+      });
+    } else {
+      slot.innerHTML = `<div class="slot-name" style="color:var(--muted);font-size:.55rem">Empty slot</div>`;
+    }
+    el.appendChild(slot);
+  }
+  const total = portfolio.reduce((s, id) => {
+    const t = TASKS.find(x => x.id === id);
+    return s + Math.floor(t.base * globalMultiplier * researchBoost * (activePower?.mult || 1));
+  }, 0);
+  $("#portfolioSummary").textContent = portfolio.length
+    ? `${portfolio.length} rites · ~${total} ⟁ potential`
+    : "Empty portfolio";
 }
-function closeProcessWindowSoon(){
-  setTimeout(()=>{
-    $("#processWindow").classList.remove("visible");
-    if(asciiRaf)cancelAnimationFrame(asciiRaf);
-  },1200);
-}
-$("#closeProcess").addEventListener("click",()=>{
-  $("#processWindow").classList.remove("visible");
-  if(asciiRaf)cancelAnimationFrame(asciiRaf);
+$("#clearPortfolio").addEventListener("click", () => {
+  portfolio.length = 0;
+  renderPortfolio();
+  log("Rites Table cleared", "system");
+});
+$("#runPortfolio").addEventListener("click", async () => {
+  if (!portfolio.length) { toast("Table empty"); return; }
+  log("Portfolio sequence started", "task");
+  toast("Running sequence…");
+  for (const id of [...portfolio]) {
+    if (taskState[id]?.status === "idle" && isUnlocked(TASKS.find(t => t.id === id))) {
+      startTask(id);
+      // wait until idle again (simple poll)
+      await new Promise(res => {
+        const check = () => {
+          if (taskState[id].status === "idle") res();
+          else setTimeout(check, 400);
+        };
+        setTimeout(check, 500);
+      });
+    }
+  }
+  log("Portfolio sequence finished", "task");
+  toast("Sequence complete");
 });
 
-function startAscii(seed){
-  const pre=$("#processAscii");
-  let t=0;
-  const cols=42, rows=16;
-  const dens=settings.asciiDens, spd=settings.asciiSpeed, style=settings.asciiStyle;
-  const hash=n=>{const x=Math.sin(n*127.1)*43758.5453;return x-Math.floor(x);};
-  function frame(){
-    let out="";
-    for(let y=0;y<rows;y++){
-      let row="";
-      for(let x=0;x<cols;x++){
-        let v=0;
-        if(style==="wave"){
-          v=Math.sin(x*0.22+t*spd)+Math.cos(y*0.18+t*0.7*spd)+hash(x+y+seed.length)*0.4;
-        }else if(style==="lattice"){
-          v=((x+Math.floor(t*spd*2))%7===0||(y+Math.floor(t*spd))%5===0)?1.2:hash(x*3+y*7+t)*0.6;
-        }else if(style==="spiral"){
-          const cx=cols/2,cy=rows/2,dx=x-cx,dy=y-cy;
-          const ang=Math.atan2(dy,dx)+t*spd*0.4;
-          const rad=Math.hypot(dx,dy);
-          v=Math.sin(rad*0.4-ang*2)+hash(x+y)*0.3;
-        }else{ // noise
-          v=hash(x*0.15+t*spd*0.1)+hash(y*0.2+t*0.07)-0.7;
-        }
-        v*=dens;
-        if(v>1.1)row+="█";else if(v>0.6)row+="▓";else if(v>0.2)row+="▒";else if(v>-0.2)row+="░";else if(v>-0.6)row+="·";else row+=" ";
+/* ── Process ASCII window ──────────────────────────────── */
+let asciiRaf = null;
+function openProcessWindow(task) {
+  const win = $("#processWindow");
+  win.classList.add("visible");
+  $("#processTitle").textContent = task.title.toUpperCase();
+  const textEl = $("#processText");
+  textEl.innerHTML = "";
+  const lines = RITE_FLAVOR[task.id] || ["Initiating…", "Resonance…", "Complete."];
+  let i = 0;
+  const add = () => {
+    if (i >= lines.length) return;
+    const d = document.createElement("div"); d.className = "line"; d.textContent = "› " + lines[i++];
+    textEl.appendChild(d); textEl.scrollTop = textEl.scrollHeight;
+    if (i < lines.length) setTimeout(add, 700);
+  };
+  add();
+  startAscii(task.id);
+}
+function closeProcessWindowSoon() {
+  setTimeout(() => {
+    $("#processWindow").classList.remove("visible");
+    if (asciiRaf) cancelAnimationFrame(asciiRaf);
+  }, 1100);
+}
+$("#closeProcess").addEventListener("click", () => {
+  $("#processWindow").classList.remove("visible");
+  if (asciiRaf) cancelAnimationFrame(asciiRaf);
+});
+function startAscii(seed) {
+  const pre = $("#processAscii");
+  let t = 0;
+  const cols = 40, rows = 14;
+  const dens = settings.asciiDens, spd = settings.asciiSpeed, style = settings.asciiStyle;
+  const hash = n => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
+  function frame() {
+    let out = "";
+    for (let y = 0; y < rows; y++) {
+      let row = "";
+      for (let x = 0; x < cols; x++) {
+        let v = 0;
+        if (style === "wave") v = Math.sin(x * 0.22 + t * spd) + Math.cos(y * 0.18 + t * 0.7 * spd);
+        else if (style === "lattice") v = ((x + Math.floor(t * spd * 2)) % 7 === 0 || (y + Math.floor(t * spd)) % 5 === 0) ? 1.2 : hash(x * 3 + y) * 0.5;
+        else if (style === "spiral") {
+          const dx = x - cols / 2, dy = y - rows / 2;
+          v = Math.sin(Math.hypot(dx, dy) * 0.4 - Math.atan2(dy, dx) * 2 + t * spd * 0.4);
+        } else v = hash(x * 0.15 + t * spd * 0.1) + hash(y * 0.2) - 0.7;
+        v *= dens;
+        if (v > 1.1) row += "█"; else if (v > 0.6) row += "▓"; else if (v > 0.2) row += "▒"; else if (v > -0.2) row += "░"; else if (v > -0.6) row += "·"; else row += " ";
       }
-      out+=row+"\n";
+      out += row + "\n";
     }
-    pre.textContent=out;
-    t+=0.08;
-    asciiRaf=requestAnimationFrame(frame);
+    pre.textContent = out;
+    t += 0.08;
+    asciiRaf = requestAnimationFrame(frame);
   }
-  if(asciiRaf)cancelAnimationFrame(asciiRaf);
+  if (asciiRaf) cancelAnimationFrame(asciiRaf);
   frame();
 }
 
-/* ── Shop ───────────────────────────────────────────────── */
-function renderShop(){
-  const g=$("#shopGrid");g.innerHTML="";
-  UPGRADES.forEach(u=>{
-    const owned=ownedUpgrades.has(u.id);
-    const c=document.createElement("div");c.className="upgrade-card"+(owned?" owned":"");
-    c.innerHTML=`<div class="upgrade-name">${u.name}</div><div class="upgrade-desc">${u.desc}</div>
-      <div class="upgrade-cost">${owned?"OWNED":u.cost+" ⟁"}</div>
-      <button class="btn-action" ${owned?"disabled":""} data-upg="${u.id}">${owned?"Owned":"Buy"}</button>`;
+/* ── Shop / Research / Keys (compact) ──────────────────── */
+function renderShop() {
+  const g = $("#shopGrid"); g.innerHTML = "";
+  UPGRADES.forEach(u => {
+    const owned = ownedUpgrades.has(u.id);
+    const c = document.createElement("div"); c.className = "upgrade-card" + (owned ? " owned" : "");
+    c.innerHTML = `<div class="upgrade-name">${u.name}</div><div class="upgrade-desc">${u.desc}</div>
+      <div class="upgrade-cost">${owned ? "OWNED" : u.cost + " ⟁"}</div>
+      <button class="btn-action" ${owned ? "disabled" : ""}>${owned ? "Owned" : "Buy"}</button>`;
     g.appendChild(c);
-    if(!owned)c.querySelector("button").addEventListener("click",e=>{
-      if(tokens<u.cost){toast("Need more tokens");return;}
-      setTokens(tokens-u.cost);ownedUpgrades.add(u.id);u.fn();
-      log(`Relic acquired: ${u.name}`,"unlock");toast(u.name);spawnRipple(e,e.target);
-      renderShop();renderTasks();updateMult();
-      try{localStorage.setItem("bp2-upg",JSON.stringify([...ownedUpgrades]));}catch(_){}
+    if (!owned) c.querySelector("button").addEventListener("click", e => {
+      if (tokens < u.cost) { toast("Need tokens"); return; }
+      setTokens(tokens - u.cost); ownedUpgrades.add(u.id); u.fn();
+      log(`Relic: ${u.name}`, "unlock"); toast(u.name); spawnRipple(e, e.target);
+      renderShop(); renderSpellPages();
+      try { localStorage.setItem("bp2-upg", JSON.stringify([...ownedUpgrades])); } catch(_){}
     });
   });
 }
-
-/* ── Research ───────────────────────────────────────────── */
-function renderResearch(){
-  const g=$("#researchGrid");g.innerHTML="";
-  RESEARCH.forEach(r=>{
-    const c=document.createElement("div");c.className="research-card";
-    c.innerHTML=`<div class="research-name">${r.name}</div><div class="research-desc">${r.desc}</div>
-      <div class="upgrade-cost">${r.cost} ⟁ · potential +${(r.boost*100).toFixed(0)}% yield</div>
-      <button class="btn-action" data-res="${r.id}">Begin Analysis</button>`;
+function renderResearch() {
+  const g = $("#researchGrid"); g.innerHTML = "";
+  RESEARCH.forEach(r => {
+    const c = document.createElement("div"); c.className = "research-card";
+    c.innerHTML = `<div class="research-name">${r.name}</div><div class="research-desc">${r.desc}</div>
+      <div class="upgrade-cost">${r.cost} ⟁ · +${(r.boost*100).toFixed(0)}%</div>
+      <button class="btn-action">Begin</button>`;
     g.appendChild(c);
-    c.querySelector("button").addEventListener("click",()=>{
-      if(tokens<r.cost){toast("Insufficient tokens");return;}
-      setTokens(tokens-r.cost);
-      activeResearch=r;
-      $("#analysisArea").style.display="block";
-      $("#analysisPrompt").textContent=`Challenge: ${r.desc}. Examine the activity log carefully and submit concise findings (keywords, counts, patterns). Higher quality → stronger permanent boost.`;
-      log(`Research started: ${r.name}`,"research");
-      toast("Analysis open");
+    c.querySelector("button").addEventListener("click", () => {
+      if (tokens < r.cost) { toast("Need tokens"); return; }
+      setTokens(tokens - r.cost);
+      activeResearch = r;
+      $("#analysisArea").style.display = "block";
+      $("#analysisPrompt").textContent = `Analyze the log for: ${r.desc}. Submit findings.`;
+      log(`Research: ${r.name}`, "research");
     });
   });
 }
-$("#submitAnalysis").addEventListener("click",()=>{
-  if(!activeResearch)return;
-  const text=$("#analysisInput").value.trim().toLowerCase();
-  if(text.length<8){toast("Findings too brief");return;}
-  // simple quality heuristic
-  let quality=0.4;
-  if(text.length>40)quality+=0.15;
-  if(/\d+/.test(text))quality+=0.1;
-  if(text.includes("task")||text.includes("rite")||text.includes("token"))quality+=0.1;
-  if(text.includes("error")||text.includes("fail")||text.includes("reject"))quality+=0.1;
-  if(text.includes("power")||text.includes("key"))quality+=0.1;
-  quality=Math.min(1,quality);
-  const boost=activeResearch.boost*quality;
-  researchBoost*= (1+boost);
-  log(`Findings accepted (quality ${(quality*100).toFixed(0)}%) · permanent yield +${(boost*100).toFixed(1)}%`,"research");
-  toast(`Research boost +${(boost*100).toFixed(1)}%`);
-  $("#analysisArea").style.display="none";
-  $("#analysisInput").value="";
-  activeResearch=null;
-  updateMult();renderTasks();
+$("#submitAnalysis").addEventListener("click", () => {
+  if (!activeResearch) return;
+  const text = $("#analysisInput").value.trim().toLowerCase();
+  if (text.length < 6) { toast("Too brief"); return; }
+  let q = 0.4;
+  if (text.length > 30) q += 0.15;
+  if (/\d+/.test(text)) q += 0.1;
+  if (/task|rite|token|error|power|key/.test(text)) q += 0.15;
+  q = Math.min(1, q);
+  const boost = activeResearch.boost * q;
+  researchBoost *= (1 + boost);
+  log(`Findings accepted · +${(boost*100).toFixed(1)}% yield`, "research");
+  toast(`+${(boost*100).toFixed(1)}% boost`);
+  $("#analysisArea").style.display = "none";
+  $("#analysisInput").value = "";
+  activeResearch = null;
+  renderSpellPages();
 });
-
-/* ── Keys / Powers (kept lean) ──────────────────────────── */
-function addKey(type){
-  const map={lattice:{name:"Lattice Key",power:"x5"},wave:{name:"Wave Key",power:"x7"},oracle:{name:"Oracle Key",power:"x55"},void:{name:"Void Key",power:"instant"}};
-  const d=map[type]||map.lattice;
-  keys.push({id:Date.now()+Math.random(),type,name:d.name,powerId:d.power});
-  log(`Key obtained: ${d.name}`,"power");toast("Key received");renderKeys();
+function addKey(type) {
+  const map = {lattice:{name:"Lattice Key",power:"x5"},wave:{name:"Wave Key",power:"x7"},oracle:{name:"Oracle Key",power:"x55"}};
+  const d = map[type] || map.lattice;
+  keys.push({id:Date.now()+Math.random(), type, name:d.name, powerId:d.power});
+  log(`Key: ${d.name}`, "power"); toast("Key received"); renderKeys();
 }
-function renderKeys(){
-  const inv=$("#keysInventory");inv.innerHTML=keys.length?"":"<span style='font-size:.55rem;color:var(--muted)'>None</span>";
-  keys.forEach(k=>{
-    const d=document.createElement("div");d.className="key-item";
-    d.innerHTML=`<span>${k.name}</span><button class="btn-action" data-k="${k.id}">Activate</button>`;
+function renderKeys() {
+  const inv = $("#keysInventory");
+  inv.innerHTML = keys.length ? "" : "<span style='font-size:.52rem;color:var(--muted)'>None</span>";
+  keys.forEach(k => {
+    const d = document.createElement("div"); d.className = "key-item";
+    d.innerHTML = `<span>${k.name}</span><button class="btn-action">Act</button>`;
     inv.appendChild(d);
-    d.querySelector("button").addEventListener("click",()=>{
-      const idx=keys.findIndex(x=>x.id===k.id);if(idx<0)return;
-      keys.splice(idx,1);
-      const defs={x5:{name:"5× Surge",mult:5,uses:3},x7:{name:"7× Amplify",mult:7,uses:2},x55:{name:"55× Apex",mult:55,uses:1},instant:{name:"Instant",mult:1,uses:4,special:"instant"}};
-      const def=defs[k.powerId]||defs.x5;
-      powers.push({id:Date.now(),...def,readyAt:0});
-      log(`Power ready: ${def.name}`,"power");renderKeys();
+    d.querySelector("button").addEventListener("click", () => {
+      const idx = keys.findIndex(x => x.id === k.id); if (idx < 0) return;
+      keys.splice(idx, 1);
+      const defs = {x5:{name:"5× Surge",mult:5,uses:3},x7:{name:"7× Amplify",mult:7,uses:2},x55:{name:"55× Apex",mult:55,uses:1}};
+      const def = defs[k.powerId] || defs.x5;
+      powers.push({id:Date.now(), ...def, readyAt:0});
+      log(`Power ready: ${def.name}`, "power"); renderKeys();
     });
   });
-  const pinv=$("#powersInventory");pinv.innerHTML=powers.length?"":"<span style='font-size:.55rem;color:var(--muted)'>None</span>";
-  powers.forEach(p=>{
-    const ready=performance.now()>=(p.readyAt||0);
-    const d=document.createElement("div");d.className="power-item";
-    d.innerHTML=`<span>${p.name} (${p.uses})</span><button class="btn-action" ${ready&&!activePower?"":"disabled"}>${activePower?.id===p.id?"ON":ready?"Use":"CD"}</button>`;
+  const pinv = $("#powersInventory");
+  pinv.innerHTML = powers.length ? "" : "<span style='font-size:.52rem;color:var(--muted)'>None</span>";
+  powers.forEach(p => {
+    const ready = performance.now() >= (p.readyAt || 0);
+    const d = document.createElement("div"); d.className = "power-item";
+    d.innerHTML = `<span>${p.name} (${p.uses})</span><button class="btn-action" ${ready && !activePower ? "" : "disabled"}>${activePower?.id === p.id ? "ON" : ready ? "Use" : "CD"}</button>`;
     pinv.appendChild(d);
-    if(ready&&!activePower)d.querySelector("button").addEventListener("click",()=>{
-      activePower=p;$("#powerBadge").style.display="block";$("#powerBadge").textContent=p.name;
-      log(`Power active: ${p.name}`,"power");updateMult();renderTasks();renderKeys();
-      setTimeout(()=>{if(activePower===p){activePower=null;$("#powerBadge").style.display="none";p.readyAt=performance.now()+60000;p.uses--;updateMult();renderKeys();renderTasks();}},20000);
+    if (ready && !activePower) d.querySelector("button").addEventListener("click", () => {
+      activePower = p; $("#powerBadge").style.display = "block"; $("#powerBadge").textContent = p.name;
+      log(`Power: ${p.name}`, "power"); renderSpellPages(); renderKeys(); renderPortfolio();
+      setTimeout(() => {
+        if (activePower === p) {
+          activePower = null; $("#powerBadge").style.display = "none";
+          p.readyAt = performance.now() + 55000; p.uses--;
+          renderKeys(); renderSpellPages(); renderPortfolio();
+        }
+      }, 18000);
     });
   });
 }
 
-/* ── Settings panel ─────────────────────────────────────── */
-$("#settingsBtn").addEventListener("click",()=>{$("#settingsOverlay").classList.add("visible");syncSettingsUI();});
-$("#settingsClose").addEventListener("click",()=>{$("#settingsOverlay").classList.remove("visible");});
-$("#settingsOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)$("#settingsOverlay").classList.remove("visible");});
-
-function syncSettingsUI(){
-  $("#setTheme").value=settings.theme;
-  $("#setAnim").value=settings.anim;
-  $("#setScale").value=settings.scale;
-  $("#setAsciiDens").value=settings.asciiDens;
-  $("#setAsciiSpeed").value=settings.asciiSpeed;
-  $("#setTextSpeed").value=settings.textSpeed;
-  $("#setAsciiStyle").value=settings.asciiStyle;
-  $("#setToasts").checked=settings.toasts;
-  $("#setLogClicks").checked=settings.logClicks;
-  $("#setGold").value=settings.gold;
-  renderKeywords();
-}
-$("#setTheme").addEventListener("change",e=>applyTheme(e.target.value));
-$("#setAnim").addEventListener("input",e=>settings.anim=+e.target.value);
-$("#setScale").addEventListener("input",e=>{settings.scale=+e.target.value;document.documentElement.style.fontSize=(16*settings.scale)+"px";});
-$("#setAsciiDens").addEventListener("input",e=>settings.asciiDens=+e.target.value);
-$("#setAsciiSpeed").addEventListener("input",e=>settings.asciiSpeed=+e.target.value);
-$("#setTextSpeed").addEventListener("input",e=>settings.textSpeed=+e.target.value);
-$("#setAsciiStyle").addEventListener("change",e=>settings.asciiStyle=e.target.value);
-$("#setToasts").addEventListener("change",e=>settings.toasts=e.target.checked);
-$("#setLogClicks").addEventListener("change",e=>settings.logClicks=e.target.checked);
-$("#setGold").addEventListener("input",e=>{
-  settings.gold=e.target.value;
-  document.documentElement.style.setProperty("--gold",settings.gold);
-  document.documentElement.style.setProperty("--gold-dim",settings.gold+"29");
+/* ── Settings ──────────────────────────────────────────── */
+$("#settingsBtn").addEventListener("click", () => $("#settingsOverlay").classList.add("visible"));
+$("#settingsClose").addEventListener("click", () => $("#settingsOverlay").classList.remove("visible"));
+$("#settingsOverlay").addEventListener("click", e => { if (e.target === e.currentTarget) $("#settingsOverlay").classList.remove("visible"); });
+$("#setTheme").addEventListener("change", e => applyTheme(e.target.value));
+$("#setAnim").addEventListener("input", e => settings.anim = +e.target.value);
+$("#setAsciiDens").addEventListener("input", e => settings.asciiDens = +e.target.value);
+$("#setAsciiSpeed").addEventListener("input", e => settings.asciiSpeed = +e.target.value);
+$("#setAsciiStyle").addEventListener("change", e => settings.asciiStyle = e.target.value);
+$("#setGold").addEventListener("input", e => {
+  settings.gold = e.target.value;
+  document.documentElement.style.setProperty("--gold", settings.gold);
+  document.documentElement.style.setProperty("--gold-dim", settings.gold + "29");
 });
-
-$("#addKeyword").addEventListener("click",()=>{
-  const v=$("#keywordInput").value.trim();
-  if(!v||keywords.includes(v))return;
-  keywords.push(v);$("#keywordInput").value="";renderKeywords();
-  log(`Notification keyword added: “${v}”`,"system");
+$("#addKeyword").addEventListener("click", () => {
+  const v = $("#keywordInput").value.trim();
+  if (!v || keywords.includes(v)) return;
+  keywords.push(v); $("#keywordInput").value = "";
+  renderKeywords(); log(`Keyword added: “${v}”`, "system");
 });
-function renderKeywords(){
-  const list=$("#keywordList");list.innerHTML="";
-  keywords.forEach((k,i)=>{
-    const chip=document.createElement("span");chip.className="keyword-chip";
-    chip.innerHTML=`${k}<button data-i="${i}">×</button>`;
+function renderKeywords() {
+  const list = $("#keywordList"); list.innerHTML = "";
+  keywords.forEach((k, i) => {
+    const chip = document.createElement("span"); chip.className = "keyword-chip";
+    chip.innerHTML = `${k}<button data-i="${i}">×</button>`;
     list.appendChild(chip);
-    chip.querySelector("button").addEventListener("click",()=>{keywords.splice(i,1);renderKeywords();});
+    chip.querySelector("button").addEventListener("click", () => { keywords.splice(i, 1); renderKeywords(); });
   });
 }
 
-/* ── Gate + Viz unlock ──────────────────────────────────── */
-const canvas=$("#sigilCanvas"),ctx=canvas.getContext("2d");
-let angle=0,pulse=0;
-(function drawSigil(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const cx=canvas.width/2,cy=canvas.height/2,r=85;
-  ctx.save();ctx.translate(cx,cy);
-  ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.strokeStyle="rgba(212,175,55,.4)";ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.stroke();
+/* ── Gate + Viz ────────────────────────────────────────── */
+const canvas = $("#sigilCanvas"), ctx = canvas.getContext("2d");
+let angle = 0, pulse = 0;
+(function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const cx = canvas.width/2, cy = canvas.height/2, r = 80;
+  ctx.save(); ctx.translate(cx, cy);
+  ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.strokeStyle = "rgba(212,175,55,.4)"; ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.stroke();
   ctx.rotate(angle);
-  ctx.beginPath();for(let i=0;i<3;i++){const a=i*2*Math.PI/3-Math.PI/2;const x=r*.8*Math.cos(a),y=r*.8*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.strokeStyle="rgba(212,175,55,.7)";ctx.setLineDash([]);ctx.stroke();
-  ctx.beginPath();ctx.arc(0,0,4+Math.sin(pulse)*2,0,Math.PI*2);ctx.fillStyle="#d4af37";ctx.fill();
-  ctx.restore();angle+=0.003;pulse+=0.05;requestAnimationFrame(drawSigil);
+  ctx.beginPath(); for (let i=0;i<3;i++){const a=i*2*Math.PI/3-Math.PI/2;const x=r*.8*Math.cos(a),y=r*.8*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.closePath(); ctx.strokeStyle="rgba(212,175,55,.7)"; ctx.setLineDash([]); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0,0,4+Math.sin(pulse)*2,0,Math.PI*2); ctx.fillStyle="#d4af37"; ctx.fill();
+  ctx.restore(); angle+=0.003; pulse+=0.05; requestAnimationFrame(draw);
 })();
-$("#sigilButton").addEventListener("click",e=>{angle+=0.5;spawnRipple(e,$("#sigilButton"));$("#status").textContent="Resonance Shifted";$("#status").style.color="var(--gold)";log("Sigil pulse","click");setTimeout(()=>{$("#status").textContent="Awaiting Input";$("#status").style.color="var(--muted)";},1500);});
-
-$("#gateForm").addEventListener("submit",e=>{
+$("#sigilButton").addEventListener("click", e => {
+  angle += 0.5; spawnRipple(e, $("#sigilButton"));
+  $("#status").textContent = "Resonance Shifted"; $("#status").style.color = "var(--gold)";
+  log("Sigil pulse", "click");
+  setTimeout(() => { $("#status").textContent = "Awaiting Input"; $("#status").style.color = "var(--muted)"; }, 1400);
+});
+$("#gateForm").addEventListener("submit", e => {
   e.preventDefault();
-  const val=$("#passphrase").value.trim().toLowerCase();
-  if(val==="bits and pieces"||val==="bits & pieces"){
-    $("#status").textContent="Access Granted";$("#status").style.color="var(--green)";
-    setTimeout(()=>{
-      $("#gateView").classList.add("hidden");$("#dashboardView").classList.remove("hidden");
-      log("Sanctuary online","system");
-      initVisualizations();renderTasks();renderShop();renderKeys();renderResearch();
+  const val = $("#passphrase").value.trim().toLowerCase();
+  if (val === "bits and pieces" || val === "bits & pieces") {
+    $("#status").textContent = "Access Granted"; $("#status").style.color = "var(--green)";
+    setTimeout(() => {
+      $("#gateView").classList.add("hidden");
+      $("#dashboardView").classList.remove("hidden");
+      log("Sanctuary online", "system");
+      initVisualizations();
+      renderChapters(); renderSpellPages(); renderPortfolio();
+      renderShop(); renderKeys(); renderResearch();
       toast("Welcome");
-      setInterval(()=>{
-        if(unlocked.lattice&&Math.random()<0.3)maybeChallenge("#vizLatticeBox","lattice");
-        if(unlocked.wave&&Math.random()<0.3)maybeChallenge("#vizWaveBox","wave");
-        if(unlocked.oracle&&Math.random()<0.25)maybeChallenge("#vizOracleBox","oracle");
-      },32000);
-    },700);
-  }else{
-    $("#status").textContent="Cipher Rejected";$("#status").style.color="var(--red)";
-    $("#passphrase").classList.add("shake");log("Rejected","error");
-    setTimeout(()=>{$("#status").textContent="Awaiting Input";$("#status").style.color="var(--muted)";$("#passphrase").classList.remove("shake");},1600);
+      setInterval(() => {
+        if (unlocked.lattice && Math.random() < 0.28) maybeChallenge("#vizLatticeBox", "lattice");
+        if (unlocked.wave && Math.random() < 0.28) maybeChallenge("#vizWaveBox", "wave");
+        if (unlocked.oracle && Math.random() < 0.22) maybeChallenge("#vizOracleBox", "oracle");
+      }, 34000);
+    }, 650);
+  } else {
+    $("#status").textContent = "Cipher Rejected"; $("#status").style.color = "var(--red)";
+    $("#passphrase").classList.add("shake"); log("Rejected", "error");
+    setTimeout(() => { $("#status").textContent = "Awaiting Input"; $("#status").style.color = "var(--muted)"; $("#passphrase").classList.remove("shake"); }, 1500);
   }
 });
-$("#lockBtn").addEventListener("click",()=>{log("Session end","system");$("#dashboardView").classList.add("hidden");$("#gateView").classList.remove("hidden");});
-
-$$("[data-feature]").forEach(btn=>{
-  btn.addEventListener("click",e=>{
-    const f=btn.dataset.feature,cost=+btn.dataset.cost;
-    if(unlocked[f]||tokens<cost){if(tokens<cost)toast("Need tokens");return;}
-    setTokens(tokens-cost);unlocked[f]=true;
-    const o=btn.closest(".lock-overlay");o.classList.add("unlocked");
-    log(`Node ${f} unlocked`,"unlock");toast(f+" online");spawnRipple(e,o);
-    setTimeout(()=>o.style.display="none",550);
+$("#lockBtn").addEventListener("click", () => {
+  log("Session end", "system");
+  $("#dashboardView").classList.add("hidden");
+  $("#gateView").classList.remove("hidden");
+});
+$$("[data-feature]").forEach(btn => {
+  btn.addEventListener("click", e => {
+    const f = btn.dataset.feature, cost = +btn.dataset.cost;
+    if (unlocked[f] || tokens < cost) { if (tokens < cost) toast("Need tokens"); return; }
+    setTokens(tokens - cost); unlocked[f] = true;
+    const o = btn.closest(".lock-overlay"); o.classList.add("unlocked");
+    log(`Node ${f} unlocked`, "unlock"); toast(f + " online"); spawnRipple(e, o);
+    setTimeout(() => o.style.display = "none", 500);
   });
 });
-
-function maybeChallenge(boxId,type){
-  const box=$(boxId);if(box.querySelector(".challenge-modal"))return;
-  const qs=[{q:"7×8−3?",a:"53"},{q:"Type AETHER",a:"aether"},{q:"Hexagon sides?",a:"6"},{q:"Reverse SIGIL",a:"ligis"}];
-  const ch=qs[Math.floor(Math.random()*qs.length)];
-  const m=document.createElement("div");m.className="challenge-modal";
-  m.innerHTML=`<h3>Node Challenge</h3><p>${ch.q}</p><input placeholder="Answer"><div style="display:flex;gap:.3rem;margin-top:.3rem"><button class="btn-action" data-a="ok">Submit</button><button class="btn-action" data-a="no">Skip</button></div>`;
+function maybeChallenge(boxId, type) {
+  const box = $(boxId); if (box.querySelector(".challenge-modal")) return;
+  const qs = [{q:"7×8−3?",a:"53"},{q:"Type AETHER",a:"aether"},{q:"Hexagon sides?",a:"6"}];
+  const ch = qs[Math.floor(Math.random()*qs.length)];
+  const m = document.createElement("div"); m.className = "challenge-modal";
+  m.innerHTML = `<h3 style="font-size:.62rem;color:var(--gold);margin-bottom:.3rem">Node Challenge</h3><p style="font-size:.55rem;color:var(--muted);margin-bottom:.35rem">${ch.q}</p><input placeholder="Answer" style="width:80%;margin-bottom:.3rem;text-align:center"><div style="display:flex;gap:.25rem"><button class="btn-action" data-a="ok">Submit</button><button class="btn-action" data-a="no">Skip</button></div>`;
   box.appendChild(m);
-  m.querySelector("[data-a=ok]").addEventListener("click",()=>{
-    if(m.querySelector("input").value.trim().toLowerCase()===ch.a){addKey(type);toast("Key earned");}
-    else toast("Wrong");m.remove();
+  m.querySelector("[data-a=ok]").addEventListener("click", () => {
+    if (m.querySelector("input").value.trim().toLowerCase() === ch.a) { addKey(type); toast("Key earned"); }
+    else toast("Wrong");
+    m.remove();
   });
-  m.querySelector("[data-a=no]").addEventListener("click",()=>m.remove());
+  m.querySelector("[data-a=no]").addEventListener("click", () => m.remove());
 }
 
-/* ── Viz engines (compact) ──────────────────────────────── */
-function initVisualizations(){
-  // Lattice
-  const c1=$("#vizLatticeCanvas"),x1=c1.getContext("2d");
-  const nodes=Array.from({length:18},()=>({x:Math.random()*200,y:Math.random()*140,vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5}));
-  (function r(){if(unlocked.lattice){c1.width=c1.offsetWidth;c1.height=c1.offsetHeight;x1.clearRect(0,0,c1.width,c1.height);
-    nodes.forEach((n,i)=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>c1.width)n.vx*=-1;if(n.y<0||n.y>c1.height)n.vy*=-1;
-      x1.beginPath();x1.arc(n.x,n.y,2,0,7);x1.fillStyle=settings.gold;x1.fill();
-      for(let j=i+1;j<nodes.length;j++){const d=Math.hypot(nodes[j].x-n.x,nodes[j].y-n.y);if(d<65){x1.beginPath();x1.moveTo(n.x,n.y);x1.lineTo(nodes[j].x,nodes[j].y);x1.strokeStyle=`rgba(212,175,55,${1-d/65})`;x1.stroke();}}});}requestAnimationFrame(r);})();
-  // Wave
-  const c2=$("#vizWaveCanvas"),x2=c2.getContext("2d");let st=0;
-  (function r(){if(unlocked.wave){c2.width=c2.offsetWidth;c2.height=c2.offsetHeight;x2.clearRect(0,0,c2.width,c2.height);
-    x2.beginPath();x2.strokeStyle="rgba(74,246,38,.7)";for(let x=0;x<c2.width;x++){const y=c2.height/2+Math.sin(x*.03+st)*18+Math.cos(x*.01+st*.5)*12;x?x2.lineTo(x,y):x2.moveTo(x,y);}x2.stroke();st+=.04;}requestAnimationFrame(r);})();
-  // Oracle
-  const c3=$("#vizOracleCanvas"),x3=c3.getContext("2d");let ot=0;
-  (function r(){if(unlocked.oracle){c3.width=c3.offsetWidth;c3.height=c3.offsetHeight;x3.clearRect(0,0,c3.width,c3.height);
-    x3.save();x3.translate(c3.width/2,c3.height/2);x3.rotate(ot);
-    for(let i=0;i<6;i++){x3.beginPath();x3.arc(Math.cos(i)*30,Math.sin(i)*30,14,0,7);x3.strokeStyle="rgba(212,175,55,.5)";x3.stroke();}x3.restore();ot+=.01;}requestAnimationFrame(r);})();
+/* ── Viz engines ───────────────────────────────────────── */
+function initVisualizations() {
+  const c1 = $("#vizLatticeCanvas"), x1 = c1.getContext("2d");
+  const nodes = Array.from({length:16}, () => ({x:Math.random()*180,y:Math.random()*110,vx:(Math.random()-.5)*.45,vy:(Math.random()-.5)*.45}));
+  (function r() {
+    if (unlocked.lattice) {
+      c1.width = c1.offsetWidth; c1.height = c1.offsetHeight; x1.clearRect(0,0,c1.width,c1.height);
+      nodes.forEach((n,i) => {
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 0 || n.x > c1.width) n.vx *= -1;
+        if (n.y < 0 || n.y > c1.height) n.vy *= -1;
+        x1.beginPath(); x1.arc(n.x,n.y,1.8,0,7); x1.fillStyle = settings.gold; x1.fill();
+        for (let j = i+1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[j].x-n.x, nodes[j].y-n.y);
+          if (d < 60) { x1.beginPath(); x1.moveTo(n.x,n.y); x1.lineTo(nodes[j].x,nodes[j].y); x1.strokeStyle = `rgba(212,175,55,${1-d/60})`; x1.stroke(); }
+        }
+      });
+    }
+    requestAnimationFrame(r);
+  })();
+  const c2 = $("#vizWaveCanvas"), x2 = c2.getContext("2d"); let st = 0;
+  (function r() {
+    if (unlocked.wave) {
+      c2.width = c2.offsetWidth; c2.height = c2.offsetHeight; x2.clearRect(0,0,c2.width,c2.height);
+      x2.beginPath(); x2.strokeStyle = "rgba(74,246,38,.7)";
+      for (let x = 0; x < c2.width; x++) {
+        const y = c2.height/2 + Math.sin(x*.03+st)*16 + Math.cos(x*.01+st*.5)*10;
+        x ? x2.lineTo(x,y) : x2.moveTo(x,y);
+      }
+      x2.stroke(); st += .04;
+    }
+    requestAnimationFrame(r);
+  })();
+  const c3 = $("#vizOracleCanvas"), x3 = c3.getContext("2d"); let ot = 0;
+  (function r() {
+    if (unlocked.oracle) {
+      c3.width = c3.offsetWidth; c3.height = c3.offsetHeight; x3.clearRect(0,0,c3.width,c3.height);
+      x3.save(); x3.translate(c3.width/2, c3.height/2); x3.rotate(ot);
+      for (let i = 0; i < 6; i++) {
+        x3.beginPath(); x3.arc(Math.cos(i)*28, Math.sin(i)*28, 12, 0, 7);
+        x3.strokeStyle = "rgba(212,175,55,.5)"; x3.stroke();
+      }
+      x3.restore(); ot += .01;
+    }
+    requestAnimationFrame(r);
+  })();
 }
 
-/* ── Boot ───────────────────────────────────────────────── */
-try{
-  const th=localStorage.getItem("bp-theme");if(th)applyTheme(th);
-  const tk=localStorage.getItem("bp2-tokens");if(tk)setTokens(+tk,false);
-  const up=localStorage.getItem("bp2-upg");if(up)JSON.parse(up).forEach(id=>{ownedUpgrades.add(id);const d=UPGRADES.find(x=>x.id===id);if(d)d.fn();});
-}catch(_){}
-log("Gatekeeper online","system");
+/* ── Boot ──────────────────────────────────────────────── */
+try {
+  const th = localStorage.getItem("bp-theme"); if (th) applyTheme(th);
+  const tk = localStorage.getItem("bp2-tokens"); if (tk) setTokens(+tk, false);
+  const up = localStorage.getItem("bp2-upg");
+  if (up) JSON.parse(up).forEach(id => {
+    ownedUpgrades.add(id);
+    const d = UPGRADES.find(x => x.id === id);
+    if (d) d.fn();
+  });
+} catch(_){}
+log("Gatekeeper online", "system");
 })();
 </script>
 </body>
