@@ -2334,7 +2334,7 @@ async function generateWebGPUReply(q,bubble){
     stream:true,
     temperature:0.5,
     top_p:0.9,
-    max_tokens:120
+    max_tokens:300
   });
   let rendered="";
   for await (const chunk of stream){
@@ -2455,7 +2455,7 @@ async function streamOllamaReply(q,bubble){
   const res=await fetch(settings.ollamaUrl+"/api/generate",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({model:settings.ollamaModel,prompt:buildAIPrompt(q),stream:settings.ollamaStream!==false})
+    body:JSON.stringify({model:settings.ollamaModel,prompt:buildAIPrompt(q),stream:settings.ollamaStream!==false,options:{num_predict:300}})
   });
   if(!res.ok)throw new Error(`Ollama HTTP ${res.status}`);
   if(settings.ollamaStream===false){
@@ -2482,7 +2482,7 @@ async function streamOllamaReply(q,bubble){
     }else if(done){
       clearInterval(pump);
     }
-  },35);
+  },50);
   while(true){
     const {value,done:streamDone}=await reader.read();
     if(streamDone)break;
@@ -2502,8 +2502,9 @@ async function streamOllamaReply(q,bubble){
     finalPart=part.done?part:(finalPart||null);
     if(part.response)(part.response.match(/\S+\s*/g)||[part.response]).forEach(word=>queue.push(word));
   }
+  while(queue.length)await new Promise(r=>setTimeout(r,50));
   done=true;
-  while(queue.length)await new Promise(r=>setTimeout(r,30));
+  clearInterval(pump);
   if(!rendered.trim())rendered=localInfer(q);
   const ms=Number(finalPart?.eval_duration)?Math.max(1,Number(finalPart.eval_duration)/1e6):Math.max(1,performance.now()-started);
   const tokens=Number(finalPart?.eval_count)||approxTokenCount(rendered);
